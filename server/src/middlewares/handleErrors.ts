@@ -1,32 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { Error as MongooseError } from 'mongoose';
-
-// Базовый интерфейс для кастомных ошибок
-interface CustomError extends Error {
-  statusCode?: number;
-}
-
-// Интерфейс для ошибок дубликации MongoDB (E11000)
-interface MongoDuplicateKeyError extends Error {
-  code: number;
-  keyPattern: Record<string, any>;
-  keyValue: Record<string, any>;
-}
-
-// Интерфейс для ошибок валидации Mongoose
-interface MongooseValidationError extends MongooseError {
-  errors: Record<
-    string,
-    MongooseError.ValidatorError | MongooseError.CastError
-  >;
-}
-
-// Объединенный тип для всех возможных ошибок
-type AppError =
-  | CustomError
-  | MongoDuplicateKeyError
-  | MongooseValidationError
-  | Error;
+import {
+  CustomError,
+  AppError,
+  MongoDuplicateKeyError,
+  MongooseValidationError,
+} from '../types/error.types';
 
 export const errorHandler = (
   statusCode: number,
