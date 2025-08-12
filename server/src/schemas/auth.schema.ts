@@ -24,6 +24,3 @@ export const signinSchema = z.object({
   email: z.string().email('Invalid email'),
   password: z.string().min(1, 'Password is required'),
 });
-
-export type SignupInput = z.infer<typeof signupSchema>;
-export type SigninInput = z.infer<typeof signinSchema> & { imageUrl?: string };

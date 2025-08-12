@@ -1,28 +1,15 @@
-import { Types } from 'mongoose';
 import { NextFunction, Response, Request } from 'express';
 import { User } from '../models/user.model';
 import { errorHandler } from '../middlewares/handleErrors';
-import { compare } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import { Secret, sign } from 'jsonwebtoken';
-import { SigninInput } from '../schemas/auth.schema';
-
-export interface UserAuthResponse {
-  _id: string;
-  username: string;
-  email: string;
-  avatarUrl: string | null;
-  role: 'user' | 'admin';
-  verified: boolean;
-  articles: Types.ObjectId[];
-  commentsCount: number;
-  articlesCount: number;
-}
-
-export interface AuthSuccessResponse {
-  success: true;
-  user: UserAuthResponse;
-  message: string;
-}
+import {
+  AuthSuccessResponse,
+  ImageRequest,
+  SigninInput,
+  SignupInput,
+  UserAuthResponse,
+} from '../types/auth.types';
 
 export const signin = async (
   req: Request<{}, {}, SigninInput>,
@@ -81,6 +68,77 @@ export const signin = async (
         success: true,
         user: userResponse,
         message: 'Sign in successfully',
+      });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const signup = async (
+  req: ImageRequest<{}, {}, SignupInput>,
+  res: Response<AuthSuccessResponse>,
+  next: NextFunction
+) => {
+  try {
+    const { username, email, password } = req.body;
+
+    const avatarUrl = req.imageUrl;
+
+    const existingUser = await User.findOne({
+      $or: [{ email }, { username }],
+    })
+      .lean()
+      .exec();
+
+    if (existingUser) {
+      const field = existingUser.email === email ? 'Email' : 'Username';
+      throw errorHandler(409, `${field} is already taken`);
+    }
+
+    const hashedPassword = await hash(password, 12);
+
+    const newUser = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+      role: 'user',
+      avatarUrl,
+      verified: false,
+      articles: [],
+    });
+
+    const token = sign(
+      {
+        userId: newUser._id,
+        email: newUser.email,
+        verified: newUser.verified,
+        role: newUser.role,
+      },
+      process.env.TOKEN_SECRET as Secret,
+      { expiresIn: '8h' }
+    );
+
+    const userResponse: UserAuthResponse = {
+      _id: newUser.id.toString(),
+      username: newUser.username,
+      email: newUser.email,
+      role: newUser.role,
+      verified: newUser.verified,
+      avatarUrl: newUser.avatarUrl || null,
+    };
+
+    return res
+      .status(201)
+      .cookie('access_token', token, {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 8 * 60 * 60 * 1000,
+      })
+      .json({
+        success: true,
+        user: userResponse,
+        message: 'User registered successfully',
       });
   } catch (err) {
     next(err);
