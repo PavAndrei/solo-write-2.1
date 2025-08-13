@@ -144,3 +144,55 @@ export const signup = async (
     next(err);
   }
 };
+
+export const getMe = async (
+  req: Request,
+  res: Response<AuthSuccessResponse>,
+  next: NextFunction
+) => {
+  try {
+    if (!req.userId) {
+      return next(errorHandler(401, 'Not authenticated'));
+    }
+
+    const user = await User.findById(req.userId)
+      .select('-password')
+      .lean()
+      .exec();
+
+    if (!user) {
+      throw errorHandler(404, 'User not found');
+    }
+
+    const userResponse: UserAuthResponse = {
+      _id: user._id.toString(),
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      verified: user.verified,
+      articles: user.articles || [],
+      avatarUrl: user.avatarUrl || null,
+      commentsCount: Number(user.commentsCount) || 0,
+      articlesCount: Number(user.articlesCount) || 0,
+    };
+
+    return res.status(200).json({
+      success: true,
+      user: userResponse,
+      message: 'User data retrieved successfully',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const signout = (req: Request, res: Response) => {
+  try {
+    res
+      .clearCookie('access_token')
+      .status(200)
+      .json({ success: true, message: 'Logged out successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Logout failed' });
+  }
+};
