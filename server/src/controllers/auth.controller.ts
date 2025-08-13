@@ -11,7 +11,7 @@ import {
   UserAuthResponse,
 } from '../types/auth.types';
 
-export const signin = async (
+export const signIn = async (
   req: Request<{}, {}, SigninInput>,
   res: Response<AuthSuccessResponse>,
   next: NextFunction
@@ -74,7 +74,7 @@ export const signin = async (
   }
 };
 
-export const signup = async (
+export const signUp = async (
   req: ImageRequest<{}, {}, SignupInput>,
   res: Response<AuthSuccessResponse>,
   next: NextFunction
@@ -186,7 +186,7 @@ export const getMe = async (
   }
 };
 
-export const signout = (req: Request, res: Response) => {
+export const signOut = (req: Request, res: Response) => {
   try {
     res
       .clearCookie('access_token')
