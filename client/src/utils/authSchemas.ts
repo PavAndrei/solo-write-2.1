@@ -4,53 +4,80 @@ import {
   MAX_FILE_SIZE,
 } from '../constants/fileValidationParams';
 
-const commonFields = {
-  email: z
-    .string()
-    .email('Invalid email')
-    .max(50, 'Email should not be longer than 50'),
-  password: z
-    .string()
-    .min(6, 'Password should not be shorter than 6')
-    .max(20, 'Password should not be longer than 20'),
-};
-
-export const SignUpSchema = z
+export const AuthSchema = z
   .object({
-    ...commonFields,
+    // Общие поля для sign-in и sign-up
+    email: z
+      .string()
+      .email('Invalid email')
+      .max(50, 'Email should not be longer than 50 characters'),
+    password: z
+      .string()
+      .min(6, 'Password should be at least 6 characters')
+      .max(20, 'Password should not exceed 20 characters'),
+
+    // Поля только для sign-up (помечены как optional в базовой схеме)
     username: z
       .string()
-      .min(3, 'Username should not be shorter than 3')
-      .max(20, 'Username should not be longer than 20')
+      .min(3, 'Username should be at least 3 characters')
+      .max(20, 'Username should not exceed 20 characters')
       .regex(
         /^[a-zA-Z0-9_]+$/,
-        'Only English letters, numbers and _ are allowed to use'
-      ),
-    repeatPassword: z.string().min(1, 'Please repeat your password'),
-    terms: z.boolean().refine((val) => val === true, {
-      message: 'You must accept the terms',
-    }),
-    file: z
-      .any()
-      .refine(
-        (files) => !files?.[0] || files[0]?.size <= MAX_FILE_SIZE,
-        'The size can be maximum 1MB.'
-      )
-      .refine(
-        (files) => !files?.[0] || ACCEPTED_IMAGE_TYPES.includes(files[0]?.type),
-        'The image can be only .jpg, .jpeg, .png и .webp.'
+        'Only English letters, numbers and underscores are allowed'
       )
       .optional(),
+
+    repeatPassword: z.string().optional(),
+
+    terms: z.boolean().optional(),
+
+    file: z.any().optional(),
   })
-  .refine((data) => data.password === data.repeatPassword, {
-    message: "Passwords don't match",
-    path: ['repeatPassword'],
+  .superRefine((data, ctx) => {
+    // Валидация дополнительных полей ТОЛЬКО если это sign-up (определяем по наличию username)
+    if (data.username !== undefined) {
+      // Проверка repeatPassword
+      if (!data.repeatPassword) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please repeat your password',
+          path: ['repeatPassword'],
+        });
+      } else if (data.password !== data.repeatPassword) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Passwords don't match",
+          path: ['repeatPassword'],
+        });
+      }
+
+      // Проверка terms
+      if (data.terms !== true) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'You must accept the terms',
+          path: ['terms'],
+        });
+      }
+
+      // Проверка файла (если он есть)
+      if (data.file?.[0]) {
+        if (data.file[0].size > MAX_FILE_SIZE) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Maximum file size is 1MB',
+            path: ['file'],
+          });
+        }
+        if (!ACCEPTED_IMAGE_TYPES.includes(data.file[0].type)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Allowed formats: .jpg, .jpeg, .png, .webp',
+            path: ['file'],
+          });
+        }
+      }
+    }
   });
 
-export const SignInSchema = z.object({
-  ...commonFields,
-});
-
-export type SignUpData = z.infer<typeof SignUpSchema>;
-export type SignInData = z.infer<typeof SignInSchema>;
-export type FormData = SignUpData | SignInData;
+export type AuthFormData = z.infer<typeof AuthSchema>;

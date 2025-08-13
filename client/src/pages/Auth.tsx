@@ -1,15 +1,9 @@
 import type { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-
+import { AuthSchema, type AuthFormData } from '../utils/authSchemas';
 import { CustomInput } from '../components/form/CustomInput';
 import { Button } from '../components/common/Button';
-import {
-  SignInSchema,
-  SignUpSchema,
-  type SignInData,
-  type SignUpData,
-} from '../utils/authSchemas';
 
 interface AuthProps {
   mode: 'sign-in' | 'sign-up';
@@ -22,12 +16,29 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignInData | SignUpData>({
-    resolver: zodResolver(isSignUp ? SignUpSchema : SignInSchema),
+  } = useForm<AuthFormData>({
+    resolver: zodResolver(AuthSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      ...(isSignUp && {
+        username: '',
+        repeatPassword: '',
+        terms: false,
+        file: undefined,
+      }),
+    },
   });
 
-  const onSubmit = (data: SignInData | SignUpData) => {
-    console.log('Form data:', data);
+  const onSubmit = (data: AuthFormData) => {
+    if (!isSignUp) {
+      // Для sign-in используем только email и password
+      const { email, password } = data;
+      console.log('SignIn data:', { email, password });
+      return;
+    }
+    // Для sign-up используем все данные
+    console.log('SignUp data:', data);
   };
 
   return (
@@ -73,8 +84,8 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
             />
 
             <div className="flex items-center gap-2">
-              <input type="checkbox" {...register('terms')} />
-              <span>I accept the terms</span>
+              <input type="checkbox" id="terms" {...register('terms')} />
+              <label htmlFor="terms">I accept the terms</label>
             </div>
             {errors.terms && (
               <p className="text-red-500 text-sm">{errors.terms.message}</p>
@@ -82,11 +93,14 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
 
             <input
               type="file"
+              accept="image/*"
               {...register('file')}
               className="block border p-2"
             />
             {errors.file && (
-              <p className="text-red-500 text-sm">{errors.file.message}</p>
+              <p className="text-red-500 text-sm">
+                {errors.file.message?.toString()}
+              </p>
             )}
           </>
         )}
