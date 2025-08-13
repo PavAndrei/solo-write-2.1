@@ -4,7 +4,7 @@ import { Readable } from 'stream';
 import cloudinary from '../configs/cloudinary.config';
 import { UploadApiResponse } from 'cloudinary';
 import { errorHandler } from './handleErrors';
-import { ImageRequest } from '../types/auth.types';
+import { ImageRequest } from '../types/common.types';
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });

@@ -4,16 +4,15 @@ import { errorHandler } from '../middlewares/handleErrors';
 import { compare, hash } from 'bcryptjs';
 import { Secret, sign } from 'jsonwebtoken';
 import {
-  AuthSuccessResponse,
-  ImageRequest,
   SigninInput,
   SignupInput,
   UserAuthResponse,
 } from '../types/auth.types';
+import { ApiResponse, ImageRequest } from '../types/common.types';
 
 export const signIn = async (
   req: Request<{}, {}, SigninInput>,
-  res: Response<AuthSuccessResponse>,
+  res: Response<ApiResponse<UserAuthResponse>>,
   next: NextFunction
 ) => {
   try {
@@ -66,7 +65,7 @@ export const signIn = async (
       })
       .json({
         success: true,
-        user: userResponse,
+        data: userResponse,
         message: 'Sign in successfully',
       });
   } catch (err) {
@@ -76,7 +75,7 @@ export const signIn = async (
 
 export const signUp = async (
   req: ImageRequest<{}, {}, SignupInput>,
-  res: Response<AuthSuccessResponse>,
+  res: Response<ApiResponse<UserAuthResponse>>,
   next: NextFunction
 ) => {
   try {
@@ -137,7 +136,7 @@ export const signUp = async (
       })
       .json({
         success: true,
-        user: userResponse,
+        data: userResponse,
         message: 'User registered successfully',
       });
   } catch (err) {
@@ -147,7 +146,7 @@ export const signUp = async (
 
 export const getMe = async (
   req: Request,
-  res: Response<AuthSuccessResponse>,
+  res: Response<ApiResponse<UserAuthResponse>>,
   next: NextFunction
 ) => {
   try {
@@ -178,7 +177,7 @@ export const getMe = async (
 
     return res.status(200).json({
       success: true,
-      user: userResponse,
+      data: userResponse,
       message: 'User data retrieved successfully',
     });
   } catch (err) {
@@ -186,13 +185,13 @@ export const getMe = async (
   }
 };
 
-export const signOut = (req: Request, res: Response) => {
+export const signOut = (req: Request, res: Response, next: NextFunction) => {
   try {
     res
       .clearCookie('access_token')
       .status(200)
       .json({ success: true, message: 'Logged out successfully' });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Logout failed' });
+    next(err);
   }
 };

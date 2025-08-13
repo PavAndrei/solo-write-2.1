@@ -1,15 +1,7 @@
-import { Request } from 'express';
 import { Types } from 'mongoose';
 import { signinSchema, signupSchema } from '../schemas/auth.schema';
 import z from 'zod';
-
-// images middleware request
-
-export interface ImageRequest<P = {}, ResBody = {}, ReqBody = {}>
-  extends Request<P, ResBody, ReqBody> {
-  file?: Express.Multer.File;
-  imageUrl?: string;
-}
+import { editorSchema } from '../schemas/editor.schema';
 
 // auth inputs
 
@@ -30,8 +22,6 @@ export interface UserAuthResponse {
   articlesCount?: number;
 }
 
-export interface AuthSuccessResponse {
-  success: true;
-  user: UserAuthResponse;
-  message: string;
-}
+// article inputs
+
+export type EditorValues = z.infer<typeof editorSchema>;
