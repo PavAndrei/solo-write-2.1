@@ -9,8 +9,14 @@ import { CustomInput } from '../components/ui/CustomInput';
 import { Button } from '../components/ui/Button';
 import { CustomCheckbox } from '../components/ui/CustomCheckbox';
 import { FileInput } from '../components/ui/FileInput';
-import { signIn, signUp } from '../features/auth/api/auth.api';
-import type { SignUpFormData } from '../features/auth/types/auth.types';
+import type {
+  SignInFormData,
+  SignUpFormData,
+} from '../features/auth/types/auth.types';
+import { useAppDispatch, useAppSelector } from '../app/store/hooks';
+import { useNavigate } from 'react-router-dom';
+import { Status } from '../types/api';
+import { signInUser, signUpUser } from '../features/auth/slices/asyncActions';
 
 interface AuthProps {
   mode: 'sign-in' | 'sign-up';
@@ -18,6 +24,11 @@ interface AuthProps {
 
 export const Auth: FC<AuthProps> = ({ mode }) => {
   const isSignUp = mode === 'sign-up';
+
+  const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
+  const { status } = useAppSelector((state) => state.auth);
 
   const {
     register,
@@ -38,29 +49,40 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
   });
 
   const onSubmit = async (data: AuthFormData) => {
+    if (status === Status.LOADING) return;
     if (!isSignUp) {
-      const result = await signIn(data);
-      return console.log(result);
+      const signInData = data as SignInFormData;
+
+      try {
+        await dispatch(signInUser(signInData)).unwrap();
+        navigate('/articles');
+      } catch (err) {
+        alert(err);
+      }
+    } else {
+      const signUpData = data as SignUpFormData;
+      const formData = new FormData();
+
+      formData.append('username', signUpData.username);
+      formData.append('email', signUpData.email);
+      formData.append('password', signUpData.password);
+      if (signUpData.file?.[0]) {
+        formData.append('image', signUpData.file[0]);
+      }
+
+      try {
+        await dispatch(signUpUser(formData)).unwrap();
+        console.log('success');
+      } catch (err) {
+        alert(err);
+      }
     }
-
-    const signUpData = data as SignUpFormData;
-    const formData = new FormData();
-
-    formData.append('username', signUpData.username);
-    formData.append('email', signUpData.email);
-    formData.append('password', signUpData.password);
-    if (signUpData.file?.[0]) {
-      formData.append('image', signUpData.file[0]);
-    }
-
-    const result = await signUp(formData);
-    console.log(result);
   };
 
   return (
     <section className="max-w-md mx-auto mt-10 border p-6 rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">
-        {isSignUp ? 'Sign Up' : 'Sign In'}
+      <h2 className="text-2xl font-bold mb-4 capitalize">
+        {mode.replace('-', ' ')}
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -117,7 +139,9 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
           </>
         )}
 
-        <Button type="submit">{isSignUp ? 'Register' : 'Login'}</Button>
+        <Button type="submit">
+          {status === Status.LOADING ? 'loading...' : mode.replace('-', ' ')}
+        </Button>
       </form>
     </section>
   );

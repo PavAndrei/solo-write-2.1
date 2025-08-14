@@ -13,4 +13,5 @@ export interface AuthUser {
   articlesCount: number | null;
 }
 
-export type SignUpFormData = RequiredExcept<AuthFormData, 'file'>;
+export type SignInFormData = Pick<AuthFormData, 'email' | 'password'>;
+export type SignUpFormData = RequiredExcept<AuthFormData, 'file'> & FormData;

@@ -1,10 +1,9 @@
 import { BASE_API_URL } from '../../../constants/api';
 import type { ApiResponse } from '../../../types/api';
-import type { AuthUser } from '../types/auth.types';
-import type { AuthFormData } from '../validation/authSchemas';
+import type { AuthUser, SignInFormData } from '../types/auth.types';
 
 export const signIn = async (
-  formData: AuthFormData
+  formData: SignInFormData
 ): Promise<ApiResponse<AuthUser>> => {
   try {
     const res = await fetch(`${BASE_API_URL}/auth/signin`, {
@@ -16,7 +15,7 @@ export const signIn = async (
       credentials: 'include',
     });
 
-    const data = await res.json();
+    const data = (await res.json()) as ApiResponse<AuthUser>;
 
     if (!data.success) {
       throw new Error(data.message);
@@ -37,7 +36,7 @@ export const signUp = async (
   try {
     const res = await fetch(`${BASE_API_URL}/auth/signup`, {
       method: 'POST',
-      body: formData as FormData,
+      body: formData,
       credentials: 'include',
     });
 

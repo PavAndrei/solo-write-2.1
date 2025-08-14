@@ -1,4 +1,10 @@
 {
+  "compilerOptions": {
+    "isolatedModules": false,
+    "preserveConstEnums": true,
+    "target": "es2015",
+    "erasableSyntaxOnly": false
+  },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },

@@ -6,3 +6,10 @@ export interface ApiResponse<T> {
   errorType?: string;
   field?: string;
 }
+
+export enum Status {
+  IDLE = 'idle',
+  LOADING = 'loading',
+  SUCCESS = 'success',
+  ERROR = 'error',
+}
