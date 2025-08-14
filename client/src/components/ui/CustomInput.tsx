@@ -4,6 +4,7 @@ import type { FieldError, UseFormRegisterReturn } from 'react-hook-form';
 interface CustomInputProps {
   label: string;
   type?: string;
+  name: string;
   placeholder?: string;
   register: UseFormRegisterReturn;
   error?: FieldError;
@@ -12,6 +13,7 @@ interface CustomInputProps {
 export const CustomInput: FC<CustomInputProps> = ({
   label,
   type = 'text',
+  name,
   placeholder,
   register,
   error,
@@ -23,6 +25,7 @@ export const CustomInput: FC<CustomInputProps> = ({
         type={type}
         placeholder={placeholder}
         {...register}
+        autoComplete={name}
         className={`border rounded px-3 py-2 outline-none ${
           error ? 'border-red-500' : 'border-gray-300'
         }`}

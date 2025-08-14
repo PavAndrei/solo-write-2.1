@@ -2,7 +2,7 @@ import { z } from 'zod';
 import {
   ACCEPTED_IMAGE_TYPES,
   MAX_FILE_SIZE,
-} from '../constants/fileValidationParams';
+} from '../../../constants/fileValidationParams';
 
 export const AuthSchema = z
   .object({

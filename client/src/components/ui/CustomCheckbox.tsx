@@ -14,12 +14,10 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   register,
   error,
 }) => {
-  console.log(error);
-
   return (
     <div className="flex items-center gap-2">
-      <input type="checkbox" {...register} />
-      <span>{label}</span>
+      <input type="checkbox" id="terms" {...register} />
+      <label htmlFor="terms">{label}</label>
       {error && <p className="text-red-500 text-sm">{error.message}</p>}
     </div>
   );

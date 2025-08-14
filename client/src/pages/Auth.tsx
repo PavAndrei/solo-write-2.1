@@ -1,9 +1,16 @@
 import type { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AuthSchema, type AuthFormData } from '../utils/authSchemas';
-import { CustomInput } from '../components/form/CustomInput';
-import { Button } from '../components/common/Button';
+import {
+  AuthSchema,
+  type AuthFormData,
+} from '../features/auth/validation/authSchemas';
+import { CustomInput } from '../components/ui/CustomInput';
+import { Button } from '../components/ui/Button';
+import { CustomCheckbox } from '../components/ui/CustomCheckbox';
+import { FileInput } from '../components/ui/FileInput';
+import { signIn, signUp } from '../features/auth/api/auth.api';
+import type { SignUpFormData } from '../features/auth/types/auth.types';
 
 interface AuthProps {
   mode: 'sign-in' | 'sign-up';
@@ -30,15 +37,24 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
     },
   });
 
-  const onSubmit = (data: AuthFormData) => {
+  const onSubmit = async (data: AuthFormData) => {
     if (!isSignUp) {
-      // Для sign-in используем только email и password
-      const { email, password } = data;
-      console.log('SignIn data:', { email, password });
-      return;
+      const result = await signIn(data);
+      return console.log(result);
     }
-    // Для sign-up используем все данные
-    console.log('SignUp data:', data);
+
+    const signUpData = data as SignUpFormData;
+    const formData = new FormData();
+
+    formData.append('username', signUpData.username);
+    formData.append('email', signUpData.email);
+    formData.append('password', signUpData.password);
+    if (signUpData.file?.[0]) {
+      formData.append('image', signUpData.file[0]);
+    }
+
+    const result = await signUp(formData);
+    console.log(result);
   };
 
   return (
@@ -54,6 +70,7 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
             placeholder="Enter username"
             register={register('username')}
             error={errors.username}
+            name="username"
           />
         )}
 
@@ -63,6 +80,7 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
           placeholder="Enter your email"
           register={register('email')}
           error={errors.email}
+          name="email"
         />
 
         <CustomInput
@@ -71,6 +89,7 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
           placeholder="Enter password"
           register={register('password')}
           error={errors.password}
+          name="password"
         />
 
         {isSignUp && (
@@ -81,27 +100,20 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
               placeholder="Repeat password"
               register={register('repeatPassword')}
               error={errors.repeatPassword}
+              name="repeatPassword"
             />
 
-            <div className="flex items-center gap-2">
-              <input type="checkbox" id="terms" {...register('terms')} />
-              <label htmlFor="terms">I accept the terms</label>
-            </div>
-            {errors.terms && (
-              <p className="text-red-500 text-sm">{errors.terms.message}</p>
-            )}
+            <CustomCheckbox
+              label="I accept the terms"
+              register={register('terms')}
+              error={errors.terms}
+            />
 
-            <input
-              type="file"
+            <FileInput
               accept="image/*"
-              {...register('file')}
-              className="block border p-2"
+              register={register('file')}
+              error={errors.file}
             />
-            {errors.file && (
-              <p className="text-red-500 text-sm">
-                {errors.file.message?.toString()}
-              </p>
-            )}
           </>
         )}
 
