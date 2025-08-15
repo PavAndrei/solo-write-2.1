@@ -1,3 +1,5 @@
-export const Footer = () => {
-  return <div>Footer</div>;
+import type { FC } from 'react';
+
+export const Footer: FC = () => {
+  return <footer>Footer</footer>;
 };
