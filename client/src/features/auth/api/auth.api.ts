@@ -54,3 +54,24 @@ export const signUp = async (
     return { success: false, message: errorMessage };
   }
 };
+
+export const getMe = async (): Promise<ApiResponse<AuthUser>> => {
+  try {
+    const res = await fetch(`${BASE_API_URL}/auth/me`, {
+      credentials: 'include',
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      throw new Error(data.message);
+    }
+
+    return data;
+  } catch (err) {
+    const errorMessage =
+      err instanceof Error ? err.message : 'Network error occured';
+    console.error(errorMessage);
+    return { success: false, message: errorMessage };
+  }
+};

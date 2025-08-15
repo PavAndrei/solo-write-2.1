@@ -5,5 +5,5 @@ interface LayoutProps {
 }
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
-  return <div className="flex flex-col min-h-screen">{children}</div>;
+  return <div className="flex flex-col min-h-screen h-full">{children}</div>;
 };

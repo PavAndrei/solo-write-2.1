@@ -6,6 +6,7 @@ import { Auth } from '../pages/Auth';
 import { AdminPanel } from '../pages/AdminPanel';
 import { NotFound } from '../pages/NotFound';
 import { Editor } from '../pages/Editor';
+import { ProtectedRoute } from '../components/navigation/ProtectedRoute';
 
 export const AppRouter = () => {
   return (
@@ -16,8 +17,11 @@ export const AppRouter = () => {
       <Route path="/editor" element={<Editor />} />
       <Route path="/articles" element={<Articles />} />
       <Route path="/article/:id" element={<SingleArticle />} />
-      <Route path="/admin/*" element={<AdminPanel />} />
       <Route path="*" element={<NotFound />} />
+
+      <Route element={<ProtectedRoute />}>
+        <Route path="/admin" element={<AdminPanel />} />
+      </Route>
     </Routes>
   );
 };

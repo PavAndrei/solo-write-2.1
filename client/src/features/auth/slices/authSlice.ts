@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Status } from '../../../types/api';
 import type { AuthState } from './auth.types';
-import { signInUser, signUpUser } from './asyncActions';
+import { checkAuthUser, signInUser, signUpUser } from './asyncActions';
 
 const initialState: AuthState = {
   user: null,
@@ -33,6 +33,17 @@ const authSlice = createSlice({
         state.user = action.payload.data;
       })
       .addCase(signUpUser.rejected, (state) => {
+        state.status = Status.ERROR;
+      })
+
+      .addCase(checkAuthUser.pending, (state) => {
+        state.status = Status.LOADING;
+      })
+      .addCase(checkAuthUser.fulfilled, (state, action) => {
+        state.status = Status.SUCCESS;
+        state.user = action.payload.data;
+      })
+      .addCase(checkAuthUser.rejected, (state) => {
         state.status = Status.ERROR;
       });
   },

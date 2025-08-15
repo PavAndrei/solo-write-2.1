@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { ApiResponse } from '../../../types/api';
 import type { AuthUser, SignInFormData } from '../types/auth.types';
-import { signIn, signUp } from '../api/auth.api';
+import { getMe, signIn, signUp } from '../api/auth.api';
 
 export const signInUser = createAsyncThunk<
   ApiResponse<AuthUser>,
@@ -33,6 +33,26 @@ export const signUpUser = createAsyncThunk<
 
     if (!response.success) {
       return rejectWithValue(response.message || 'Registration failed');
+    }
+
+    return response;
+  } catch (err) {
+    return rejectWithValue(
+      err instanceof Error ? err.message : 'Unknown error'
+    );
+  }
+});
+
+export const checkAuthUser = createAsyncThunk<
+  ApiResponse<AuthUser>,
+  void,
+  { rejectValue: string }
+>('auth/checkAuth', async (_, { rejectWithValue }) => {
+  try {
+    const response = await getMe();
+
+    if (!response.success) {
+      return rejectWithValue(response.message || 'Authentification failed');
     }
 
     return response;
