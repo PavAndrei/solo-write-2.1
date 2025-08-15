@@ -5,6 +5,7 @@ import { SingleArticle } from '../pages/SingleArticle';
 import { Auth } from '../pages/Auth';
 import { AdminPanel } from '../pages/AdminPanel';
 import { NotFound } from '../pages/NotFound';
+import { Editor } from '../pages/Editor';
 
 export const AppRouter = () => {
   return (
@@ -12,6 +13,7 @@ export const AppRouter = () => {
       <Route path="/" element={<Home />} />
       <Route path="/signin" element={<Auth mode="sign-in" />} />
       <Route path="/signup" element={<Auth mode="sign-up" />} />
+      <Route path="/editor" element={<Editor />} />
       <Route path="/articles" element={<Articles />} />
       <Route path="/article/:id" element={<SingleArticle />} />
       <Route path="/admin/*" element={<AdminPanel />} />

@@ -1,3 +1,3 @@
 export const AdminPanel = () => {
-  return <div>Admin Panel</div>;
+  return <section>Admin Panel</section>;
 };

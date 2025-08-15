@@ -13,6 +13,10 @@ body,
   @apply w-full h-full bg-gray-100;
 }
 
+/* a {
+  display: inline-block;
+} */
+
 html:has(.dark) {
   @apply bg-gray-900;
 }
