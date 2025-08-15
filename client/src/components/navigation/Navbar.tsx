@@ -12,6 +12,7 @@ import { ImExit } from 'react-icons/im';
 import { NavbarLink } from './NavbarLink';
 import { useAppDispatch, useAppSelector } from '../../app/store/hooks';
 import { signOutUser } from '../../features/auth/slices/asyncActions';
+import { ThemeToggler } from '../../features/theme/components/ThemeToggler';
 
 const PAGES = [
   { name: 'Home', url: '/', icon: <FaHome /> },
@@ -30,7 +31,7 @@ export const Navbar: FC = () => {
 
   return (
     <nav className="flex items-center flex-grow">
-      <ul className="flex gap-5 mx-auto">
+      <ul className="flex gap-3 mx-auto">
         {PAGES.map((page) => (
           <li key={page.name}>
             <NavbarLink text={page.name} icon={page.icon} url={page.url} />
@@ -38,19 +39,23 @@ export const Navbar: FC = () => {
         ))}
       </ul>
 
-      <div className="flex gap-5 self-end">
+      <div className="flex gap-3">
         <NavbarLink text="Sign Up" icon={<FaUserPlus />} url="/signup" />
         <NavbarLink text="Sign In" icon={<FaSignInAlt />} url="/signin" />
+      </div>
 
+      <div className="flex gap-3 ml-auto mr-0">
         {user && (
           <Button
             onClick={logOut}
             className="border rounded-md py-1.5 px-4 flex items-center gap-1.5"
+            ariaLabel="log out"
           >
             <span>Sign Out</span>
             <ImExit />
           </Button>
         )}
+        <ThemeToggler />
       </div>
     </nav>
   );

@@ -5,19 +5,22 @@ import { Header } from './components/layout/Header';
 import { Main } from './components/layout/Main';
 import { Footer } from './components/layout/Footer';
 import { AuthProvider } from './app/providers/AuthProvider';
+import { ThemeProvider } from './app/providers/ThemeProvider';
 
 export const App = () => {
   return (
     <BrowserRouter>
-      <Layout>
-        <Header />
-        <AuthProvider>
-          <Main>
-            <AppRouter />
-          </Main>
-        </AuthProvider>
-        <Footer />
-      </Layout>
+      <ThemeProvider>
+        <Layout>
+          <Header />
+          <AuthProvider>
+            <Main>
+              <AppRouter />
+            </Main>
+          </AuthProvider>
+          <Footer />
+        </Layout>
+      </ThemeProvider>
     </BrowserRouter>
   );
 };

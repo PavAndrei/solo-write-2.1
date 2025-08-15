@@ -139,7 +139,7 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
           </>
         )}
 
-        <Button type="submit">
+        <Button ariaLabel={mode.replace('-', ' ')} type="submit">
           {status === Status.LOADING ? 'loading...' : mode.replace('-', ' ')}
         </Button>
       </form>

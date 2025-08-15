@@ -5,9 +5,9 @@ import { Navbar } from '../navigation/Navbar';
 
 export const Header: FC = () => {
   return (
-    <header className="py-4 bg-gray-300">
+    <header className="py-4 bg-gray-300 dark:bg-gray-900">
       <Container>
-        <div className="flex items-center gap-25">
+        <div className="flex items-center gap-5">
           <Logo />
           <Navbar />
         </div>
