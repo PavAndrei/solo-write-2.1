@@ -1,7 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Status } from '../../../types/api';
 import type { AuthState } from './auth.types';
-import { checkAuthUser, signInUser, signUpUser } from './asyncActions';
+import {
+  checkAuthUser,
+  signInUser,
+  signOutUser,
+  signUpUser,
+} from './asyncActions';
 
 const initialState: AuthState = {
   user: null,
@@ -46,6 +51,11 @@ const authSlice = createSlice({
       .addCase(checkAuthUser.rejected, (state) => {
         state.status = Status.ERROR;
       });
+
+    builder.addCase(signOutUser.fulfilled, (state) => {
+      state.user = null;
+      state.status = Status.IDLE;
+    });
   },
 });
 

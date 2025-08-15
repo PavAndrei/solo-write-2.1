@@ -10,7 +10,8 @@ import {
 import { SiReadthedocs } from 'react-icons/si';
 import { ImExit } from 'react-icons/im';
 import { NavbarLink } from './NavbarLink';
-import { useAppSelector } from '../../app/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/store/hooks';
+import { signOutUser } from '../../features/auth/slices/asyncActions';
 
 const PAGES = [
   { name: 'Home', url: '/', icon: <FaHome /> },
@@ -20,7 +21,12 @@ const PAGES = [
 ];
 
 export const Navbar: FC = () => {
+  const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
+
+  const logOut = async () => {
+    await dispatch(signOutUser());
+  };
 
   return (
     <nav className="flex items-center flex-grow">
@@ -37,7 +43,10 @@ export const Navbar: FC = () => {
         <NavbarLink text="Sign In" icon={<FaSignInAlt />} url="/signin" />
 
         {user && (
-          <Button className="border rounded-md py-1.5 px-4 flex items-center gap-1.5">
+          <Button
+            onClick={logOut}
+            className="border rounded-md py-1.5 px-4 flex items-center gap-1.5"
+          >
             <span>Sign Out</span>
             <ImExit />
           </Button>
