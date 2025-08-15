@@ -17,6 +17,9 @@ import { useAppDispatch, useAppSelector } from '../app/store/hooks';
 import { useNavigate } from 'react-router-dom';
 import { Status } from '../types/api';
 import { signInUser, signUpUser } from '../features/auth/slices/asyncActions';
+import { PageTitle } from '../components/ui/PageTitle';
+import { FaUser, FaKey } from 'react-icons/fa';
+import { MdEmail } from 'react-icons/md';
 
 interface AuthProps {
   mode: 'sign-in' | 'sign-up';
@@ -80,12 +83,13 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
   };
 
   return (
-    <section className="max-w-md mx-auto mt-10 border p-6 rounded shadow">
-      <h2 className="text-2xl font-bold mb-4 capitalize">
-        {mode.replace('-', ' ')}
-      </h2>
+    <section className="h-full py-10">
+      <PageTitle>{mode.replace('-', ' ')}</PageTitle>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-4 border p-4 border-gray-500 rounded shadow max-w-lg mx-auto"
+      >
         {isSignUp && (
           <CustomInput
             label="Username"
@@ -93,6 +97,7 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
             register={register('username')}
             error={errors.username}
             name="username"
+            icon={<FaUser />}
           />
         )}
 
@@ -103,6 +108,7 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
           register={register('email')}
           error={errors.email}
           name="email"
+          icon={<MdEmail />}
         />
 
         <CustomInput
@@ -112,6 +118,7 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
           register={register('password')}
           error={errors.password}
           name="password"
+          icon={<FaKey />}
         />
 
         {isSignUp && (
@@ -123,6 +130,7 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
               register={register('repeatPassword')}
               error={errors.repeatPassword}
               name="repeatPassword"
+              icon={<FaKey />}
             />
 
             <CustomCheckbox
