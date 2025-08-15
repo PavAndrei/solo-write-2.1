@@ -10,7 +10,5 @@ export const ProtectedRoute: FC = () => {
     return <SpinnerLoading />;
   }
 
-  if (status === 'success') {
-    return user ? <Outlet /> : <Navigate to="/signin" />;
-  }
+  return user ? <Outlet /> : <Navigate to="/signin" />;
 };

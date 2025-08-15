@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { Container } from './Container';
 import { Logo } from '../ui/Logo';
-import { Navbar } from '../ui/Navbar';
+import { Navbar } from '../navigation/Navbar';
 
 export const Header: FC = () => {
   return (

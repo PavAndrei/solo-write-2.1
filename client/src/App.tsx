@@ -4,7 +4,7 @@ import { Layout } from './components/layout/Layout';
 import { Header } from './components/layout/Header';
 import { Main } from './components/layout/Main';
 import { Footer } from './components/layout/Footer';
-import { AuthProvider } from './components/AuthProvider';
+import { AuthProvider } from './app/providers/AuthProvider';
 
 export const App = () => {
   return (
