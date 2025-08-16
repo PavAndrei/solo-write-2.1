@@ -37,7 +37,7 @@ export const CustomInput: FC<CustomInputProps> = ({
           {...register}
           autoComplete={name}
           className={clsx(
-            'border rounded pl-8 pr-3 py-2 outline-none placeholder:text-gray-500 w-full transition-all ease-in-out duration-200 shadow-md hover:shadow-gray-300 dark:hover:shadow-gray-500 focus:border-gray-900 dark:focus:border-gray-100 focus:shadow-gray-300 dark:focus:shadow-gray-500',
+            'border rounded pl-8 pr-3 py-2 placeholder:text-gray-500 w-full transition-all ease-in-out duration-200 shadow-md hover:shadow-gray-300 dark:hover:shadow-gray-500 focus:border-gray-900 dark:focus:border-gray-100 focus:shadow-gray-300 dark:focus:shadow-gray-500 focus-visible:shadow-gray-500 focus-visible:inset-shadow-gray-600 dark:inset-shadow-gray-100 focus-visible:inset-shadow-sm',
             error ? 'border-red-500' : 'border-gray-500'
           )}
         />

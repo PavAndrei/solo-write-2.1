@@ -84,7 +84,9 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
 
   return (
     <section className="h-full py-10">
-      <PageTitle>{mode.replace('-', ' ')}</PageTitle>
+      <PageTitle hasSubtitle={isSignUp ? 'Join Us' : 'Welcome Back'}>
+        {mode.replace('-', ' ')}
+      </PageTitle>
 
       <form
         onSubmit={handleSubmit(onSubmit)}

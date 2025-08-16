@@ -23,7 +23,7 @@ export const NavbarLink: FC<NavbarLink> = ({
   return (
     <Link
       className={clsx(
-        'border border-gray-500 rounded-md py-1.5 px-4 flex items-center gap-1.5 font-medium bg-gray-200 dark:bg-gray-700 active:scale-95 transition-all duration-300 ease-in-out hover:shadow-lg/30 shadow-gray-500',
+        'border border-gray-500 focus-visible:dark:border-gray-100 rounded-md py-1.5 px-4 flex items-center gap-1.5 font-medium bg-gray-200 dark:bg-gray-700 active:scale-95 transition-all duration-300 ease-in-out hover:shadow-lg/30 shadow-gray-700 focus-visible:shadow-lg/80 focus-visible:shadow-gray-500 focus-visible:inset-shadow-sm inset-shadow-gray-700 dark:focus-visible:inset-shadow-gray-400 dark:shadow-gray-200 dark:focus-visible:outline-gray-400 focus-visible:outline-gray-700',
         disabled && 'opacity-50',
         pathname === url &&
           'inset-shadow-sm inset-shadow-gray-700 dark:inset-shadow-gray-100',

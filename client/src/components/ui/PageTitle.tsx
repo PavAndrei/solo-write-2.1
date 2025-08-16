@@ -2,12 +2,20 @@ import type { FC, ReactNode } from 'react';
 
 interface PageTitleProps {
   children: ReactNode;
+  hasSubtitle: string;
 }
 
-export const PageTitle: FC<PageTitleProps> = ({ children }) => {
+export const PageTitle: FC<PageTitleProps> = ({ children, hasSubtitle }) => {
   return (
-    <h1 className="text-3xl font-bold mb-4 text-center capitalize pb-10">
-      {children}
-    </h1>
+    <div className="mb-10">
+      <h1 className="text-4xl font-bold text-center capitalize mb-5">
+        {children}
+      </h1>
+      {hasSubtitle && (
+        <p className="text-center italic text-shadow-xs font-medium">
+          {hasSubtitle}
+        </p>
+      )}
+    </div>
   );
 };
