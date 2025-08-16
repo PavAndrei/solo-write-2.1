@@ -6,8 +6,8 @@ export const signupSchema = z.object({
     .min(3, 'Username should not be shorter than 3')
     .max(20, 'Username should not be longer than 20')
     .regex(
-      /^[a-zA-Z0-9_]+$/,
-      'Only English letters, numbers and _ are allowed to use'
+      /^(?=[a-zA-Z0-9_ ]*$)(?!.* .* )[a-zA-Z0-9_]+(?: [a-zA-Z0-9_]+)?$/,
+      'Only English letters, numbers, _ and one space are allowed'
     ),
   email: z
     .string()

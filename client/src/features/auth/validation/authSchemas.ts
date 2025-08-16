@@ -22,8 +22,8 @@ export const AuthSchema = z
       .min(3, 'Username should be at least 3 characters')
       .max(20, 'Username should not exceed 20 characters')
       .regex(
-        /^[a-zA-Z0-9_]+$/,
-        'Only English letters, numbers and underscores are allowed'
+        /^(?=[a-zA-Z0-9_ ]*$)(?!.* .* )[a-zA-Z0-9_]+(?: [a-zA-Z0-9_]+)?$/,
+        'Only English letters, numbers, _ and one space are allowed'
       )
       .optional(),
 

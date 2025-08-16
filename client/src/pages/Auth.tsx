@@ -18,9 +18,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Status } from '../types/api';
 import { signInUser, signUpUser } from '../features/auth/slices/asyncActions';
 import { PageTitle } from '../components/ui/PageTitle';
-import { FaUser, FaKey } from 'react-icons/fa';
+import { FaUser, FaKey, FaUserPlus, FaSignInAlt } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
-
+import { GoogleAuthButton } from '../features/auth/components/GoogleAuthButton';
 interface AuthProps {
   mode: 'sign-in' | 'sign-up';
 }
@@ -163,15 +163,23 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
           ariaLabel={mode.replace('-', ' ')}
           type="submit"
         >
-          {status === Status.LOADING ? 'loading...' : mode.replace('-', ' ')}
+          {status === Status.LOADING ? (
+            'loading...'
+          ) : (
+            <span className="flex items-center gap-1.5">
+              {mode.replace('-', ' ')}{' '}
+              {isSignUp ? <FaUserPlus /> : <FaSignInAlt />}
+            </span>
+          )}
         </Button>
+        <GoogleAuthButton />
 
         <span>
           {isSignUp ? 'Already have an account?' : "Don't have an account?"}
 
           <Link
             to={isSignUp ? '/signin' : '/signup'}
-            className="italic text-shadow-xs font-semibold"
+            className="italic text-shadow-xs font-semibold hover:underline"
           >
             {isSignUp ? ' Sign in.' : ' Sign up.'}
           </Link>

@@ -13,5 +13,11 @@ export interface AuthUser {
   articlesCount: number | null;
 }
 
+export interface GoogleAuthPayload {
+  email: string;
+  username: string;
+  avatarUrl: string;
+}
+
 export type SignInFormData = Pick<AuthFormData, 'email' | 'password'>;
 export type SignUpFormData = RequiredExcept<AuthFormData, 'file'> & FormData;
