@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   AuthSchema,
@@ -14,7 +14,7 @@ import type {
   SignUpFormData,
 } from '../features/auth/types/auth.types';
 import { useAppDispatch, useAppSelector } from '../app/store/hooks';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Status } from '../types/api';
 import { signInUser, signUpUser } from '../features/auth/slices/asyncActions';
 import { PageTitle } from '../components/ui/PageTitle';
@@ -36,7 +36,8 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    control,
+    formState: { isLoading, errors },
   } = useForm<AuthFormData>({
     resolver: zodResolver(AuthSchema),
     defaultValues: {
@@ -90,7 +91,7 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 border p-4 border-gray-500 rounded shadow max-w-lg mx-auto"
+        className="flex flex-col gap-4 border p-4 border-gray-500 rounded shadow max-w-lg mx-auto shadow-gray-500"
       >
         {isSignUp && (
           <CustomInput
@@ -105,7 +106,7 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
 
         <CustomInput
           label="Email"
-          type="email"
+          type="text"
           placeholder="Enter your email"
           register={register('email')}
           error={errors.email}
@@ -135,10 +136,18 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
               icon={<FaKey />}
             />
 
-            <CustomCheckbox
-              label="I accept the terms"
-              register={register('terms')}
-              error={errors.terms}
+            <Controller
+              name="terms"
+              control={control}
+              render={({ field }) => (
+                <CustomCheckbox
+                  name={field.name}
+                  checked={field.value}
+                  onChange={field.onChange}
+                  label="I accept the terms"
+                  error={errors.terms}
+                />
+              )}
             />
 
             <FileInput
@@ -149,9 +158,24 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
           </>
         )}
 
-        <Button ariaLabel={mode.replace('-', ' ')} type="submit">
+        <Button
+          disabled={isLoading}
+          ariaLabel={mode.replace('-', ' ')}
+          type="submit"
+        >
           {status === Status.LOADING ? 'loading...' : mode.replace('-', ' ')}
         </Button>
+
+        <span>
+          {isSignUp ? 'Already have an account?' : "Don't have an account?"}
+
+          <Link
+            to={isSignUp ? '/signin' : '/signup'}
+            className="italic text-shadow-xs font-semibold"
+          >
+            {isSignUp ? ' Sign in.' : ' Sign up.'}
+          </Link>
+        </span>
       </form>
     </section>
   );
