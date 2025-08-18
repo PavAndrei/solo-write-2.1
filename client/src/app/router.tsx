@@ -3,7 +3,7 @@ import { Home } from '../pages/Home';
 import { Articles } from '../pages/Articles';
 import { SingleArticle } from '../pages/SingleArticle';
 import { Auth } from '../pages/Auth';
-import { AdminPanel } from '../pages/AdminPanel';
+import { Dashboard } from '../pages/Dashboard';
 import { NotFound } from '../pages/NotFound';
 import { Editor } from '../pages/Editor';
 import { ProtectedRoute } from '../components/navigation/ProtectedRoute';
@@ -20,7 +20,7 @@ export const AppRouter = () => {
       <Route path="*" element={<NotFound />} />
 
       <Route element={<ProtectedRoute />}>
-        <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Route>
     </Routes>
   );

@@ -4,9 +4,9 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { SpinnerLoading } from '../ui/SpinnerLoading';
 
 export const ProtectedRoute: FC = () => {
-  const { user, status } = useAppSelector((state) => state.auth);
+  const { user, isAuthChecked } = useAppSelector((state) => state.auth);
 
-  if (status === 'loading') {
+  if (!isAuthChecked) {
     return <SpinnerLoading />;
   }
 

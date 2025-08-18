@@ -4,4 +4,5 @@ import type { AuthUser } from '../types/auth.types';
 export interface AuthState {
   user: AuthUser | null | undefined;
   status: Status;
+  isAuthChecked: boolean;
 }
