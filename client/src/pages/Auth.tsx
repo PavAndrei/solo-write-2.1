@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import { useEffect, type FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -37,6 +37,7 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { isLoading, errors },
   } = useForm<AuthFormData>({
     resolver: zodResolver(AuthSchema),
@@ -82,6 +83,10 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
       }
     }
   };
+
+  useEffect(() => {
+    reset();
+  }, [mode, reset]);
 
   return (
     <section className="h-full py-10">
