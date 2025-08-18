@@ -172,6 +172,7 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
             </span>
           )}
         </Button>
+
         <GoogleAuthButton />
 
         <span>

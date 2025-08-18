@@ -102,6 +102,29 @@ export const signOut = async (): Promise<ApiResponse<null>> => {
   }
 };
 
+export const getGoogleUserCredentials = async (token: string) => {
+  try {
+    const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!data) {
+      throw new Error(data.message);
+    }
+
+    return data;
+  } catch (err) {
+    const errorMessage =
+      err instanceof Error ? err.message : 'Network error occured';
+    console.error(errorMessage);
+    return { success: false, message: errorMessage };
+  }
+};
+
 export const googleAuth = async (
   payload: GoogleAuthPayload
 ): Promise<ApiResponse<AuthUser>> => {
@@ -111,6 +134,7 @@ export const googleAuth = async (
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify({ payload }),
     });
 

@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { Status } from '../../../types/api';
 import type { AuthState } from './auth.types';
 import {
+  authWithGoogle,
   checkAuthUser,
   signInUser,
   signOutUser,
@@ -49,6 +50,17 @@ const authSlice = createSlice({
         state.user = action.payload.data;
       })
       .addCase(checkAuthUser.rejected, (state) => {
+        state.status = Status.ERROR;
+      })
+
+      .addCase(authWithGoogle.pending, (state) => {
+        state.status = Status.LOADING;
+      })
+      .addCase(authWithGoogle.fulfilled, (state, action) => {
+        state.status = Status.SUCCESS;
+        state.user = action.payload.data;
+      })
+      .addCase(authWithGoogle.rejected, (state) => {
         state.status = Status.ERROR;
       });
 

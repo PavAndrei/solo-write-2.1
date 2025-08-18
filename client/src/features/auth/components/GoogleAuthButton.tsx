@@ -1,42 +1,25 @@
 import { useGoogleLogin } from '@react-oauth/google';
 import { Button } from '../../../components/ui/Button';
 import { FaGoogle } from 'react-icons/fa';
-import { googleAuth } from '../api/auth.api';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../../app/store/hooks';
+import { authWithGoogle } from '../slices/asyncActions';
 
 export const GoogleAuthButton = () => {
+  const dispatch = useAppDispatch();
+
   const navigate = useNavigate();
 
-  const handleAuth = async (token: string) => {
-    try {
-      const userInfoResponse = await fetch(
-        'https://www.googleapis.com/oauth2/v3/userinfo',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const userInfo = await userInfoResponse.json();
-
-      const payload = {
-        email: userInfo.email,
-        username: userInfo.name,
-        avatarUrl: userInfo.picture,
-      };
-
-      const res = await googleAuth(payload);
-
-      console.log('Backend response:', res);
-    } catch (error) {
-      console.error('Google Auth Error:', error);
-    }
-  };
-
   const login = useGoogleLogin({
-    onSuccess: (tokenResponse) => {
-      handleAuth(tokenResponse.access_token);
+    onSuccess: async (tokenResponse) => {
+      const token = tokenResponse.access_token;
+
+      try {
+        await dispatch(authWithGoogle(token));
+        console.log('success');
+      } catch (err) {
+        console.error('Google Auth Error:', err);
+      }
       navigate('/profile');
     },
     onError: () => console.log('Login Failed'),
