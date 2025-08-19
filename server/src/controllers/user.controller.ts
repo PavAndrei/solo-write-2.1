@@ -85,11 +85,19 @@ export const getAllUsers = async (
     pipeline.push({ $skip: skip });
     pipeline.push({ $limit: limitNum });
 
+    // 🔒 исключаем пароль
+    pipeline.push({
+      $project: {
+        password: 0,
+      },
+    });
+
     const users = await User.aggregate(pipeline);
 
     const totalUsers = await User.aggregate([
       ...pipeline.filter(
-        (stage) => !('$skip' in stage) && !('$limit' in stage)
+        (stage) =>
+          !('$skip' in stage) && !('$limit' in stage) && !('$project' in stage)
       ),
       { $count: 'count' },
     ]);
@@ -99,8 +107,7 @@ export const getAllUsers = async (
     res.status(200).json({
       success: true,
       message: 'Users fetched successfully',
-      data: users,
-      total,
+      data: { users, total },
     });
   } catch (err) {
     next(err);

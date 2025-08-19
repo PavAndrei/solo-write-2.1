@@ -1,4 +1,4 @@
-import { BASE_API_URL } from '../../../constants/api';
+import { BASE_API_URL, GOOGLE_API_URL } from '../../../constants/api';
 import type { ApiResponse } from '../../../types/api';
 import type {
   AuthUser,
@@ -104,7 +104,7 @@ export const signOut = async (): Promise<ApiResponse<null>> => {
 
 export const getGoogleUserCredentials = async (token: string) => {
   try {
-    const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+    const res = await fetch(GOOGLE_API_URL, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

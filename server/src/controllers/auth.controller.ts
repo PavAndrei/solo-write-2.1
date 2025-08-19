@@ -81,7 +81,7 @@ export const signUp = async (
   try {
     const { username, email, password } = req.body;
 
-    const avatarUrl = req.imageUrl;
+    const avatarUrl = req.imageUrl || null;
 
     const existingUser = await User.findOne({
       $or: [{ email }, { username }],

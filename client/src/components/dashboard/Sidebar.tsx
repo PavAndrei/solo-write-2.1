@@ -24,7 +24,7 @@ export const Sidebar = () => {
   const location = useLocation();
   const [tab, setTab] = useState('');
 
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -34,6 +34,10 @@ export const Sidebar = () => {
       setTab(tabFromUrl);
     }
   }, [location.search]);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   return (
     <div className={clsx('relative', 'w-0')}>

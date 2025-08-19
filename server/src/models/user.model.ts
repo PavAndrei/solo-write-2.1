@@ -25,7 +25,7 @@ const userSchema = new Schema<IUser>(
       trim: true,
     },
     password: { type: String, required: true },
-    avatarUrl: { type: String },
+    avatarUrl: { type: String, default: null },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     verified: { type: Boolean, default: false },
     articles: [{ type: Schema.Types.ObjectId, ref: 'Article' }],
