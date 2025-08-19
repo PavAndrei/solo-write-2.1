@@ -20,7 +20,7 @@ export const Dashboard = () => {
   return (
     <div className="flex gap-2 h-[calc(100vh-100px)]">
       <Sidebar />
-      <div className="grow">
+      <div className="transition-all duration-300 ease-in-out mx-auto w-full">
         {tab === 'profile' && <DashProfile />}
         {tab === 'articles' && <DashArticles />}
         {tab === 'users' && <DashUsers />}
