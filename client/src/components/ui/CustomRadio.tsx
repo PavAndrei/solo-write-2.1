@@ -26,7 +26,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
       {buttons.map((btn) => (
         <label
           key={btn.value}
-          className="flex items-center gap-1.5 cursor-pointer text-gray-600 focus-within:font-bold"
+          className="flex items-center gap-1.5 cursor-pointer text-gray-600 focus-within:font-bold transition-all ease-in-out duration-200"
         >
           <input
             type="radio"

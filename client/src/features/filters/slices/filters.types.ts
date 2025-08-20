@@ -1,5 +1,5 @@
-interface AdminUsersFilters {
-  role?: 'user' | 'admin';
+export interface AdminUsersFilters {
+  role: 'user' | 'admin' | '';
   verified: boolean;
   username: string;
   email: string;
@@ -15,9 +15,7 @@ interface AdminFilters {
   articles: undefined;
 }
 
-export interface Filters {
-  filters: {
-    public: undefined;
-    admin: AdminFilters;
-  };
+export interface FiltersState {
+  public: undefined;
+  admin: AdminFilters;
 }

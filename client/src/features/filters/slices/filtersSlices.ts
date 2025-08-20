@@ -1,30 +1,40 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { Filters } from './filters.types';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { FetchUsersRequestParams } from '../../users/types/users.types';
+import type { FiltersState } from './filters.types';
 
-const initialState: Filters = {
-  filters: {
-    public: undefined,
-    admin: {
-      users: {
-        role: 'user',
-        verified: false,
-        username: '',
-        email: '',
-        sort: 'desc',
-        startIndex: 0,
-        limit: 12,
-        hasAvatar: false,
-      },
-      comments: undefined,
-      articles: undefined,
+const initialState: FiltersState = {
+  public: undefined,
+  admin: {
+    users: {
+      role: '',
+      verified: false,
+      username: '',
+      email: '',
+      sort: 'desc',
+      startIndex: 0,
+      limit: 12,
+      hasAvatar: false,
     },
+    comments: undefined,
+    articles: undefined,
   },
 };
 
 const filtersSlice = createSlice({
-  name: 'filter',
+  name: 'filters',
   initialState,
-  reducers: {},
+  reducers: {
+    setUsersFilters(
+      state,
+      action: PayloadAction<Partial<FetchUsersRequestParams>>
+    ) {
+      state.admin.users = { ...state.admin.users, ...action.payload };
+    },
+    resetUsersFilters(state) {
+      state.admin.users = initialState.admin.users;
+    },
+  },
 });
 
+export const { setUsersFilters, resetUsersFilters } = filtersSlice.actions;
 export default filtersSlice.reducer;
