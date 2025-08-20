@@ -9,40 +9,33 @@ export const getAllUsers = async (
   params: FetchUsersRequestParams
 ): Promise<ApiResponse<UserResponseData>> => {
   try {
-    console.log(params);
+    let queryString;
 
-    // const {
-    //   email,
-    //   hasAvatar,
-    //   limit,
-    //   sort,
-    //   startIndex,
-    //   username,
-    //   verified,
-    //   role,
-    // } = params;
+    if (params) {
+      const searchParams = new URLSearchParams();
 
-    const searchParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (value === '' || value === undefined || value === null) {
+          return;
+        }
 
-    Object.entries(params).forEach(([key, value]) => {
-      if (value === '' || value === undefined || value === null) {
-        return;
+        if (typeof value === 'boolean') {
+          searchParams.append(key, value.toString());
+          return;
+        }
+
+        searchParams.append(key, String(value));
+      });
+
+      queryString = searchParams.toString();
+    }
+
+    const res = await fetch(
+      `${BASE_API_URL}/user${queryString ? `?${queryString}` : ''}`,
+      {
+        credentials: 'include',
       }
-
-      if (typeof value === 'boolean') {
-        searchParams.append(key, value.toString());
-        return;
-      }
-
-      searchParams.append(key, String(value));
-    });
-
-    const queryString = searchParams.toString();
-    console.log(queryString);
-
-    const res = await fetch(`${BASE_API_URL}/user?${queryString}`, {
-      credentials: 'include',
-    });
+    );
 
     const data = await res.json();
 

@@ -20,7 +20,7 @@ export interface UserResponseData {
 }
 
 export interface FetchUsersRequestParams {
-  role?: 'user' | 'admin';
+  role?: 'user' | 'admin' | '';
   verified: boolean;
   username: string;
   email: string;

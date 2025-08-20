@@ -56,7 +56,7 @@ export const Sidebar = () => {
       <aside
         aria-label="admin-panel tabs switcher"
         className={clsx(
-          'w-54 h-full bg-gray-300 dark:bg-gray-900 flex flex-col gap-8 pt-14 pb-10 transition duration-300 ease-in-out z-99',
+          'w-54 h-full bg-gray-300 dark:bg-gray-900 flex flex-col gap-8 pt-14 pb-10 transition duration-300 ease-in-out z-99 border-r border-gray-500',
           !isVisible && '-translate-x-full w-0'
         )}
       >
