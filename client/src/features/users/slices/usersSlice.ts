@@ -23,18 +23,23 @@ const usersSlice = createSlice({
       })
       .addCase(fetchUsers.rejected, (state) => {
         state.status = Status.ERROR;
-      });
+      })
 
-    // .addCase(deleteUser.pending, (state) => {
-    //   state.status = Status.LOADING;
-    // })
-    // .addCase(deleteUser.fulfilled, (state, action) => {
-    //   state.status = Status.SUCCESS;
-    //   state.data = action.payload.data;
-    // })
-    // .addCase(deleteUser.rejected, (state) => {
-    //   state.status = Status.ERROR;
-    // });
+      .addCase(deleteUser.pending, (state) => {
+        state.status = Status.LOADING;
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.status = Status.SUCCESS;
+        const deletedUserId = action.payload.data?._id;
+
+        if (state.data)
+          state.data.users = state.data?.users.filter(
+            (user) => user._id !== deletedUserId
+          );
+      })
+      .addCase(deleteUser.rejected, (state) => {
+        state.status = Status.ERROR;
+      });
   },
 });
 

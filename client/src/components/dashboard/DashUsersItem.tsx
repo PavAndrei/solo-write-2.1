@@ -6,8 +6,11 @@ import { RiAdminFill } from 'react-icons/ri';
 import { MdVerified, MdDeleteForever } from 'react-icons/md';
 import { GoUnverified } from 'react-icons/go';
 import { Button } from '../ui/Button';
+import { useAppDispatch } from '../../app/store/hooks';
+import { deleteUser } from '../../features/users/slices/asyncActions';
 
 export const DashUsersItem: FC<User> = ({
+  _id,
   username,
   email,
   avatarUrl,
@@ -15,6 +18,15 @@ export const DashUsersItem: FC<User> = ({
   role,
 }) => {
   const readableDate = formatDate(createdAt);
+  const dispatch = useAppDispatch();
+
+  const handleDeleUserById = (id: string) => {
+    const res = confirm('Are you sure to delete the user?');
+
+    if (res) {
+      dispatch(deleteUser(id));
+    }
+  };
 
   return (
     <li className="border py-3 px-1.5 rounded-md flex gap-2">
@@ -56,7 +68,12 @@ export const DashUsersItem: FC<User> = ({
             <span>Edit</span>
             <FaUserEdit />
           </Button>
-          <Button type="button" ariaLabel="delete this user" size="sm">
+          <Button
+            type="button"
+            ariaLabel="delete this user"
+            size="sm"
+            onClick={() => handleDeleUserById(_id)}
+          >
             <span>Delete</span>
             <MdDeleteForever className="text-red-600" />
           </Button>

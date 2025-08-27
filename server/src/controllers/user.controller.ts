@@ -158,6 +158,7 @@ export const deleteUser = async (
     res.status(200).json({
       success: true,
       message: `The user ${userExists.username} deleted successfully`,
+      data: userToDelete,
     });
   } catch (err) {
     next(err);

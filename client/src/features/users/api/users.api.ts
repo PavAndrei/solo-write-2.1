@@ -2,6 +2,7 @@ import { BASE_API_URL } from '../../../constants/api';
 import type { ApiResponse } from '../../../types/api';
 import type {
   FetchUsersRequestParams,
+  User,
   UserResponseData,
 } from '../types/users.types';
 
@@ -52,7 +53,9 @@ export const getAllUsers = async (
   }
 };
 
-export const deleteUserById = async (id: string) => {
+export const deleteUserById = async (
+  id: string
+): Promise<ApiResponse<User>> => {
   try {
     const res = await fetch(`${BASE_API_URL}/user/${id}`, {
       method: 'DELETE',

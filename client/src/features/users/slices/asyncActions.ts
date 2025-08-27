@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { ApiResponse } from '../../../types/api';
 import type {
   FetchUsersRequestParams,
+  User,
   UserResponseData,
 } from '../types/users.types';
 import { getAllUsers, deleteUserById } from '../api/users.api';
@@ -27,7 +28,7 @@ export const fetchUsers = createAsyncThunk<
 });
 
 export const deleteUser = createAsyncThunk<
-  ApiResponse<void>,
+  ApiResponse<User>,
   string,
   { rejectValue: string }
 >('users/deleteUser', async (id, { rejectWithValue }) => {
