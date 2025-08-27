@@ -11,6 +11,7 @@ import type { AdminUsersFilters } from '../../features/filters/slices/filters.ty
 import { useEffect, useRef } from 'react';
 import { fetchUsers } from '../../features/users/slices/asyncActions';
 import { useSearchParams } from 'react-router-dom';
+import { parseBool } from '../../utils/parseBool';
 
 export const DashUsersFilters = () => {
   const dispatch = useAppDispatch();
@@ -81,17 +82,46 @@ export const DashUsersFilters = () => {
   };
 
   // Функция, берущая параметры из url-строки.
-  const getUsersAllURLParams = () => {
+  // const getUsersAllURLParams = () => {
+  //   const allParams = Object.fromEntries(searchParams.entries());
+
+  //   const result = Object.entries(allParams).filter((arr) => {
+  //     const [key] = arr;
+  //     if (key === 'tab') return;
+
+  //     return arr;
+  //   });
+
+  //   return Object.fromEntries(result);
+  // };
+
+  // Функция, берущая параметры из url-строки и возвращающая Partial<AdminUsersFilters>
+  const getUsersAllURLParams = (): Partial<AdminUsersFilters> => {
+    // берем все params, оставляем только те, что не tab
     const allParams = Object.fromEntries(searchParams.entries());
+    const entries = Object.entries(allParams).filter(([key]) => key !== 'tab');
 
-    const result = Object.entries(allParams).filter((arr) => {
-      const [key] = arr;
-      if (key === 'tab') return;
+    // если ничего нет — возвращаем пустой объект (в правильном типе)
+    if (entries.length === 0) return {};
 
-      return arr;
-    });
+    // raw — строки, как вернул URL
+    const raw = Object.fromEntries(entries) as Record<string, string>;
 
-    return Object.fromEntries(result);
+    // parsed — собираем корректные типы
+    const parsed: Partial<AdminUsersFilters> = {};
+
+    if (raw.username !== undefined) parsed.username = raw.username;
+    if (raw.email !== undefined) parsed.email = raw.email;
+    if (raw.role !== undefined) parsed.role = raw.role as 'admin' | 'user';
+    if (raw.sort !== undefined)
+      parsed.sort = raw.sort as AdminUsersFilters['sort'];
+
+    // Приводим к boolean только эти два поля
+    if (raw.hasAvatar !== undefined)
+      parsed.hasAvatar = parseBool(raw.hasAvatar);
+    if (raw.verified !== undefined) parsed.verified = parseBool(raw.verified);
+
+    return parsed;
   };
 
   // Эффект, обновляющий фильтры redux, при каждом изменении в форме.

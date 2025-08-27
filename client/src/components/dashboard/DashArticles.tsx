@@ -4,7 +4,7 @@ export const DashArticles = () => {
   return (
     <section className="pt-10">
       <PageTitle hasSubtitle="You can read, update and delete the articles on the platform">
-        Comments
+        Articles
       </PageTitle>
     </section>
   );

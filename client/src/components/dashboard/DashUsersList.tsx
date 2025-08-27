@@ -7,7 +7,9 @@ export const DashUsersList = () => {
   return (
     <div className="w-2/3">
       <span className="mb-2 block font-medium text-lg">
-        {data?.total} users were found:
+        {data && data?.total > 0
+          ? `${data?.total} users were found:`
+          : 'Users not found'}
       </span>
       <ul className="flex flex-col gap-3">
         {data?.users.map((user) => (

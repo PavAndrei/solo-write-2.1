@@ -24,7 +24,10 @@ export const Sidebar = () => {
   const location = useLocation();
   const [tab, setTab] = useState('');
 
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState<boolean | null>(() => {
+    const stored = localStorage.getItem('sidebarVisible');
+    return stored !== null ? JSON.parse(stored) : true;
+  });
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -36,8 +39,8 @@ export const Sidebar = () => {
   }, [location.search]);
 
   useEffect(() => {
-    setIsVisible(true);
-  }, []);
+    localStorage.setItem('sidebarVisible', JSON.stringify(isVisible));
+  }, [isVisible]);
 
   return (
     <div className={clsx('relative', 'w-0')}>
