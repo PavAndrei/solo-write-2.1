@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { User } from '../models/user.model';
+import { errorHandler } from '../middlewares/handleErrors';
 
 export const getAllUsers = async (
   req: Request,
@@ -108,6 +109,42 @@ export const getAllUsers = async (
       success: true,
       message: 'Users fetched successfully',
       data: { users, total },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.userId;
+    const deletedUserId = req.params.id;
+
+    if (!userId) {
+      throw errorHandler(401, 'Not authenticated');
+    }
+
+    const userExists = await User.findById(userId).select('-password').lean();
+
+    if (
+      userExists?.role !== 'admin' &&
+      userExists?._id.toString() !== deletedUserId.toString()
+    ) {
+      throw errorHandler(
+        403,
+        `You are not allowed to delete the user ${userExists?.username}`
+      );
+    }
+
+    await User.findByIdAndDelete(deletedUserId);
+
+    res.status(200).json({
+      success: true,
+      message: `The user ${userExists.username} deleted successfully`,
     });
   } catch (err) {
     next(err);
