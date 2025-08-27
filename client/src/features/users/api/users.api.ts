@@ -51,3 +51,21 @@ export const getAllUsers = async (
     return { success: false, message: errorMessage };
   }
 };
+
+export const geleteUserById = async (id: string) => {
+  try {
+    const res = await fetch(`${BASE_API_URL}/user/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+
+    const data = await res.json();
+
+    return data;
+  } catch (err) {
+    const errorMessage =
+      err instanceof Error ? err.message : 'Network error occured';
+    console.error(errorMessage);
+    return { success: false, message: errorMessage };
+  }
+};

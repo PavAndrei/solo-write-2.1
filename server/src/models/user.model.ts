@@ -5,6 +5,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   avatarUrl?: string;
+  avatarPublicId?: string;
   role: 'user' | 'admin';
   verified: boolean;
   articles: mongoose.Types.ObjectId[];
@@ -26,6 +27,7 @@ const userSchema = new Schema<IUser>(
     },
     password: { type: String, required: true },
     avatarUrl: { type: String, default: null },
+    avatarPublicId: { type: String, default: null },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     verified: { type: Boolean, default: false },
     articles: [{ type: Schema.Types.ObjectId, ref: 'Article' }],

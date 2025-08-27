@@ -7,6 +7,7 @@ export interface ImageRequest<P = {}, ResBody = {}, ReqBody = {}>
   file?: Express.Multer.File;
   imageUrl?: string;
   imageUrls?: string[];
+  imagePublicId?: string;
 }
 
 export interface ApiResponse<T> {

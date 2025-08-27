@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { User } from '../models/user.model';
 import { errorHandler } from '../middlewares/handleErrors';
+import cloudinary from '../configs/cloudinary.config';
 
 export const getAllUsers = async (
   req: Request,
@@ -138,6 +139,18 @@ export const deleteUser = async (
         403,
         `You are not allowed to delete the user ${userExists?.username}`
       );
+    }
+
+    const userToDelete = await User.findById(deletedUserId)
+      .select('-password')
+      .lean();
+
+    if (!userToDelete) {
+      throw errorHandler(404, 'User not found');
+    }
+
+    if (userToDelete.avatarPublicId) {
+      await cloudinary.uploader.destroy(userToDelete.avatarPublicId);
     }
 
     await User.findByIdAndDelete(deletedUserId);

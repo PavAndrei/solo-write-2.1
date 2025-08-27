@@ -82,6 +82,7 @@ export const signUp = async (
     const { username, email, password } = req.body;
 
     const avatarUrl = req.imageUrl || null;
+    const avatarPublicId = req.imagePublicId || null;
 
     const existingUser = await User.findOne({
       $or: [{ email }, { username }],
@@ -102,6 +103,7 @@ export const signUp = async (
       password: hashedPassword,
       role: 'user',
       avatarUrl,
+      avatarPublicId,
       verified: false,
       articles: [],
     });

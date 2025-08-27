@@ -45,6 +45,7 @@ export const uploadImage = [
 
       const result = await streamUpload(req.file.buffer);
       req.imageUrl = result.secure_url;
+      req.imagePublicId = result.public_id;
 
       next();
     } catch (err) {
