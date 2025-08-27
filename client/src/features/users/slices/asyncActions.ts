@@ -4,7 +4,7 @@ import type {
   FetchUsersRequestParams,
   UserResponseData,
 } from '../types/users.types';
-import { getAllUsers } from '../api/users.api';
+import { getAllUsers, deleteUserById } from '../api/users.api';
 
 export const fetchUsers = createAsyncThunk<
   ApiResponse<UserResponseData>,
@@ -15,7 +15,27 @@ export const fetchUsers = createAsyncThunk<
     const response = await getAllUsers(params);
 
     if (!response.success) {
-      return rejectWithValue(response.message || 'Authentification failed');
+      return rejectWithValue(response.message || 'Fetching users failed');
+    }
+
+    return response;
+  } catch (err) {
+    return rejectWithValue(
+      err instanceof Error ? err.message : 'Unknown error'
+    );
+  }
+});
+
+export const deleteUser = createAsyncThunk<
+  ApiResponse<void>,
+  string,
+  { rejectValue: string }
+>('users/deleteUser', async (id, { rejectWithValue }) => {
+  try {
+    const response = await deleteUserById(id);
+
+    if (!response.success) {
+      return rejectWithValue(response.message || 'Deleting users failed');
     }
 
     return response;

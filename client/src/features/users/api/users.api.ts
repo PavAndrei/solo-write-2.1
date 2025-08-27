@@ -52,7 +52,7 @@ export const getAllUsers = async (
   }
 };
 
-export const geleteUserById = async (id: string) => {
+export const deleteUserById = async (id: string) => {
   try {
     const res = await fetch(`${BASE_API_URL}/user/${id}`, {
       method: 'DELETE',

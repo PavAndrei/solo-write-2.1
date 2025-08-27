@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { UsersState } from './users.types';
 import { Status } from '../../../types/api';
-import { fetchUsers } from './asyncActions';
+import { deleteUser, fetchUsers } from './asyncActions';
 
 const initialState: UsersState = {
   data: null,
@@ -24,6 +24,17 @@ const usersSlice = createSlice({
       .addCase(fetchUsers.rejected, (state) => {
         state.status = Status.ERROR;
       });
+
+    // .addCase(deleteUser.pending, (state) => {
+    //   state.status = Status.LOADING;
+    // })
+    // .addCase(deleteUser.fulfilled, (state, action) => {
+    //   state.status = Status.SUCCESS;
+    //   state.data = action.payload.data;
+    // })
+    // .addCase(deleteUser.rejected, (state) => {
+    //   state.status = Status.ERROR;
+    // });
   },
 });
 
