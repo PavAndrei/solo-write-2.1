@@ -1,8 +1,28 @@
-import { useAppSelector } from '../../app/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/store/hooks';
+import { setUsersFilters } from '../../features/filters/slices/filtersSlices';
+import { Pagination } from '../ui/Pagination';
 import { DashUsersItem } from './DashUsersItem';
 
 export const DashUsersList = () => {
+  const dispatch = useAppDispatch();
   const { data } = useAppSelector((state) => state.users);
+  const { startIndex, limit } = useAppSelector(
+    (state) => state.filters.admin.users
+  );
+
+  const handlePreviousPageClick = () => {
+    if (startIndex < 1) return;
+    dispatch(setUsersFilters({ startIndex: startIndex - limit }));
+  };
+
+  const handleNextPageClick = () => {
+    dispatch(setUsersFilters({ startIndex: startIndex + limit }));
+  };
+
+  const handleCurrentPageClick = (page: number) => {
+    console.log(page);
+    dispatch(setUsersFilters({ startIndex: limit * page }));
+  };
 
   return (
     <div className="w-2/3">
@@ -16,6 +36,13 @@ export const DashUsersList = () => {
           <DashUsersItem key={user._id} {...user} />
         ))}
       </ul>
+      <Pagination
+        currentPage={startIndex / limit}
+        totalPages={data ? Math.ceil(data?.total / limit) : 0}
+        handleNextPage={handleNextPageClick}
+        handlePreviousPage={handlePreviousPageClick}
+        handlePageClick={handleCurrentPageClick}
+      />
     </div>
   );
 };

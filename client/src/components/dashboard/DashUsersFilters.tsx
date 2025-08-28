@@ -60,8 +60,8 @@ export const DashUsersFilters = () => {
       username: usersFilters.username,
       email: usersFilters.email,
       sort: usersFilters.sort,
-      // startIndex: 0,
-      // limit: 12,
+      startIndex: usersFilters.startIndex,
+      limit: usersFilters.limit,
       hasAvatar: usersFilters.hasAvatar.toString(),
     };
 
@@ -74,26 +74,16 @@ export const DashUsersFilters = () => {
         if (value === 'false') return;
       }
 
+      if (key === 'startIndex' && value == 0) return;
+
+      if (key === 'limit' && value === 10) return;
+
       if (key === 'sort' && value === 'desc') return;
       return arr;
     });
 
     setSearchParams(Object.fromEntries(filteredParams));
   };
-
-  // Функция, берущая параметры из url-строки.
-  // const getUsersAllURLParams = () => {
-  //   const allParams = Object.fromEntries(searchParams.entries());
-
-  //   const result = Object.entries(allParams).filter((arr) => {
-  //     const [key] = arr;
-  //     if (key === 'tab') return;
-
-  //     return arr;
-  //   });
-
-  //   return Object.fromEntries(result);
-  // };
 
   // Функция, берущая параметры из url-строки и возвращающая Partial<AdminUsersFilters>
   const getUsersAllURLParams = (): Partial<AdminUsersFilters> => {
@@ -121,6 +111,12 @@ export const DashUsersFilters = () => {
       parsed.hasAvatar = parseBool(raw.hasAvatar);
     if (raw.verified !== undefined) parsed.verified = parseBool(raw.verified);
 
+    if (raw.startIndex && +raw.startIndex !== 0)
+      parsed.startIndex = +raw.startIndex;
+
+    console.log(+raw.startIndex);
+    console.log(parsed);
+
     return parsed;
   };
 
@@ -128,6 +124,10 @@ export const DashUsersFilters = () => {
   useEffect(() => {
     dispatch(setUsersFilters(values));
   }, [JSON.stringify(values)]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [JSON.stringify(usersFilters.startIndex)]);
 
   // Эффект, запрашивающий новых users, с учетом примененных фильтров из redux.
   useEffect(() => {

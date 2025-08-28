@@ -16,6 +16,7 @@ export const DashUsersItem: FC<User> = ({
   avatarUrl,
   createdAt,
   role,
+  verified,
 }) => {
   const readableDate = formatDate(createdAt);
   const dispatch = useAppDispatch();
@@ -59,7 +60,7 @@ export const DashUsersItem: FC<User> = ({
             </div>
             <div className="flex gap-1.5 items-center min-w-20 justify-between">
               <span>Verified: </span>
-              {role === 'admin' ? <MdVerified /> : <GoUnverified />}
+              {verified ? <MdVerified /> : <GoUnverified />}
             </div>
           </div>
         </div>

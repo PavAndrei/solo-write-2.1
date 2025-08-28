@@ -15,15 +15,9 @@ export const getAllUsers = async (
     if (params) {
       const searchParams = new URLSearchParams();
 
-      Object.entries(params).forEach(([key, value]) => {
-        if (value === '' || value === undefined || value === null) {
-          return;
-        }
-
-        if (typeof value === 'boolean') {
-          searchParams.append(key, value.toString());
-          return;
-        }
+      Object.entries(params).filter(([key, value]) => {
+        if (!value) return;
+        if (key === 'sort' && value === 'desc') return;
 
         searchParams.append(key, String(value));
       });

@@ -32,10 +32,12 @@ const usersSlice = createSlice({
         state.status = Status.SUCCESS;
         const deletedUserId = action.payload.data?._id;
 
-        if (state.data)
+        if (state.data) {
+          state.data.total -= 1;
           state.data.users = state.data?.users.filter(
             (user) => user._id !== deletedUserId
           );
+        }
       })
       .addCase(deleteUser.rejected, (state) => {
         state.status = Status.ERROR;

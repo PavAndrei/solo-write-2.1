@@ -12,7 +12,7 @@ const initialState: FiltersState = {
       email: '',
       sort: 'desc',
       startIndex: 0,
-      limit: 12,
+      limit: 10,
       hasAvatar: false,
     },
     comments: undefined,
