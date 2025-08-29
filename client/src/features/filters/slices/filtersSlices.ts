@@ -28,8 +28,29 @@ const filtersSlice = createSlice({
       state,
       action: PayloadAction<Partial<FetchUsersRequestParams>>
     ) {
-      state.admin.users = { ...state.admin.users, ...action.payload };
+      const prev = state.admin.users;
+      const next = { ...prev, ...action.payload };
+
+      const filterKeys: (keyof FetchUsersRequestParams)[] = [
+        'role',
+        'verified',
+        'username',
+        'email',
+        'sort',
+        'hasAvatar',
+      ];
+
+      const filtersChanged = filterKeys.some(
+        (key) =>
+          action.payload[key] !== undefined && action.payload[key] !== prev[key]
+      );
+
+      state.admin.users = {
+        ...next,
+        startIndex: filtersChanged ? 0 : next.startIndex,
+      };
     },
+
     resetUsersFilters(state) {
       state.admin.users = initialState.admin.users;
     },
