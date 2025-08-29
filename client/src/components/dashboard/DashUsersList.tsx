@@ -1,11 +1,13 @@
 import { useAppDispatch, useAppSelector } from '../../app/store/hooks';
 import { setUsersFilters } from '../../features/filters/slices/filtersSlices';
+import { Status } from '../../types/api';
 import { Pagination } from '../ui/Pagination';
+import { SpinnerLoading } from '../ui/SpinnerLoading';
 import { DashUsersItem } from './DashUsersItem';
 
 export const DashUsersList = () => {
   const dispatch = useAppDispatch();
-  const { data } = useAppSelector((state) => state.users);
+  const { data, status } = useAppSelector((state) => state.users);
   const { startIndex, limit } = useAppSelector(
     (state) => state.filters.admin.users
   );
@@ -24,6 +26,18 @@ export const DashUsersList = () => {
     dispatch(setUsersFilters({ startIndex: limit * page }));
   };
 
+  if (status === Status.LOADING) {
+    return (
+      <div className="w-2/3">
+        <SpinnerLoading />
+      </div>
+    );
+  }
+
+  if (status === Status.ERROR) {
+    return <div className="w-2/3">Something went wrong...</div>;
+  }
+
   return (
     <div className="w-2/3">
       <span className="mb-2 block font-medium text-lg">
@@ -36,13 +50,15 @@ export const DashUsersList = () => {
           <DashUsersItem key={user._id} {...user} />
         ))}
       </ul>
-      <Pagination
-        currentPage={startIndex / limit}
-        totalPages={data ? Math.ceil(data?.total / limit) : 0}
-        handleNextPage={handleNextPageClick}
-        handlePreviousPage={handlePreviousPageClick}
-        handlePageClick={handleCurrentPageClick}
-      />
+      {data && data.total > limit && (
+        <Pagination
+          currentPage={startIndex / limit}
+          totalPages={Math.ceil(data?.total / limit)}
+          handleNextPage={handleNextPageClick}
+          handlePreviousPage={handlePreviousPageClick}
+          handlePageClick={handleCurrentPageClick}
+        />
+      )}
     </div>
   );
 };

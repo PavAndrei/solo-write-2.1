@@ -65,6 +65,7 @@ export const DashUsers = () => {
       </PageTitle>
       <Container>
         <div className="flex justify-between gap-15 pb-10">
+          {}
           <DashUsersList />
           <DashUsersFilters
             defaultValues={usersFilters}
