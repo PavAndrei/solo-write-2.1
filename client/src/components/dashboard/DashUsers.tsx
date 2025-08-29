@@ -70,9 +70,9 @@ export const DashUsers = () => {
             defaultValues={usersFilters}
             onFiltersChange={handleFiltersChange}
             isFirstRender={isFirstRender.current}
-          />{' '}
-        </div>{' '}
-      </Container>{' '}
+          />
+        </div>
+      </Container>
     </section>
   );
 };

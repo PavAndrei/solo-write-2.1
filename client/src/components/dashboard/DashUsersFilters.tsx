@@ -8,6 +8,7 @@ import { Button } from '../ui/Button';
 import { useEffect, type FC } from 'react';
 import type { AdminUsersFilters } from '../../features/filters/slices/filters.types';
 import { USERS_FILTERS_DEFAULTS } from '../../constants/defaults';
+import { useDebounce } from '../../hooks/useDebounce';
 
 type DashUsersFiltersProps = {
   defaultValues: AdminUsersFilters;
@@ -26,12 +27,21 @@ export const DashUsersFilters: FC<DashUsersFiltersProps> = ({
 
   const values = watch();
 
+  const debouncedUsername = useDebounce(values.username, 500);
+  const debouncedEmail = useDebounce(values.email, 500);
+
+  const debouncedValues = {
+    ...values,
+    username: debouncedUsername,
+    email: debouncedEmail,
+  };
+
   useEffect(() => {
     console.log(isFirstRender);
     if (!isFirstRender) {
-      onFiltersChange(values);
+      onFiltersChange(debouncedValues);
     }
-  }, [JSON.stringify(values)]);
+  }, [JSON.stringify(debouncedValues)]);
 
   useEffect(() => {
     reset(defaultValues);
