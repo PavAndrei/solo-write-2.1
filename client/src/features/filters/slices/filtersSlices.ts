@@ -1,20 +1,11 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { FetchUsersRequestParams } from '../../users/types/users.types';
-import type { FiltersState } from './filters.types';
+import type { AdminUsersFilters, FiltersState } from './filters.types';
+import { USERS_FILTERS_DEFAULTS } from '../../../constants/defaults';
 
 const initialState: FiltersState = {
   public: undefined,
   admin: {
-    users: {
-      role: '',
-      verified: false,
-      username: '',
-      email: '',
-      sort: 'desc',
-      startIndex: 0,
-      limit: 10,
-      hasAvatar: false,
-    },
+    users: USERS_FILTERS_DEFAULTS,
     comments: undefined,
     articles: undefined,
   },
@@ -24,14 +15,11 @@ const filtersSlice = createSlice({
   name: 'filters',
   initialState,
   reducers: {
-    setUsersFilters(
-      state,
-      action: PayloadAction<Partial<FetchUsersRequestParams>>
-    ) {
+    setUsersFilters(state, action: PayloadAction<Partial<AdminUsersFilters>>) {
       const prev = state.admin.users;
       const next = { ...prev, ...action.payload };
 
-      const filterKeys: (keyof FetchUsersRequestParams)[] = [
+      const filterKeys: (keyof AdminUsersFilters)[] = [
         'role',
         'verified',
         'username',

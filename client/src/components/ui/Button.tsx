@@ -11,6 +11,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button: FC<ButtonProps> = ({
   children,
   ariaLabel,
+  disabled,
   className,
   size = 'md',
   ...props
@@ -25,9 +26,10 @@ export const Button: FC<ButtonProps> = ({
   return (
     <button
       {...props}
+      disabled={disabled}
       className={clsx(
         baseClassNames,
-        hoversAndActives,
+        !disabled ? hoversAndActives : 'opacity-45',
         focuses,
         size === 'md' && 'px-4 py-1.5 font-medium',
         size === 'sm' && 'px-2 py-1 font-light',

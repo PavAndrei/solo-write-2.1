@@ -9,7 +9,7 @@ import { getAllUsers, deleteUserById } from '../api/users.api';
 
 export const fetchUsers = createAsyncThunk<
   ApiResponse<UserResponseData>,
-  FetchUsersRequestParams,
+  Partial<FetchUsersRequestParams>,
   { rejectValue: string }
 >('users/fetchUsers', async (params, { rejectWithValue }) => {
   try {

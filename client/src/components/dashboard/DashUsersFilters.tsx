@@ -1,170 +1,54 @@
 import { Controller, useForm } from 'react-hook-form';
-import { useAppDispatch, useAppSelector } from '../../app/store/hooks';
 import { CustomInput } from '../ui/CustomInput';
 import { FaUser } from 'react-icons/fa';
 import { MdEmail, MdFilterAltOff } from 'react-icons/md';
 import { CustomCheckbox } from '../ui/CustomCheckbox';
 import { CustomRadio } from '../ui/CustomRadio';
 import { Button } from '../ui/Button';
-import { setUsersFilters } from '../../features/filters/slices/filtersSlices';
+import { useEffect, type FC } from 'react';
 import type { AdminUsersFilters } from '../../features/filters/slices/filters.types';
-import { useEffect, useRef } from 'react';
-import { fetchUsers } from '../../features/users/slices/asyncActions';
-import { useSearchParams } from 'react-router-dom';
-import { parseBool } from '../../utils/parseBool';
+import { USERS_FILTERS_DEFAULTS } from '../../constants/defaults';
 
-export const DashUsersFilters = () => {
-  const dispatch = useAppDispatch();
-  const { users: usersFilters } = useAppSelector(
-    (state) => state.filters.admin
-  );
+type DashUsersFiltersProps = {
+  defaultValues: AdminUsersFilters;
+  onFiltersChange: (values: AdminUsersFilters) => void;
+  isFirstRender: boolean;
+};
 
-  const isFirstRender = useRef<boolean>(true);
-
-  const [searchParams, setSearchParams] = useSearchParams();
-
+export const DashUsersFilters: FC<DashUsersFiltersProps> = ({
+  defaultValues,
+  onFiltersChange,
+  isFirstRender,
+}) => {
   const { register, reset, watch, control } = useForm<AdminUsersFilters>({
-    defaultValues: usersFilters,
+    defaultValues,
   });
-
-  const handleReset = () => {
-    reset({
-      username: '',
-      email: '',
-      hasAvatar: false,
-      verified: false,
-      role: '',
-      sort: 'desc',
-    });
-    dispatch(
-      setUsersFilters({
-        username: '',
-        email: '',
-        hasAvatar: false,
-        verified: false,
-        role: '',
-        sort: 'desc',
-      })
-    );
-    setSearchParams({ tab: 'users' });
-  };
 
   const values = watch();
 
-  // Функиця, которая записывает параметры в url-строку.
-  const updateUsersURLParams = () => {
-    const newParams = {
-      tab: 'users',
-      role: usersFilters.role,
-      verified: usersFilters.verified.toString(),
-      username: usersFilters.username,
-      email: usersFilters.email,
-      sort: usersFilters.sort,
-      startIndex: usersFilters.startIndex,
-      limit: usersFilters.limit,
-      hasAvatar: usersFilters.hasAvatar.toString(),
-    };
-
-    const filteredParams = Object.entries(newParams).filter((arr) => {
-      const [key, value] = arr;
-      if (key === 'role' || key === 'username' || key === 'email') {
-        if (!value) return;
-      }
-      if (key === 'verified' || key === 'hasAvatar') {
-        if (value === 'false') return;
-      }
-
-      if (key === 'startIndex' && value == 0) return;
-
-      if (key === 'limit' && value === 10) return;
-
-      if (key === 'sort' && value === 'desc') return;
-      return arr;
-    });
-
-    setSearchParams(Object.fromEntries(filteredParams));
-  };
-
-  // Функция, берущая параметры из url-строки и возвращающая Partial<AdminUsersFilters>
-  const getUsersAllURLParams = (): Partial<AdminUsersFilters> => {
-    // берем все params, оставляем только те, что не tab
-    const allParams = Object.fromEntries(searchParams.entries());
-    const entries = Object.entries(allParams).filter(([key]) => key !== 'tab');
-
-    // если ничего нет — возвращаем пустой объект (в правильном типе)
-    if (entries.length === 0) return {};
-
-    // raw — строки, как вернул URL
-    const raw = Object.fromEntries(entries) as Record<string, string>;
-
-    // parsed — собираем корректные типы
-    const parsed: Partial<AdminUsersFilters> = {};
-
-    if (raw.username !== undefined) parsed.username = raw.username;
-    if (raw.email !== undefined) parsed.email = raw.email;
-    if (raw.role !== undefined) parsed.role = raw.role as 'admin' | 'user';
-    if (raw.sort !== undefined)
-      parsed.sort = raw.sort as AdminUsersFilters['sort'];
-
-    // Приводим к boolean только эти два поля
-    if (raw.hasAvatar !== undefined)
-      parsed.hasAvatar = parseBool(raw.hasAvatar);
-    if (raw.verified !== undefined) parsed.verified = parseBool(raw.verified);
-
-    if (raw.startIndex && +raw.startIndex !== 0)
-      parsed.startIndex = +raw.startIndex;
-
-    console.log(+raw.startIndex);
-    console.log(parsed);
-
-    return parsed;
-  };
-
-  // Эффект, обновляющий фильтры redux, при каждом изменении в форме.
   useEffect(() => {
-    dispatch(setUsersFilters(values));
+    console.log(isFirstRender);
+    if (!isFirstRender) {
+      onFiltersChange(values);
+    }
   }, [JSON.stringify(values)]);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [JSON.stringify(usersFilters.startIndex)]);
+    reset(defaultValues);
+  }, [defaultValues, reset]);
 
-  // Эффект, запрашивающий новых users, с учетом примененных фильтров из redux.
-  useEffect(() => {
-    if (isFirstRender.current) {
-      const urlFilters = getUsersAllURLParams();
-      const hasUrlParams = Object.keys(urlFilters).length > 0;
-      const hasRedux = Object.values(usersFilters).some(
-        (val) => val !== '' && val !== false
-      );
+  const handleReset = () => {
+    console.log('reset');
+    reset(USERS_FILTERS_DEFAULTS);
+  };
 
-      if (hasUrlParams) {
-        // 1) URL побеждает
-        console.log('URL побеждает');
-        reset(urlFilters);
-        dispatch(setUsersFilters(urlFilters));
-      } else if (hasRedux) {
-        // 2) URL пустой, но в Redux есть старые фильтры
-        console.log('URL пустой, но в Redux есть старые фильтры');
-        reset(usersFilters);
-        dispatch(fetchUsers(usersFilters));
-        updateUsersURLParams();
-      } else {
-        // 3) ни там, ни там — ставим URL по умолчанию
-        console.log('ни там, ни там — ставим URL по умолчанию');
-        updateUsersURLParams();
-      }
-
-      isFirstRender.current = false;
-      return;
-    }
-
-    // при последующих изменениях
-
-    console.log('при последующих изменениях');
-    dispatch(fetchUsers(usersFilters));
-    updateUsersURLParams();
-  }, [JSON.stringify(usersFilters)]);
+  const areFiltersEmpty =
+    !values.email &&
+    !values.username &&
+    !values.hasAvatar &&
+    !values.verified &&
+    !values.role &&
+    values.sort === 'desc';
 
   return (
     <form className="flex flex-col gap-3 grow">
@@ -248,7 +132,12 @@ export const DashUsersFilters = () => {
         )}
       />
 
-      <Button ariaLabel="reset the filters" onClick={handleReset} type="button">
+      <Button
+        ariaLabel="reset the filters"
+        onClick={handleReset}
+        type="reset"
+        disabled={areFiltersEmpty}
+      >
         <MdFilterAltOff /> Clear The Filters
       </Button>
     </form>

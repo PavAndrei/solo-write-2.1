@@ -7,7 +7,7 @@ import type {
 } from '../types/users.types';
 
 export const getAllUsers = async (
-  params: FetchUsersRequestParams
+  params: Partial<FetchUsersRequestParams>
 ): Promise<ApiResponse<UserResponseData>> => {
   try {
     let queryString;
