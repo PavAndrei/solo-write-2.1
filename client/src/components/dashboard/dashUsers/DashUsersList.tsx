@@ -1,8 +1,8 @@
-import { useAppDispatch, useAppSelector } from '../../app/store/hooks';
-import { setUsersFilters } from '../../features/filters/slices/filtersSlices';
-import { Status } from '../../types/api';
-import { Pagination } from '../ui/Pagination';
-import { SpinnerLoading } from '../ui/SpinnerLoading';
+import { useAppDispatch, useAppSelector } from '../../../app/store/hooks';
+import { setUsersFilters } from '../../../features/filters/slices/filtersSlices';
+import { Status } from '../../../types/api';
+import { Pagination } from '../../ui/Pagination';
+import { SpinnerLoading } from '../../ui/SpinnerLoading';
 import { DashUsersItem } from './DashUsersItem';
 
 export const DashUsersList = () => {

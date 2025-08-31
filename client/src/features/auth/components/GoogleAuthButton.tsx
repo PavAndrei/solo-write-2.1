@@ -20,7 +20,7 @@ export const GoogleAuthButton = () => {
       } catch (err) {
         console.error('Google Auth Error:', err);
       }
-      navigate('/profile');
+      navigate('/dashboard?tab=profile');
     },
     onError: () => console.log('Login Failed'),
   });

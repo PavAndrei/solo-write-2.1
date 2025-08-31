@@ -1,16 +1,16 @@
 import { useSearchParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../app/store/hooks';
-import type { AdminUsersFilters } from '../../features/filters/slices/filters.types';
+import { useAppDispatch, useAppSelector } from '../../../app/store/hooks';
+import type { AdminUsersFilters } from '../../../features/filters/slices/filters.types';
 import { useEffect, useRef } from 'react';
-import { parseUrlParams, toUrlParams } from '../../utils/handleUrlParams';
-import { userSchema } from '../../features/filters/schemas/users.schema';
-import { setUsersFilters } from '../../features/filters/slices/filtersSlices';
-import { fetchUsers } from '../../features/users/slices/asyncActions';
-import { PageTitle } from '../ui/PageTitle';
-import { Container } from '../layout/Container';
-import { DashUsersList } from './DashUsersList';
+import { parseUrlParams, toUrlParams } from '../../../utils/handleUrlParams';
+import { userSchema } from '../../../features/filters/schemas/users.schema';
+import { setUsersFilters } from '../../../features/filters/slices/filtersSlices';
+import { fetchUsers } from '../../../features/users/slices/asyncActions';
+import { PageTitle } from '../../ui/PageTitle';
+import { Container } from '../../layout/Container';
 import { DashUsersFilters } from './DashUsersFilters';
-import { USERS_FILTERS_DEFAULTS } from '../../constants/defaults';
+import { USERS_FILTERS_DEFAULTS } from '../../../constants/defaults';
+import { DashUsersList } from './DashUsersList';
 
 export const DashUsers = () => {
   const dispatch = useAppDispatch();
@@ -65,7 +65,6 @@ export const DashUsers = () => {
       </PageTitle>
       <Container>
         <div className="flex justify-between gap-15 pb-10">
-          {}
           <DashUsersList />
           <DashUsersFilters
             defaultValues={usersFilters}

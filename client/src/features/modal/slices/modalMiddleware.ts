@@ -16,9 +16,9 @@ export const modalMiddleware: Middleware = (store) => {
     if (confirmModal.match(action) || alertModal.match(action)) {
       const id = ++nextId;
       const type = confirmModal.match(action) ? 'confirm' : 'alert';
-      const message = action.payload;
 
-      store.dispatch(showModal({ id, type, message }));
+      const { title, message } = action.payload;
+      store.dispatch(showModal({ id, type, title, message }));
 
       return new Promise<boolean>((resolve) => {
         resolvers.set(id, resolve);

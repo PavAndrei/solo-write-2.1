@@ -1,14 +1,14 @@
 import { Controller, useForm } from 'react-hook-form';
-import { CustomInput } from '../ui/CustomInput';
+import { CustomInput } from '../../ui/CustomInput';
 import { FaUser } from 'react-icons/fa';
 import { MdEmail, MdFilterAltOff } from 'react-icons/md';
-import { CustomCheckbox } from '../ui/CustomCheckbox';
-import { CustomRadio } from '../ui/CustomRadio';
-import { Button } from '../ui/Button';
+import { CustomCheckbox } from '../../ui/CustomCheckbox';
+import { CustomRadio } from '../../ui/CustomRadio';
+import { Button } from '../../ui/Button';
 import { useEffect, type FC } from 'react';
-import type { AdminUsersFilters } from '../../features/filters/slices/filters.types';
-import { USERS_FILTERS_DEFAULTS } from '../../constants/defaults';
-import { useDebounce } from '../../hooks/useDebounce';
+import type { AdminUsersFilters } from '../../../features/filters/slices/filters.types';
+import { USERS_FILTERS_DEFAULTS } from '../../../constants/defaults';
+import { useDebounce } from '../../../hooks/useDebounce';
 
 type DashUsersFiltersProps = {
   defaultValues: AdminUsersFilters;

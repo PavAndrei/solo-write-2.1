@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { PageTitle } from '../ui/PageTitle';
+import { PageTitle } from '../../ui/PageTitle';
 
 export const DashProfile: FC = () => {
   return (
@@ -7,6 +7,11 @@ export const DashProfile: FC = () => {
       <PageTitle hasSubtitle="You can find and update any information about you">
         Profile
       </PageTitle>
+
+      <form className="flex flex-col">
+        <input type="text" placeholder="username" />
+        <input type="email" placeholder="email" />
+      </form>
     </section>
   );
 };

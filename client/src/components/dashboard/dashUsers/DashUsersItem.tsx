@@ -1,17 +1,17 @@
 import type { FC } from 'react';
-import type { User } from '../../features/users/types/users.types';
+import type { User } from '../../../features/users/types/users.types';
 import { FaUser, FaUserEdit } from 'react-icons/fa';
-import { formatDate } from '../../utils/formatDate';
+import { formatDate } from '../../../utils/formatDate';
 import { RiAdminFill } from 'react-icons/ri';
 import { MdVerified, MdDeleteForever } from 'react-icons/md';
 import { GoUnverified } from 'react-icons/go';
-import { Button } from '../ui/Button';
-import { useAppDispatch } from '../../app/store/hooks';
+import { Button } from '../../ui/Button';
+import { useAppDispatch } from '../../../app/store/hooks';
 import {
   alertModal,
   confirmModal,
-} from '../../features/modal/slices/modalSlice';
-import { deleteUser } from '../../features/users/slices/asyncActions';
+} from '../../../features/modal/slices/modalSlice';
+import { deleteUser } from '../../../features/users/slices/asyncActions';
 
 export const DashUsersItem: FC<User> = ({
   _id,
@@ -26,24 +26,31 @@ export const DashUsersItem: FC<User> = ({
   const dispatch = useAppDispatch();
 
   const handleEditUserById = async () => {
-    const res = await dispatch(alertModal('Edit'));
+    const res = await dispatch(alertModal({ title: 'edit', message: 'Edit' }));
     console.log(res);
   };
 
   const handleDeleteUserById = async (id: string) => {
     const confirm = await dispatch(
-      confirmModal(`Delete the user ${username}?`)
+      confirmModal({
+        title: 'Deleting the user',
+        message: `Are you sure to delete the user '${username}'?`,
+      })
     );
 
     let res;
     if (confirm) {
       res = await dispatch(deleteUser(id));
     }
-    console.log(res);
 
-    if (res?.payload?.success) {
+    if (res) {
       console.log('success');
-      await dispatch(alertModal(`The user ${username} has been deleted`));
+      await dispatch(
+        alertModal({
+          title: 'Success',
+          message: `The user '${username}' has been fully deleted from the data base with his avatar.`,
+        })
+      );
     }
   };
 

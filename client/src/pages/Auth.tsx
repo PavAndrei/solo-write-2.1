@@ -21,6 +21,7 @@ import { PageTitle } from '../components/ui/PageTitle';
 import { FaUser, FaKey, FaUserPlus, FaSignInAlt } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 import { GoogleAuthButton } from '../features/auth/components/GoogleAuthButton';
+import { alertModal } from '../features/modal/slices/modalSlice';
 interface AuthProps {
   mode: 'sign-in' | 'sign-up';
 }
@@ -60,9 +61,14 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
 
       try {
         await dispatch(signInUser(signInData)).unwrap();
-        navigate('/articles');
+        navigate('/dashboard?tab=profile');
       } catch (err) {
-        alert(err);
+        await dispatch(
+          alertModal({
+            title: 'Authorization failed',
+            message: `Text message: ${JSON.stringify(err)}. Please, try again.`,
+          })
+        );
       }
     } else {
       const signUpData = data as SignUpFormData;
@@ -77,9 +83,14 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
 
       try {
         await dispatch(signUpUser(formData)).unwrap();
-        console.log('success');
+        navigate('/dashboard?tab=profile');
       } catch (err) {
-        alert(err);
+        await dispatch(
+          alertModal({
+            title: 'Registration failed',
+            message: `Text message: ${JSON.stringify(err)}. Please, try again.`,
+          })
+        );
       }
     }
   };

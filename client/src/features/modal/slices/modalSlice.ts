@@ -6,8 +6,15 @@ import {
 } from '@reduxjs/toolkit';
 
 // payloadы для экшенов
-export const confirmModal = createAction<string>('modal/confirm');
-export const alertModal = createAction<string>('modal/alert');
+export const confirmModal = createAction<{
+  title: string;
+  message: string;
+}>('modal/confirm');
+export const alertModal = createAction<{
+  title: string;
+  message: string;
+}>('modal/alert');
+
 export const respondModal = createAction<{ id: number; result: boolean }>(
   'modal/respond'
 );
@@ -17,6 +24,7 @@ interface ModalItem {
   id: number;
   type: 'confirm' | 'alert';
   message: string;
+  title: string;
 }
 
 interface ModalState {
