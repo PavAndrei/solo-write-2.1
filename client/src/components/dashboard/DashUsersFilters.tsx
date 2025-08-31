@@ -37,7 +37,6 @@ export const DashUsersFilters: FC<DashUsersFiltersProps> = ({
   };
 
   useEffect(() => {
-    console.log(isFirstRender);
     if (!isFirstRender) {
       onFiltersChange(debouncedValues);
     }

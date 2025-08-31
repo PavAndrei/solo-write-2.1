@@ -21,7 +21,7 @@ export const Pagination: FC<PaginationProps> = ({
   }
 
   return (
-    <div className="flex pt-5 items-center gap-2 w-full justify-center">
+    <div className="flex pt-5 items-center gap-2 w-full justify-center mt-auto mb-0">
       <button
         className="p-2 border rounded-md not-disabled:cursor-pointer min-h-8 not-disabled:active:scale-95 disabled:opacity-45 not-disabled:hover:bg-gray-200 not-disabled:dark:hover:bg-gray-600 transition-colors ease-in-out duration-300"
         type="button"

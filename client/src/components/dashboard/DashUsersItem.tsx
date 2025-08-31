@@ -7,6 +7,10 @@ import { MdVerified, MdDeleteForever } from 'react-icons/md';
 import { GoUnverified } from 'react-icons/go';
 import { Button } from '../ui/Button';
 import { useAppDispatch } from '../../app/store/hooks';
+import {
+  alertModal,
+  confirmModal,
+} from '../../features/modal/slices/modalSlice';
 import { deleteUser } from '../../features/users/slices/asyncActions';
 
 export const DashUsersItem: FC<User> = ({
@@ -21,11 +25,25 @@ export const DashUsersItem: FC<User> = ({
   const readableDate = formatDate(createdAt);
   const dispatch = useAppDispatch();
 
-  const handleDeleUserById = (id: string) => {
-    const res = confirm('Are you sure to delete the user?');
+  const handleEditUserById = async () => {
+    const res = await dispatch(alertModal('Edit'));
+    console.log(res);
+  };
 
-    if (res) {
-      dispatch(deleteUser(id));
+  const handleDeleteUserById = async (id: string) => {
+    const confirm = await dispatch(
+      confirmModal(`Delete the user ${username}?`)
+    );
+
+    let res;
+    if (confirm) {
+      res = await dispatch(deleteUser(id));
+    }
+    console.log(res);
+
+    if (res?.payload?.success) {
+      console.log('success');
+      await dispatch(alertModal(`The user ${username} has been deleted`));
     }
   };
 
@@ -65,7 +83,12 @@ export const DashUsersItem: FC<User> = ({
           </div>
         </div>
         <div className="flex justify-end gap-4">
-          <Button type="button" ariaLabel="edit this user" size="sm">
+          <Button
+            type="button"
+            ariaLabel="edit this user"
+            size="sm"
+            onClick={() => handleEditUserById()}
+          >
             <span>Edit</span>
             <FaUserEdit />
           </Button>
@@ -73,7 +96,7 @@ export const DashUsersItem: FC<User> = ({
             type="button"
             ariaLabel="delete this user"
             size="sm"
-            onClick={() => handleDeleUserById(_id)}
+            onClick={() => handleDeleteUserById(_id)}
           >
             <span>Delete</span>
             <MdDeleteForever className="text-red-600" />

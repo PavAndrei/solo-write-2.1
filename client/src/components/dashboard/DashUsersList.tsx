@@ -39,7 +39,7 @@ export const DashUsersList = () => {
   }
 
   return (
-    <div className="w-2/3">
+    <div className="w-2/3 min-h-full flex flex-col">
       <span className="mb-2 block font-medium text-lg">
         {data && data?.total > 0
           ? `${data?.total} users were found:`

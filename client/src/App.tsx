@@ -6,6 +6,7 @@ import { Main } from './components/layout/Main';
 import { Footer } from './components/layout/Footer';
 import { AuthProvider } from './app/providers/AuthProvider';
 import { ThemeProvider } from './app/providers/ThemeProvider';
+import ModalRoot from './components/ui/modals/ModalRoot';
 
 export const App = () => {
   return (
@@ -16,6 +17,7 @@ export const App = () => {
           <AuthProvider>
             <Main>
               <AppRouter />
+              <ModalRoot />
             </Main>
           </AuthProvider>
           <Footer />
