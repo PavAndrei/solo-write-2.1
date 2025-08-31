@@ -15,10 +15,20 @@ import { signOutUser } from '../../features/auth/slices/asyncActions';
 import { ThemeToggler } from '../../features/theme/components/ThemeToggler';
 
 const PAGES = [
-  { name: 'Home', url: '/', icon: <FaHome /> },
-  { name: 'Articles', url: '/articles', icon: <SiReadthedocs /> },
-  { name: 'Editor', url: '/editor', icon: <FaEdit /> },
-  { name: 'Profile', url: '/dashboard', icon: <FaUser /> },
+  { name: 'Home', url: '/', icon: <FaHome />, protected: false },
+  {
+    name: 'Articles',
+    url: '/articles',
+    icon: <SiReadthedocs />,
+    protected: false,
+  },
+  { name: 'Editor', url: '/editor', icon: <FaEdit />, protected: true },
+  {
+    name: 'Profile',
+    url: '/dashboard?tab=profile',
+    icon: <FaUser />,
+    protected: true,
+  },
 ];
 
 export const Navbar: FC = () => {
@@ -33,7 +43,7 @@ export const Navbar: FC = () => {
     <nav className="flex items-center flex-grow">
       <ul className="flex gap-3 ml-20 mr-auto">
         {PAGES.map((page) => {
-          if (page.name === 'Profile' && (!isAuthChecked || !user)) return;
+          if (page.protected && (!isAuthChecked || !user)) return;
 
           return (
             <li key={page.name}>

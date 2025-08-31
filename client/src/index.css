@@ -26,3 +26,26 @@ input:-webkit-autofill,
 input:-webkit-autofill:focus {
   transition: background-color 0s 600000s, color 0s 600000s !important;
 }
+
+.tiptap p.is-editor-empty:first-child::before {
+  @apply text-gray-500 float-left h-0 pointer-events-none;
+  content: attr(data-placeholder);
+}
+
+.tiptap h1 {
+  @apply text-4xl font-bold;
+}
+
+.tiptap h2 {
+  @apply text-3xl font-bold;
+}
+
+.tiptap h3 {
+  @apply text-2xl font-bold;
+}
+
+.is-active {
+  background: red;
+  width: 20px;
+  height: 20px;
+}
