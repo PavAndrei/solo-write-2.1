@@ -4,6 +4,7 @@ import { respondModal } from '../../../features/modal/slices/modalSlice';
 import { ModalConfirm } from './ModalConfirm';
 import { ModalAlert } from './ModalAlert';
 import { IoMdCloseCircle } from 'react-icons/io';
+import { ModalPrompt } from './ModalPrompt';
 
 const ModalRoot: FC = () => {
   const modals = useAppSelector((state) => state.modal.modals);
@@ -13,7 +14,7 @@ const ModalRoot: FC = () => {
 
   const { id, type, message, title } = modals[0];
 
-  const handleClose = (result: boolean) => {
+  const handleClose = (result: boolean | string) => {
     dispatch(respondModal({ id, result }));
   };
 
@@ -40,6 +41,14 @@ const ModalRoot: FC = () => {
             message={message}
             title={title}
             onClose={() => handleClose(true)}
+          />
+        )}
+        {type === 'prompt' && (
+          <ModalPrompt
+            message={message}
+            title={title}
+            onSubmit={(value) => handleClose(value)}
+            onCancel={() => handleClose('')}
           />
         )}
       </div>

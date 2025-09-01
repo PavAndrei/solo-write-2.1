@@ -14,15 +14,20 @@ export const alertModal = createAction<{
   title: string;
   message: string;
 }>('modal/alert');
+export const promptModal = createAction<{
+  title: string;
+  message: string;
+}>('modal/prompt');
 
-export const respondModal = createAction<{ id: number; result: boolean }>(
-  'modal/respond'
-);
+export const respondModal = createAction<{
+  id: number;
+  result: boolean | string;
+}>('modal/respond');
 
 // единичная модалка в очереди
 interface ModalItem {
   id: number;
-  type: 'confirm' | 'alert';
+  type: 'confirm' | 'alert' | 'prompt';
   message: string;
   title: string;
 }
