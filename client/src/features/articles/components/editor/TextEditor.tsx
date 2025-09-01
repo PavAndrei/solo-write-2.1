@@ -1,8 +1,10 @@
-import { Placeholder } from '@tiptap/extensions';
+import { Placeholder, CharacterCount } from '@tiptap/extensions';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { FaPenAlt } from 'react-icons/fa';
 import { MenuBar } from './MenuBar';
+import TextAlign from '@tiptap/extension-text-align';
+import { characterLimit } from '../../../../constants/articleValidationParams';
 
 export const TextEditor = () => {
   const editor = useEditor({
@@ -10,6 +12,12 @@ export const TextEditor = () => {
       StarterKit,
       Placeholder.configure({
         placeholder: 'Share your thoughts with us...',
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+      CharacterCount.configure({
+        limit: characterLimit,
       }),
     ],
     content: '',

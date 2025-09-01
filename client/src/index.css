@@ -47,6 +47,14 @@ input:-webkit-autofill:focus {
   @apply text-2xl font-bold;
 }
 
+.tiptap h4 {
+  @apply text-xl font-bold;
+}
+
+.tiptap h5 {
+  @apply text-lg font-bold;
+}
+
 .tiptap ul {
   @apply list-disc;
 }
@@ -68,4 +76,18 @@ input:-webkit-autofill:focus {
 .tiptap pre code {
   @apply font-mono text-sm leading-5;
   font-family: var(--font-mono);
+}
+
+.tiptap blockquote {
+  @apply border-l-4 border-gray-300 dark:border-gray-700 pl-4 italic text-gray-700 dark:text-gray-300 relative max-w-fit;
+}
+
+.tiptap blockquote::before {
+  content: '“';
+  @apply text-4xl text-gray-400 absolute -left-2.5 top-0;
+}
+
+.tiptap blockquote::after {
+  content: '”';
+  @apply text-4xl text-gray-400 absolute -right-4 -bottom-5;
 }

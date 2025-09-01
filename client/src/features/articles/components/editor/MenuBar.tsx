@@ -10,11 +10,27 @@ import {
   FaFileCode,
   FaRedo,
   FaUndo,
+  FaRulerHorizontal,
+  FaAlignLeft,
+  FaAlignRight,
+  FaAlignCenter,
+  FaAlignJustify,
 } from 'react-icons/fa';
+import { VscNewline, VscClearAll } from 'react-icons/vsc';
+import { GrBlockQuote } from 'react-icons/gr';
+import { MdOutlineRemoveDone } from 'react-icons/md';
 
 import { MenuBarButton } from './MenuBarButton';
-import { LuHeading1, LuHeading2, LuHeading3 } from 'react-icons/lu';
+import {
+  LuHeading1,
+  LuHeading2,
+  LuHeading3,
+  LuHeading4,
+  LuHeading5,
+} from 'react-icons/lu';
 import { BiCodeBlock } from 'react-icons/bi';
+import { characterLimit } from '../../../../constants/articleValidationParams';
+import { CharacterCounter } from '../../../../components/ui/CharacterCounter';
 
 interface MenuBarProps {
   editor: Editor;
@@ -47,13 +63,30 @@ export const MenuBar: FC<MenuBarProps> = ({ editor }) => {
         isBlockquote: ctx.editor.isActive('blockquote') ?? false,
         canUndo: ctx.editor.can().chain().undo().run() ?? false,
         canRedo: ctx.editor.can().chain().redo().run() ?? false,
+        isAlignLeft: ctx.editor.isActive({ textAlign: 'left' }) ?? false,
+        isAlignCenter: ctx.editor.isActive({ textAlign: 'center' }) ?? false,
+        isAlignRight: ctx.editor.isActive({ textAlign: 'right' }) ?? false,
+        isAlignJustify: ctx.editor.isActive({ TextAlign: 'justify' }) ?? false,
+        charactersCount: ctx.editor.storage.characterCount.characters(),
+        wordsCount: ctx.editor.storage.characterCount.words(),
       };
     },
   });
 
+  const percentage = editor
+    ? Math.round((100 / characterLimit) * editorState.charactersCount)
+    : 0;
+
   return (
     <div className="group flex gap-10 pb-2">
-      <div className="flex items-center gap-2">
+      <CharacterCounter
+        charactersCount={editorState.charactersCount}
+        characterLimit={characterLimit}
+        percentage={percentage}
+        wordsCount={editorState.wordsCount}
+      />
+
+      <div className="flex items-center gap-2 flex-wrap">
         <MenuBarButton
           onClick={() => editor.chain().focus().toggleBold().run()}
           disabled={!editorState.canBold}
@@ -77,8 +110,6 @@ export const MenuBar: FC<MenuBarProps> = ({ editor }) => {
         >
           <FaStrikethrough />
         </MenuBarButton>
-      </div>
-      <div className="flex items-center gap-2">
         <MenuBarButton
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 1 }).run()
@@ -110,14 +141,32 @@ export const MenuBar: FC<MenuBarProps> = ({ editor }) => {
         </MenuBarButton>
 
         <MenuBarButton
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 4 }).run()
+          }
+          isSelected={editorState.isHeading4}
+          className="text-xl"
+        >
+          <LuHeading4 />
+        </MenuBarButton>
+
+        <MenuBarButton
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 5 }).run()
+          }
+          isSelected={editorState.isHeading5}
+          className="text-xl"
+        >
+          <LuHeading5 />
+        </MenuBarButton>
+
+        <MenuBarButton
           onClick={() => editor.chain().focus().setParagraph().run()}
           isSelected={editorState.isParagraph}
         >
           <FaParagraph />
         </MenuBarButton>
-      </div>
 
-      <div className="flex items-center gap-2">
         <MenuBarButton
           onClick={() => editor.chain().focus().toggleCode().run()}
           disabled={!editorState.canCode}
@@ -147,39 +196,36 @@ export const MenuBar: FC<MenuBarProps> = ({ editor }) => {
           <FaListOl />
         </MenuBarButton>
 
-        {/* <button
-          type="button"
+        <MenuBarButton
           onClick={() => editor.chain().focus().unsetAllMarks().run()}
         >
-          Clear marks
-        </button> */}
+          <MdOutlineRemoveDone />
+        </MenuBarButton>
 
-        {/* <button
-          type="button"
+        <MenuBarButton
           onClick={() => editor.chain().focus().clearNodes().run()}
         >
-          Clear nodes
-        </button> */}
+          <VscClearAll />
+        </MenuBarButton>
 
-        <button
-          type="button"
+        <MenuBarButton
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={editorState.isBlockquote ? 'is-active' : ''}
+          isSelected={editorState.isBlockquote}
         >
-          Blockquote
-        </button>
-        <button
-          type="button"
+          <GrBlockQuote />
+        </MenuBarButton>
+
+        <MenuBarButton
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
         >
-          Horizontal rule
-        </button>
-        <button
-          type="button"
+          <FaRulerHorizontal />
+        </MenuBarButton>
+
+        <MenuBarButton
           onClick={() => editor.chain().focus().setHardBreak().run()}
         >
-          Hard break
-        </button>
+          <VscNewline />
+        </MenuBarButton>
 
         <MenuBarButton
           onClick={() => editor.chain().focus().undo().run()}
@@ -193,6 +239,38 @@ export const MenuBar: FC<MenuBarProps> = ({ editor }) => {
           disabled={!editorState.canRedo}
         >
           <FaRedo />
+        </MenuBarButton>
+
+        <MenuBarButton
+          onClick={() => editor.chain().focus().setTextAlign('left').run()}
+          isSelected={editorState.isAlignLeft}
+          disabled={editorState.isAlignLeft}
+        >
+          <FaAlignLeft />
+        </MenuBarButton>
+
+        <MenuBarButton
+          onClick={() => editor.chain().focus().setTextAlign('center').run()}
+          isSelected={editorState.isAlignCenter}
+          disabled={editorState.isAlignCenter}
+        >
+          <FaAlignCenter />
+        </MenuBarButton>
+
+        <MenuBarButton
+          onClick={() => editor.chain().focus().setTextAlign('right').run()}
+          isSelected={editorState.isAlignRight}
+          disabled={editorState.isAlignRight}
+        >
+          <FaAlignRight />
+        </MenuBarButton>
+
+        <MenuBarButton
+          onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+          isSelected={editorState.isAlignJustify}
+          disabled={editorState.isAlignJustify}
+        >
+          <FaAlignJustify />
         </MenuBarButton>
       </div>
     </div>
