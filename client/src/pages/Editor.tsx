@@ -4,6 +4,7 @@ import { PageTitle } from '../components/ui/PageTitle';
 import { TextEditor } from '../features/articles/components/editor/TextEditor';
 import { CustomInput } from '../components/ui/CustomInput';
 import { MdTitle, MdDescription } from 'react-icons/md';
+import { Button } from '../components/ui/Button';
 
 export const Editor: FC = () => {
   return (
@@ -25,7 +26,9 @@ export const Editor: FC = () => {
             icon={<MdDescription />}
           />
           <TextEditor />
-          <button type="submit"></button>
+          <Button ariaLabel="Post the article" type="submit">
+            Post
+          </Button>
         </form>
       </Container>
     </section>

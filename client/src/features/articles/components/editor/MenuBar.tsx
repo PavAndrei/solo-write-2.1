@@ -1,5 +1,20 @@
 import { useEditorState, type Editor } from '@tiptap/react';
 import type { FC } from 'react';
+import {
+  FaBold,
+  FaItalic,
+  FaStrikethrough,
+  FaParagraph,
+  FaListOl,
+  FaListUl,
+  FaFileCode,
+  FaRedo,
+  FaUndo,
+} from 'react-icons/fa';
+
+import { MenuBarButton } from './MenuBarButton';
+import { LuHeading1, LuHeading2, LuHeading3 } from 'react-icons/lu';
+import { BiCodeBlock } from 'react-icons/bi';
 
 interface MenuBarProps {
   editor: Editor;
@@ -37,133 +52,115 @@ export const MenuBar: FC<MenuBarProps> = ({ editor }) => {
   });
 
   return (
-    <div className="control-group">
-      <div className="button-group">
-        <button
-          type="button"
+    <div className="group flex gap-10 pb-2">
+      <div className="flex items-center gap-2">
+        <MenuBarButton
           onClick={() => editor.chain().focus().toggleBold().run()}
           disabled={!editorState.canBold}
-          className={editorState.isBold ? 'is-active' : ''}
+          isSelected={editorState.isBold}
         >
-          Bold
-        </button>
-        <button
-          type="button"
+          <FaBold />
+        </MenuBarButton>
+
+        <MenuBarButton
           onClick={() => editor.chain().focus().toggleItalic().run()}
           disabled={!editorState.canItalic}
-          className={editorState.isItalic ? 'is-active' : ''}
+          isSelected={editorState.isItalic}
         >
-          Italic
-        </button>
-        <button
-          type="button"
+          <FaItalic />
+        </MenuBarButton>
+
+        <MenuBarButton
           onClick={() => editor.chain().focus().toggleStrike().run()}
           disabled={!editorState.canStrike}
-          className={editorState.isStrike ? 'is-active' : ''}
+          isSelected={editorState.isStrike}
         >
-          Strike
-        </button>
-        <button
-          type="button"
+          <FaStrikethrough />
+        </MenuBarButton>
+      </div>
+      <div className="flex items-center gap-2">
+        <MenuBarButton
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 1 }).run()
+          }
+          isSelected={editorState.isHeading1}
+          className="text-xl"
+        >
+          <LuHeading1 />
+        </MenuBarButton>
+
+        <MenuBarButton
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
+          }
+          isSelected={editorState.isHeading2}
+          className="text-xl"
+        >
+          <LuHeading2 />
+        </MenuBarButton>
+
+        <MenuBarButton
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 3 }).run()
+          }
+          isSelected={editorState.isHeading3}
+          className="text-xl"
+        >
+          <LuHeading3 />
+        </MenuBarButton>
+
+        <MenuBarButton
+          onClick={() => editor.chain().focus().setParagraph().run()}
+          isSelected={editorState.isParagraph}
+        >
+          <FaParagraph />
+        </MenuBarButton>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <MenuBarButton
           onClick={() => editor.chain().focus().toggleCode().run()}
           disabled={!editorState.canCode}
-          className={editorState.isCode ? 'is-active' : ''}
+          isSelected={editorState.isCode}
         >
-          Code
-        </button>
-        <button
+          <FaFileCode />
+        </MenuBarButton>
+
+        <MenuBarButton
+          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+          isSelected={editorState.isCodeBlock}
+        >
+          <BiCodeBlock />
+        </MenuBarButton>
+
+        <MenuBarButton
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          isSelected={editorState.isBulletList}
+        >
+          <FaListUl />
+        </MenuBarButton>
+
+        <MenuBarButton
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          isSelected={editorState.isOrderedList}
+        >
+          <FaListOl />
+        </MenuBarButton>
+
+        {/* <button
           type="button"
           onClick={() => editor.chain().focus().unsetAllMarks().run()}
         >
           Clear marks
-        </button>
-        <button
+        </button> */}
+
+        {/* <button
           type="button"
           onClick={() => editor.chain().focus().clearNodes().run()}
         >
           Clear nodes
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().setParagraph().run()}
-          className={editorState.isParagraph ? 'is-active' : ''}
-        >
-          Paragraph
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 1 }).run()
-          }
-          className={editorState.isHeading1 ? 'is-active' : ''}
-        >
-          H1
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
-          }
-          className={editorState.isHeading2 ? 'is-active' : ''}
-        >
-          H2
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 3 }).run()
-          }
-          className={editorState.isHeading3 ? 'is-active' : ''}
-        >
-          H3
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 4 }).run()
-          }
-          className={editorState.isHeading4 ? 'is-active' : ''}
-        >
-          H4
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 5 }).run()
-          }
-          className={editorState.isHeading5 ? 'is-active' : ''}
-        >
-          H5
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 6 }).run()
-          }
-          className={editorState.isHeading6 ? 'is-active' : ''}
-        >
-          H6
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={editorState.isBulletList ? 'is-active' : ''}
-        >
-          Bullet list
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={editorState.isOrderedList ? 'is-active' : ''}
-        >
-          Ordered list
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          className={editorState.isCodeBlock ? 'is-active' : ''}
-        >
-          Code block
-        </button>
+        </button> */}
+
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
@@ -183,20 +180,20 @@ export const MenuBar: FC<MenuBarProps> = ({ editor }) => {
         >
           Hard break
         </button>
-        <button
-          type="button"
+
+        <MenuBarButton
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editorState.canUndo}
         >
-          Undo
-        </button>
-        <button
-          type="button"
+          <FaUndo />
+        </MenuBarButton>
+
+        <MenuBarButton
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editorState.canRedo}
         >
-          Redo
-        </button>
+          <FaRedo />
+        </MenuBarButton>
       </div>
     </div>
   );

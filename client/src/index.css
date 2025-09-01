@@ -1,16 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap');
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-inter: 'Inter', sans-serif;
+  --font-mono: 'Fira Code', monospace;
 }
 
 html,
 body,
 #root {
   @apply w-full h-full bg-gray-300;
+  font-family: var(--font-inter);
 }
 
 html:has(.dark) {
@@ -44,8 +47,25 @@ input:-webkit-autofill:focus {
   @apply text-2xl font-bold;
 }
 
-.is-active {
-  background: red;
-  width: 20px;
-  height: 20px;
+.tiptap ul {
+  @apply list-disc;
+}
+
+.tiptap ol {
+  @apply list-decimal;
+}
+
+.tiptap code {
+  @apply rounded bg-gray-200 dark:bg-gray-900 px-2 py-1 text-sm font-mono text-gray-100 dark:text-pink-100;
+  font-family: var(--font-mono);
+}
+
+.tiptap pre {
+  @apply rounded-lg bg-gray-900 p-4 text-gray-100 overflow-x-auto;
+  font-family: var(--font-mono);
+}
+
+.tiptap pre code {
+  @apply font-mono text-sm leading-5;
+  font-family: var(--font-mono);
 }
