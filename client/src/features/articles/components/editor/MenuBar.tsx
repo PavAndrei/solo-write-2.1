@@ -15,6 +15,10 @@ import {
   FaAlignRight,
   FaAlignCenter,
   FaAlignJustify,
+  FaHighlighter,
+  FaUnderline,
+  FaSuperscript,
+  FaSubscript,
 } from 'react-icons/fa';
 import { VscNewline, VscClearAll } from 'react-icons/vsc';
 import { GrBlockQuote } from 'react-icons/gr';
@@ -69,6 +73,10 @@ export const MenuBar: FC<MenuBarProps> = ({ editor }) => {
         isAlignJustify: ctx.editor.isActive({ TextAlign: 'justify' }) ?? false,
         charactersCount: ctx.editor.storage.characterCount.characters(),
         wordsCount: ctx.editor.storage.characterCount.words(),
+        isHighlighted: ctx.editor.isActive('highlight') ?? false,
+        isUnderlined: ctx.editor.isActive('underline') ?? false,
+        isSuperscripted: ctx.editor.isActive('superscript') ?? false,
+        isSubscripted: ctx.editor.isActive('subscript') ?? false,
       };
     },
   });
@@ -87,6 +95,34 @@ export const MenuBar: FC<MenuBarProps> = ({ editor }) => {
       />
 
       <div className="flex items-center gap-2 flex-wrap">
+        <MenuBarButton
+          onClick={() => editor.chain().focus().toggleHighlight().run()}
+          isSelected={editorState.isHighlighted}
+        >
+          <FaHighlighter />
+        </MenuBarButton>
+
+        <MenuBarButton
+          onClick={() => editor.chain().focus().toggleSubscript().run()}
+          isSelected={editorState.isSubscripted}
+        >
+          <FaSubscript />
+        </MenuBarButton>
+
+        <MenuBarButton
+          onClick={() => editor.chain().focus().toggleSuperscript().run()}
+          isSelected={editorState.isSuperscripted}
+        >
+          <FaSuperscript />
+        </MenuBarButton>
+
+        <MenuBarButton
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          isSelected={editorState.isUnderlined}
+        >
+          <FaUnderline />
+        </MenuBarButton>
+
         <MenuBarButton
           onClick={() => editor.chain().focus().toggleBold().run()}
           disabled={!editorState.canBold}

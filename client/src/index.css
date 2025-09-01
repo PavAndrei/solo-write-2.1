@@ -91,3 +91,7 @@ input:-webkit-autofill:focus {
   content: '”';
   @apply text-4xl text-gray-400 absolute -right-4 -bottom-5;
 }
+
+.tiptap mark {
+  @apply bg-gray-500 text-gray-100 rounded-sm;
+}

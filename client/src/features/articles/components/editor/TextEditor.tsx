@@ -4,6 +4,10 @@ import StarterKit from '@tiptap/starter-kit';
 import { FaPenAlt } from 'react-icons/fa';
 import { MenuBar } from './MenuBar';
 import TextAlign from '@tiptap/extension-text-align';
+import Highlight from '@tiptap/extension-highlight';
+import Superscript from '@tiptap/extension-superscript';
+import Subscript from '@tiptap/extension-subscript';
+
 import { characterLimit } from '../../../../constants/articleValidationParams';
 
 export const TextEditor = () => {
@@ -19,6 +23,9 @@ export const TextEditor = () => {
       CharacterCount.configure({
         limit: characterLimit,
       }),
+      Highlight,
+      Superscript,
+      Subscript,
     ],
     content: '',
     editorProps: {
