@@ -35,6 +35,7 @@ import {
 import { BiCodeBlock } from 'react-icons/bi';
 import { characterLimit } from '../../../../constants/articleValidationParams';
 import { CharacterCounter } from '../../../../components/ui/CharacterCounter';
+import { AiToolbar } from './AiToolbar';
 
 interface MenuBarProps {
   editor: Editor;
@@ -93,6 +94,8 @@ export const MenuBar: FC<MenuBarProps> = ({ editor }) => {
         percentage={percentage}
         wordsCount={editorState.wordsCount}
       />
+
+      <AiToolbar editor={editor} />
 
       <div className="flex items-center gap-2 flex-wrap">
         <MenuBarButton
