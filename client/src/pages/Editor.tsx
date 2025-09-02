@@ -7,9 +7,10 @@ import { CustomInput } from '../components/ui/CustomInput';
 import { MdTitle, MdDescription } from 'react-icons/md';
 import { Button } from '../components/ui/Button';
 import { Controller, useForm } from 'react-hook-form';
+import { CustomTextarea } from '../components/ui/CustomTextarea';
 
 export const Editor: FC = () => {
-  const { handleSubmit, control, register } = useForm({
+  const { handleSubmit, control, register, watch } = useForm({
     defaultValues: {
       title: '',
       description: '',
@@ -22,6 +23,8 @@ export const Editor: FC = () => {
   const onSubmit = (data: any) => {
     console.log('Form data:', data);
   };
+
+  const values = watch();
 
   return (
     <section className="h-full py-10">
@@ -39,12 +42,16 @@ export const Editor: FC = () => {
             icon={<MdTitle />}
           />
 
-          <CustomInput
+          <CustomTextarea
             label="Description"
             placeholder="Enter the description"
             register={register('description')}
             name="description"
+            currentValue={values.description}
             icon={<MdDescription />}
+            showCounter
+            maxLength={350}
+            rows={3}
           />
 
           <Controller
