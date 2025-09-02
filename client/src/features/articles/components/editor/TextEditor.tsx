@@ -9,8 +9,21 @@ import Superscript from '@tiptap/extension-superscript';
 import Subscript from '@tiptap/extension-subscript';
 
 import { characterLimit } from '../../../../constants/articleValidationParams';
+import type { FC } from 'react';
 
-export const TextEditor = () => {
+interface TextEditorProps {
+  label: string;
+  value: string;
+  onChange: (val: string) => void;
+  onLimitChange: (overLimit: boolean) => void;
+}
+
+export const TextEditor: FC<TextEditorProps> = ({
+  label,
+  value,
+  onChange,
+  onLimitChange,
+}) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -20,26 +33,30 @@ export const TextEditor = () => {
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
-      CharacterCount.configure({
-        limit: characterLimit,
-      }),
+      // ⚡ убираем limit, чтобы не блокировало ввод
+      CharacterCount.configure(),
       Highlight,
       Superscript,
       Subscript,
     ],
-    content: '',
+    content: value,
     editorProps: {
       attributes: {
         class:
           'min-h-[156px] border border-gray-500 rounded shadow-md hover:shadow-gray-300 dark:hover:shadow-gray-500 focus:border-gray-900 dark:focus:border-gray-100 focus:shadow-gray-300 dark:focus:shadow-gray-500 focus-visible:shadow-gray-500 focus-visible:inset-shadow-gray-600 dark:inset-shadow-gray-100 focus-visible:inset-shadow-sm py-2 px-14 transititon ease-in-out duration-300',
       },
     },
+    onUpdate: ({ editor }) => {
+      onChange(editor.getHTML());
+      const count = editor.storage.characterCount.characters();
+      onLimitChange(count > characterLimit); // теперь только уведомляем родителя
+    },
   });
 
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="font-medium text-lg cursor-default">Text</span>
-      <MenuBar editor={editor} />
+      <span className="font-medium text-lg cursor-default">{label}</span>
+      {editor && <MenuBar editor={editor} />}
       <div className="relative group">
         <EditorContent editor={editor} />
         <FaPenAlt

@@ -59,16 +59,20 @@ export const AiToolbar: FC<AiToolbarProps> = ({ editor }) => {
   };
 
   return (
-    <div className="flex gap-2 flex-wrap">
-      {Object.entries(AiButtonConfig).map(([action, { label }]) => (
-        <MenuBarButton
-          key={action}
-          onClick={() => handleAiAction(action as AiAction)}
-          disabled={isLoading || !editor?.isEditable}
-        >
-          {isLoading ? '...' : label}
-        </MenuBarButton>
-      ))}
+    <div>
+      <span className="mb-1.5 block">AI helpers:</span>
+
+      <div className="flex gap-2 flex-wrap">
+        {Object.entries(AiButtonConfig).map(([action, { label }]) => (
+          <MenuBarButton
+            key={action}
+            onClick={() => handleAiAction(action as AiAction)}
+            disabled={isLoading || !editor?.isEditable}
+          >
+            {isLoading ? '...' : label}
+          </MenuBarButton>
+        ))}
+      </div>
     </div>
   );
 };

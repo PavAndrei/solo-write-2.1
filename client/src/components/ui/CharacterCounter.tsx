@@ -13,7 +13,7 @@ export const CharacterCounter: FC<CharacterCounterProps> = ({
   percentage,
   wordsCount,
 }) => {
-  const isLimitAchieved = charactersCount === characterLimit;
+  const isLimitAchieved = charactersCount >= characterLimit;
 
   return (
     <div className="flex gap-2">

@@ -6,7 +6,6 @@ export type AiAction =
   | 'add_emoji'
   | 'exciting'
   | 'simplify'
-  | 'extend'
   | 'formalize'
   | 'casual';
 
@@ -15,7 +14,6 @@ export const AiButtonConfig: Record<AiAction, { label: string }> = {
   add_emoji: { label: 'Add emojis' },
   exciting: { label: 'Make it exciting' },
   simplify: { label: 'Simplify' },
-  extend: { label: 'Extend' },
   formalize: { label: 'Formalize' },
   casual: { label: 'Make it casual' },
 };
