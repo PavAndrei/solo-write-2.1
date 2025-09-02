@@ -9,6 +9,7 @@ import { globalErrorHandler } from './middlewares/handleErrors';
 import { articleRouter } from './routes/article.route';
 import { commentRouter } from './routes/comment.route';
 import { userRouter } from './routes/user.route';
+import aiRouter from './routes/ai.route';
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/article', articleRouter);
 app.use('/api/comment', commentRouter);
 app.use('/api/user', userRouter);
+app.use('/api/ai', aiRouter);
 
 if (!MONGO_URI) {
   console.error('❌ MONGO_CONNECTION_STRING is missing');
