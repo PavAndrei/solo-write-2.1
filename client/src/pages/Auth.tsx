@@ -8,7 +8,6 @@ import {
 import { CustomInput } from '../components/ui/CustomInput';
 import { Button } from '../components/ui/Button';
 import { CustomCheckbox } from '../components/ui/CustomCheckbox';
-import { FileInput } from '../components/ui/FileInput';
 import type {
   SignInFormData,
   SignUpFormData,
@@ -22,6 +21,7 @@ import { FaUser, FaKey, FaUserPlus, FaSignInAlt } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 import { GoogleAuthButton } from '../features/auth/components/GoogleAuthButton';
 import { alertModal } from '../features/modal/slices/modalSlice';
+import { CustomImageUpload } from '../components/ui/CustomImageUpload';
 interface AuthProps {
   mode: 'sign-in' | 'sign-up';
 }
@@ -166,10 +166,17 @@ export const Auth: FC<AuthProps> = ({ mode }) => {
               )}
             />
 
-            <FileInput
-              accept="image/*"
-              register={register('file')}
-              error={errors.file}
+            <Controller
+              name="file"
+              control={control}
+              render={({ field }) => (
+                <CustomImageUpload
+                  label="Upload image"
+                  onChange={field.onChange}
+                  maxFiles={1}
+                  error={errors.file?.message?.toString()}
+                />
+              )}
             />
           </>
         )}

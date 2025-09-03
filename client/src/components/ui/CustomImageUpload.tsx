@@ -1,10 +1,4 @@
 import { type FC, useRef, useState, useCallback, useEffect } from 'react';
-import {
-  useController,
-  type Control,
-  type FieldValues,
-  type Path,
-} from 'react-hook-form';
 import { FaTimes, FaCloudUploadAlt } from 'react-icons/fa';
 import clsx from 'clsx';
 
@@ -14,30 +8,19 @@ interface ImageFile {
   id: string;
 }
 
-interface CustomImageUploadProps<T extends FieldValues> {
-  name: Path<T>;
-  control: Control<T>;
+interface CustomImageUploadProps {
   label: string;
   error?: string;
   maxFiles?: number;
+  onChange: (files: File[]) => void;
 }
 
-export const CustomImageUpload = <T extends FieldValues>({
-  name,
-  control,
+export const CustomImageUpload: FC<CustomImageUploadProps> = ({
   label,
   error,
   maxFiles = 5,
-}: CustomImageUploadProps<T>) => {
-  const {
-    field: { value, onChange },
-  } = useController({
-    name,
-    control,
-  });
-
-  console.log(error);
-
+  onChange,
+}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<ImageFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -70,10 +53,10 @@ export const CustomImageUpload = <T extends FieldValues>({
     [images, maxFiles, onChange]
   );
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      processFiles(event.target.files);
-      event.target.value = ''; // Сброс input для возможности повторной загрузки тех же файлов
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      processFiles(e.target.files);
+      e.target.value = ''; // Сброс input для возможности повторной загрузки тех же файлов
     }
   };
 
@@ -89,22 +72,22 @@ export const CustomImageUpload = <T extends FieldValues>({
     }
   };
 
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
     setIsDragging(false);
 
-    if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
-      processFiles(event.dataTransfer.files);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      processFiles(e.dataTransfer.files);
     }
   };
 
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
     setIsDragging(true);
   };
 
-  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
     setIsDragging(false);
   };
 
@@ -143,11 +126,11 @@ export const CustomImageUpload = <T extends FieldValues>({
             {canUpload ? (
               <>Drag and drop an image or click to choose</>
             ) : (
-              <>Достигнут лимит в {maxFiles} изображений</>
+              <>Maximum limit of {maxFiles} images reached</>
             )}
           </p>
           <p className="text-sm text-gray-400 mt-1">
-            {availableSlots} more is availiable
+            {availableSlots} {availableSlots === 1 ? 'slot' : 'slots'} available
           </p>
 
           {/* Скрытый input */}
@@ -162,7 +145,7 @@ export const CustomImageUpload = <T extends FieldValues>({
           />
         </div>
 
-        {/* Список превью */}
+        {/* Список превью изображений */}
         {images.length > 0 && (
           <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
             {images.map((image) => (
@@ -177,8 +160,9 @@ export const CustomImageUpload = <T extends FieldValues>({
                 />
                 <button
                   type="button"
+                  aria-label="remove the image"
                   onClick={() => handleRemoveImage(image.id)}
-                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer"
                 >
                   <FaTimes size={12} />
                 </button>
@@ -188,10 +172,12 @@ export const CustomImageUpload = <T extends FieldValues>({
         )}
       </div>
 
+      {/* Сообщение об ошибке */}
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
+      {/* Информация о лимитах */}
       <p className="text-sm text-gray-500 dark:text-gray-400">
-        Maximum {maxFiles} files
+        Maximum {maxFiles} images
       </p>
     </div>
   );

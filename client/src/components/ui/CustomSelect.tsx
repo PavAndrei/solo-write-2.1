@@ -28,7 +28,7 @@ export const CustomSelect: FC<CustomSelectProps> = ({
   onChange,
   error,
   icon,
-  minSelection = 0, // Изменил по умолчанию на 0
+  minSelection = 0,
   maxSelection = 5,
   placeholder = 'Choose options',
 }) => {
@@ -36,7 +36,6 @@ export const CustomSelect: FC<CustomSelectProps> = ({
   const selectRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Закрытие дропдауна при клике вне компонента
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -65,7 +64,6 @@ export const CustomSelect: FC<CustomSelectProps> = ({
 
   const removeOption = (optionValue: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    // Убрал проверку на минимальное количество - теперь можно удалять все
     const newSelected = selected.filter((v) => v !== optionValue);
     onChange(newSelected);
   };
@@ -92,7 +90,6 @@ export const CustomSelect: FC<CustomSelectProps> = ({
       <span className="font-medium text-lg">{label}</span>
 
       <div className="relative group">
-        {/* Кастомный дропдаун */}
         <div
           ref={selectRef}
           className={clsx(
@@ -104,14 +101,12 @@ export const CustomSelect: FC<CustomSelectProps> = ({
           onClick={handleSelectClick}
           tabIndex={0}
         >
-          {/* Иконка */}
           {icon && (
             <span className="absolute top-3.5 left-2.5 text-gray-500 group-focus-within:text-gray-900 dark:group-focus-within:text-gray-100 transition-all duration-300 ease-in-out">
               {icon}
             </span>
           )}
 
-          {/* Выбранные опции */}
           {selectedOptions.length > 0 ? (
             <div className="flex flex-wrap gap-1 ml-4">
               {selectedOptions.map((option) => (
@@ -134,7 +129,6 @@ export const CustomSelect: FC<CustomSelectProps> = ({
             <span className="text-gray-500 ml-0.5">{placeholder}</span>
           )}
 
-          {/* Стрелка */}
           <FaChevronDown
             className={clsx(
               'absolute top-3.5 right-2 text-gray-500 transition-transform duration-200',
@@ -143,7 +137,6 @@ export const CustomSelect: FC<CustomSelectProps> = ({
           />
         </div>
 
-        {/* Выпадающий список */}
         {isOpen && (
           <div
             ref={dropdownRef}
@@ -168,10 +161,8 @@ export const CustomSelect: FC<CustomSelectProps> = ({
         )}
       </div>
 
-      {/* Сообщение об ошибке */}
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
-      {/* Информация о лимитах */}
       <p className="text-sm text-gray-500 dark:text-gray-400">
         Choose from {minSelection} to {maxSelection} options
       </p>

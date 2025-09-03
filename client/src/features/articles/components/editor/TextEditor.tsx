@@ -35,7 +35,6 @@ export const TextEditor: FC<TextEditorProps> = ({
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
-      // ⚡ убираем limit, чтобы не блокировало ввод
       CharacterCount.configure(),
       Highlight,
       Superscript,
@@ -51,7 +50,7 @@ export const TextEditor: FC<TextEditorProps> = ({
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
       const count = editor.storage.characterCount.characters();
-      onLimitChange(count > characterLimit); // теперь только уведомляем родителя
+      onLimitChange(count > characterLimit);
     },
   });
 

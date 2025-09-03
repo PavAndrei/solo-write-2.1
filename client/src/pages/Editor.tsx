@@ -16,6 +16,7 @@ import {
   type EditorFormData,
 } from '../features/articles/validation/editorSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { CATEGORIES } from '../constants/categories';
 
 export const Editor: FC = () => {
   const {
@@ -42,19 +43,6 @@ export const Editor: FC = () => {
   };
 
   const values = watch();
-
-  const CATEGORIES = [
-    { value: 'technology', label: 'Технологии' },
-    { value: 'design', label: 'Дизайн' },
-    { value: 'business', label: 'Бизнес' },
-    { value: 'health', label: 'Здоровье' },
-    { value: 'education', label: 'Образование' },
-    { value: 'art', label: 'Искусство' },
-    { value: 'science', label: 'Наука' },
-    { value: 'sports', label: 'Спорт' },
-    { value: 'travel', label: 'Путешествия' },
-    { value: 'food', label: 'Еда' },
-  ];
 
   return (
     <section className="h-full py-10">
@@ -104,12 +92,17 @@ export const Editor: FC = () => {
             )}
           />
 
-          <CustomImageUpload
+          <Controller
             name="images"
             control={control}
-            label="Загрузите изображения"
-            maxFiles={5}
-            error={errors.images?.message}
+            render={({ field }) => (
+              <CustomImageUpload
+                label="Upload images"
+                onChange={field.onChange}
+                maxFiles={5}
+                error={errors.images?.message}
+              />
+            )}
           />
 
           <Controller
