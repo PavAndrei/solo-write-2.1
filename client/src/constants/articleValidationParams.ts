@@ -1,1 +1,1 @@
-export const characterLimit = 1200;
+export const characterLimit = 3500;

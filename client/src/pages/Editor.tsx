@@ -10,8 +10,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { CustomTextarea } from '../components/ui/CustomTextarea';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { FaTags } from 'react-icons/fa';
-
-// constants/categories.ts
+import { CustomImageUpload } from '../components/ui/CustomImageUpload';
 
 export const Editor: FC = () => {
   const { handleSubmit, control, register, watch } = useForm({
@@ -20,6 +19,7 @@ export const Editor: FC = () => {
       description: '',
       content: '',
       categories: [],
+      images: [],
     },
   });
 
@@ -75,13 +75,6 @@ export const Editor: FC = () => {
           <Controller
             name="categories"
             control={control}
-            rules={{
-              validate: (value) => {
-                if (value.length < 2) return 'Select at least 2 categories';
-                if (value.length > 5) return 'Maximum 5 categories';
-                return true;
-              },
-            }}
             render={({ field }) => (
               <CustomSelect
                 name="categories"
@@ -94,6 +87,13 @@ export const Editor: FC = () => {
                 icon={<FaTags />}
               />
             )}
+          />
+
+          <CustomImageUpload
+            name="images"
+            control={control}
+            label="Загрузите изображения"
+            maxFiles={5}
           />
 
           <Controller
@@ -121,3 +121,5 @@ export const Editor: FC = () => {
     </section>
   );
 };
+
+// У меня есть компонент Editor для сайта редактора кода на react + ts. Мне нужно создать и подключить zod-схему для валидации. Ошибки передавать в кастомные компоненты формы в проп error. Все поля обязательны для заполнения. Категории должны быть от 2 до 5 выбраны. Максимальная длина поля description - 350. Максимальная длина для content - 3500 символов. Ка
