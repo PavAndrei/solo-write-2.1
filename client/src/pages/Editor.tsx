@@ -11,9 +11,21 @@ import { CustomTextarea } from '../components/ui/CustomTextarea';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { FaTags } from 'react-icons/fa';
 import { CustomImageUpload } from '../components/ui/CustomImageUpload';
+import {
+  editorSchema,
+  type EditorFormData,
+} from '../features/articles/validation/editorSchema';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export const Editor: FC = () => {
-  const { handleSubmit, control, register, watch } = useForm({
+  const {
+    handleSubmit,
+    control,
+    register,
+    watch,
+    formState: { errors },
+  } = useForm<EditorFormData>({
+    resolver: zodResolver(editorSchema),
     defaultValues: {
       title: '',
       description: '',
@@ -25,7 +37,7 @@ export const Editor: FC = () => {
 
   const [isOverLimit, setIsOverLimit] = useState(false);
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: EditorFormData) => {
     console.log('Form data:', data);
   };
 
@@ -58,6 +70,7 @@ export const Editor: FC = () => {
             register={register('title')}
             name="title"
             icon={<MdTitle />}
+            error={errors.title}
           />
 
           <CustomTextarea
@@ -70,6 +83,7 @@ export const Editor: FC = () => {
             showCounter
             maxLength={350}
             rows={3}
+            error={errors.description}
           />
 
           <Controller
@@ -85,6 +99,7 @@ export const Editor: FC = () => {
                 minSelection={2}
                 maxSelection={5}
                 icon={<FaTags />}
+                error={errors.categories?.message}
               />
             )}
           />
@@ -94,6 +109,7 @@ export const Editor: FC = () => {
             control={control}
             label="Загрузите изображения"
             maxFiles={5}
+            error={errors.images?.message}
           />
 
           <Controller
@@ -105,6 +121,7 @@ export const Editor: FC = () => {
                 value={field.value}
                 onChange={field.onChange}
                 onLimitChange={setIsOverLimit}
+                error={errors.content?.message}
               />
             )}
           />
@@ -121,5 +138,3 @@ export const Editor: FC = () => {
     </section>
   );
 };
-
-// У меня есть компонент Editor для сайта редактора кода на react + ts. Мне нужно создать и подключить zod-схему для валидации. Ошибки передавать в кастомные компоненты формы в проп error. Все поля обязательны для заполнения. Категории должны быть от 2 до 5 выбраны. Максимальная длина поля description - 350. Максимальная длина для content - 3500 символов. Ка

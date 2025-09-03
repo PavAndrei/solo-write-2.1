@@ -36,6 +36,8 @@ export const CustomImageUpload = <T extends FieldValues>({
     control,
   });
 
+  console.log(error);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<ImageFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);

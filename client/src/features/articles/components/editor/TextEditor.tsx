@@ -16,6 +16,7 @@ interface TextEditorProps {
   value: string;
   onChange: (val: string) => void;
   onLimitChange: (overLimit: boolean) => void;
+  error?: string;
 }
 
 export const TextEditor: FC<TextEditorProps> = ({
@@ -23,6 +24,7 @@ export const TextEditor: FC<TextEditorProps> = ({
   value,
   onChange,
   onLimitChange,
+  error,
 }) => {
   const editor = useEditor({
     extensions: [
@@ -64,6 +66,8 @@ export const TextEditor: FC<TextEditorProps> = ({
                  group-focus-within:text-gray-900 dark:group-focus-within:text-gray-100"
         />
       </div>
+
+      {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>
   );
 };
