@@ -1,5 +1,5 @@
 import { useState, type FC } from 'react';
-import { Button } from '../Button';
+import { Button } from '../../../../components/ui/Button';
 
 interface ModalPromptProps {
   title: string;

@@ -1,10 +1,10 @@
 import type { FC } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/store/hooks';
-import { respondModal } from '../../../features/modal/slices/modalSlice';
 import { ModalConfirm } from './ModalConfirm';
 import { ModalAlert } from './ModalAlert';
 import { IoMdCloseCircle } from 'react-icons/io';
 import { ModalPrompt } from './ModalPrompt';
+import { useAppDispatch, useAppSelector } from '../../../../app/store/hooks';
+import { respondModal } from '../../slices/modalSlice';
 
 const ModalRoot: FC = () => {
   const modals = useAppSelector((state) => state.modal.modals);

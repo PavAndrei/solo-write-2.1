@@ -6,7 +6,7 @@ import { Main } from './components/layout/Main';
 import { Footer } from './components/layout/Footer';
 import { AuthProvider } from './app/providers/AuthProvider';
 import { ThemeProvider } from './app/providers/ThemeProvider';
-import ModalRoot from './components/ui/modals/ModalRoot';
+import ModalRoot from './features/modal/components/modals/ModalRoot';
 
 export const App = () => {
   return (

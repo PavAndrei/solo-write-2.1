@@ -22,7 +22,6 @@ export const DashUsersList = () => {
   };
 
   const handleCurrentPageClick = (page: number) => {
-    console.log(page);
     dispatch(setUsersFilters({ startIndex: limit * page }));
   };
 
@@ -40,24 +39,28 @@ export const DashUsersList = () => {
 
   return (
     <div className="w-2/3 min-h-full flex flex-col">
-      <span className="mb-2 block font-medium text-lg">
-        {data && data?.total > 0
-          ? `${data?.total} users were found:`
-          : 'Users not found'}
-      </span>
-      <ul className="flex flex-col gap-3">
-        {data?.users.map((user) => (
-          <DashUsersItem key={user._id} {...user} />
-        ))}
-      </ul>
-      {data && data.total > limit && (
-        <Pagination
-          currentPage={startIndex / limit}
-          totalPages={Math.ceil(data?.total / limit)}
-          handleNextPage={handleNextPageClick}
-          handlePreviousPage={handlePreviousPageClick}
-          handlePageClick={handleCurrentPageClick}
-        />
+      {status === Status.IDLE ? null : (
+        <>
+          <span className="mb-2 block font-medium text-lg">
+            {data && data.total > 0
+              ? `${data.total} users were found:`
+              : 'Users not found'}
+          </span>
+          <ul className="flex flex-col gap-3">
+            {data?.users.map((user) => (
+              <DashUsersItem key={user._id} {...user} />
+            ))}
+          </ul>
+          {data && data.total > limit && (
+            <Pagination
+              currentPage={startIndex / limit}
+              totalPages={Math.ceil(data.total / limit)}
+              handleNextPage={handleNextPageClick}
+              handlePreviousPage={handlePreviousPageClick}
+              handlePageClick={handleCurrentPageClick}
+            />
+          )}
+        </>
       )}
     </div>
   );

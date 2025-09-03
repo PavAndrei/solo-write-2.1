@@ -53,9 +53,18 @@ export const DashUsers = () => {
       isFirstRender.current = false;
       return;
     }
-    dispatch(fetchUsers({ ...usersFilters, limit: undefined }));
-    updateUsersURLParams(usersFilters);
-    window.scrollTo(0, 0);
+
+    const timeoutId = setTimeout(() => {
+      dispatch(fetchUsers({ ...usersFilters, limit: undefined }));
+      updateUsersURLParams(usersFilters);
+      window.scrollTo(0, 0);
+    }, 400);
+
+    // dispatch(fetchUsers({ ...usersFilters, limit: undefined }));
+    // updateUsersURLParams(usersFilters);
+    // window.scrollTo(0, 0);
+
+    return () => clearTimeout(timeoutId);
   }, [JSON.stringify(usersFilters), dispatch]);
 
   return (
