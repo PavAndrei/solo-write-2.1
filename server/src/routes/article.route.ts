@@ -3,14 +3,14 @@ import { createArticle } from '../controllers/article.controller';
 import { checkAuth } from '../middlewares/checkAuth';
 import { uploadMultiplyImages } from '../middlewares/uploadImages';
 import { validate } from '../middlewares/validate';
-import { editorSchema } from '../schemas/editor.schema';
+import { createArticleSchema } from '../schemas/editor.schema';
 
 export const articleRouter = Router();
 
 articleRouter.post(
   '/create',
   checkAuth,
-  uploadMultiplyImages,
-  validate(editorSchema),
+  uploadMultiplyImages, // Теперь требует ровно 5 файлов
+  validate(createArticleSchema), // Валидация body
   createArticle
 );

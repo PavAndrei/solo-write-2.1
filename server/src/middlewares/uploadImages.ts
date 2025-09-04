@@ -56,30 +56,24 @@ export const uploadImage = [
 ];
 
 export const uploadMultiplyImages = [
-  upload.array('images', 4),
-  (req: Request, res: Response, next: NextFunction) => {
-    (async () => {
-      try {
-        if (!Array.isArray(req.files)) {
-          return next(errorHandler(400, 'Expected files to be an array'));
-        }
+  upload.array('images', 5),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const typedReq = req as MultipleImagesRequest;
 
-        const typedReq = req as MultipleImagesRequest;
-
-        if (!Array.isArray(typedReq.files) || typedReq.files.length === 0) {
-          return next(errorHandler(400, 'At least one image is required'));
-        }
-
-        const results = await Promise.all(
-          typedReq.files.map((file) => streamUpload(file.buffer))
-        );
-
-        typedReq.imageUrls = results.map((r) => r.secure_url);
-        next();
-      } catch (err) {
-        console.error(err);
-        next(errorHandler(500, 'Multiple image upload failed'));
+      if (!Array.isArray(typedReq.files) || typedReq.files.length !== 5) {
+        return next(errorHandler(400, 'Exactly 5 images are required'));
       }
-    })();
+
+      const results = await Promise.all(
+        typedReq.files.map((file) => streamUpload(file.buffer))
+      );
+
+      typedReq.imageUrls = results.map((r) => r.secure_url);
+      next();
+    } catch (err) {
+      console.error(err);
+      next(errorHandler(500, 'Multiple image upload failed'));
+    }
   },
 ];

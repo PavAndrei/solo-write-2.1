@@ -17,6 +17,7 @@ import {
 } from '../features/articles/validation/editorSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CATEGORIES } from '../constants/categories';
+import { BASE_API_URL } from '../constants/api';
 
 export const Editor: FC = () => {
   const {
@@ -24,6 +25,7 @@ export const Editor: FC = () => {
     control,
     register,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<EditorFormData>({
     resolver: zodResolver(editorSchema),
@@ -37,9 +39,53 @@ export const Editor: FC = () => {
   });
 
   const [isOverLimit, setIsOverLimit] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = (data: EditorFormData) => {
-    console.log('Form data:', data);
+  const onSubmit = async (data: EditorFormData) => {
+    try {
+      setIsSubmitting(true);
+
+      const formData = new FormData();
+      formData.append('title', data.title);
+      formData.append('description', data.description);
+      formData.append('content', data.content);
+      formData.append('categories', JSON.stringify(data.categories));
+
+      if (data.images && data.images.length > 0) {
+        data.images.forEach((image) => {
+          if (image instanceof File) {
+            formData.append('images', image);
+          }
+        });
+      }
+
+      const response = await fetch(`${BASE_API_URL}/article/create`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to create article');
+      }
+
+      const result = await response.json();
+      console.log('Article created:', result);
+
+      setValue('title', '');
+      setValue('description', '');
+      setValue('content', '');
+      setValue('categories', []);
+      setValue('images', []);
+
+      alert('Article created successfully!');
+    } catch (error) {
+      console.error('Error:', error);
+      alert(error instanceof Error ? error.message : 'Error creating article');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const values = watch();
@@ -122,9 +168,9 @@ export const Editor: FC = () => {
           <Button
             ariaLabel="Post the article"
             type="submit"
-            disabled={isOverLimit}
+            disabled={isOverLimit || isSubmitting}
           >
-            Post
+            {isSubmitting ? 'Posting...' : 'Post'}
           </Button>
         </form>
       </Container>
