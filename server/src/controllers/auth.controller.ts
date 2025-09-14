@@ -9,6 +9,7 @@ import {
   UserAuthResponse,
 } from '../types/auth.types';
 import { ApiResponse, ImageRequest } from '../types/common.types';
+import { streamUpload } from '../utils/streamUpload';
 
 export const signIn = async (
   req: Request<{}, {}, SigninInput>,
@@ -73,17 +74,88 @@ export const signIn = async (
   }
 };
 
+// export const signUp = async (
+//   req: ImageRequest<{}, {}, SignupInput>,
+//   res: Response<ApiResponse<UserAuthResponse>>,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const { username, email, password } = req.body;
+
+//     const avatarUrl = req.imageUrl || null;
+//     const avatarPublicId = req.imagePublicId || null;
+
+//     const existingUser = await User.findOne({
+//       $or: [{ email }, { username }],
+//     })
+//       .lean()
+//       .exec();
+
+//     if (existingUser) {
+//       const field = existingUser.email === email ? 'Email' : 'Username';
+//       throw errorHandler(409, `${field} is already taken`);
+//     }
+
+//     const hashedPassword = await hash(password, 12);
+
+//     const newUser = await User.create({
+//       username,
+//       email,
+//       password: hashedPassword,
+//       role: 'user',
+//       avatarUrl,
+//       avatarPublicId,
+//       verified: false,
+//       articles: [],
+//     });
+
+//     const token = sign(
+//       {
+//         userId: newUser._id,
+//         email: newUser.email,
+//         verified: newUser.verified,
+//         role: newUser.role,
+//       },
+//       process.env.TOKEN_SECRET as Secret,
+//       { expiresIn: '8h' }
+//     );
+
+//     const userResponse: UserAuthResponse = {
+//       _id: newUser.id.toString(),
+//       username: newUser.username,
+//       email: newUser.email,
+//       role: newUser.role,
+//       verified: newUser.verified,
+//       avatarUrl: newUser.avatarUrl || null,
+//     };
+
+//     return res
+//       .status(201)
+//       .cookie('access_token', token, {
+//         httpOnly: true,
+//         sameSite: 'lax',
+//         secure: process.env.NODE_ENV === 'production',
+//         maxAge: 8 * 60 * 60 * 1000,
+//       })
+//       .json({
+//         success: true,
+//         data: userResponse,
+//         message: 'User registered successfully',
+//       });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
 export const signUp = async (
-  req: ImageRequest<{}, {}, SignupInput>,
+  req: Request<{}, {}, SignupInput>,
   res: Response<ApiResponse<UserAuthResponse>>,
   next: NextFunction
 ) => {
   try {
     const { username, email, password } = req.body;
 
-    const avatarUrl = req.imageUrl || null;
-    const avatarPublicId = req.imagePublicId || null;
-
+    // проверка уникальности
     const existingUser = await User.findOne({
       $or: [{ email }, { username }],
     })
@@ -95,8 +167,20 @@ export const signUp = async (
       throw errorHandler(409, `${field} is already taken`);
     }
 
+    // хэш пароля
     const hashedPassword = await hash(password, 12);
 
+    // загружаем аватар (если есть)
+    let avatarUrl: string | null = null;
+    let avatarPublicId: string | null = null;
+
+    if (req.file) {
+      const result = await streamUpload(req.file.buffer);
+      avatarUrl = result.secure_url;
+      avatarPublicId = result.public_id;
+    }
+
+    // создаём юзера
     const newUser = await User.create({
       username,
       email,
@@ -108,6 +192,7 @@ export const signUp = async (
       articles: [],
     });
 
+    // токен
     const token = sign(
       {
         userId: newUser._id,
