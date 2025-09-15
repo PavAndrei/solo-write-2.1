@@ -17,9 +17,12 @@ import {
 } from '../features/articles/validation/editorSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CATEGORIES } from '../constants/categories';
-import { BASE_API_URL } from '../constants/api';
+import { useAppDispatch } from '../app/store/hooks';
+import { createArticleAsync } from '../features/articles/slices/asyncActions';
 
 export const Editor: FC = () => {
+  const dispatch = useAppDispatch();
+
   const {
     handleSubmit,
     control,
@@ -59,27 +62,19 @@ export const Editor: FC = () => {
         });
       }
 
-      const response = await fetch(`${BASE_API_URL}/article/create`, {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
+      const res = await dispatch(createArticleAsync(formData)).unwrap();
+      console.log(res);
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Failed to create article');
+      if (res.success) {
+        setValue('title', '');
+        setValue('description', '');
+        setValue('content', '');
+        setValue('categories', []);
+        setValue('images', []);
+        alert('Article created successfully!');
+      } else {
+        alert('Some error occured');
       }
-
-      const result = await response.json();
-      console.log('Article created:', result);
-
-      setValue('title', '');
-      setValue('description', '');
-      setValue('content', '');
-      setValue('categories', []);
-      setValue('images', []);
-
-      alert('Article created successfully!');
     } catch (error) {
       console.error('Error:', error);
       alert(error instanceof Error ? error.message : 'Error creating article');
