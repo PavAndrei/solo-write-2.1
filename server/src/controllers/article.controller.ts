@@ -1,4 +1,4 @@
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { MultipleImagesRequest } from '../middlewares/uploadImages';
 import { UploadApiResponse } from 'cloudinary';
 import cloudinary from '../configs/cloudinary.config';
@@ -83,6 +83,67 @@ export const createArticle = async (
       success: true,
       message: 'Article created successfully',
       data: newArticle,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getArticles = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const {
+      start = 0,
+      limit = 10,
+      search,
+      category,
+      user,
+      sortBy = 'createdAt',
+      order = 'desc',
+    } = req.query;
+
+    // Базовый фильтр
+    const filter: any = {};
+
+    if (search) {
+      filter.$text = { $search: String(search) };
+    }
+
+    if (category) {
+      filter.categories = { $in: [String(category)] };
+    }
+
+    if (user) {
+      filter.user = user;
+    }
+
+    // Подсчет общего количества
+    const totalArticles = await Article.countDocuments(filter);
+
+    // Основной запрос
+    const articles = await Article.find(filter)
+      .sort({ [String(sortBy)]: order === 'desc' ? -1 : 1 })
+      .skip(Number(start))
+      .limit(Number(limit))
+      .exec();
+
+    // Самые популярные статьи (топ-3 по viewsCount)
+    const popularArticles = await Article.find({})
+      .sort({ viewsCount: -1 })
+      .limit(3)
+      .exec();
+
+    res.status(200).json({
+      success: true,
+      message: 'Articles received',
+      data: {
+        articles,
+        totalArticles,
+        popularArticles,
+      },
     });
   } catch (err) {
     next(err);
