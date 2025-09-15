@@ -82,7 +82,7 @@ export const createArticle = async (
     return res.status(201).json({
       success: true,
       message: 'Article created successfully',
-      article: newArticle,
+      data: newArticle,
     });
   } catch (err) {
     next(err);

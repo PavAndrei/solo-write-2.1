@@ -3,33 +3,33 @@ import { z } from 'zod';
 export const editorSchema = z.object({
   title: z
     .string()
-    .min(1, 'Название обязательно для заполнения')
-    .max(200, 'Название не должно превышать 200 символов'),
+    .min(1, 'Title is required')
+    .max(200, 'Title should not exceed 200 characters'),
 
   description: z
     .string()
-    .min(1, 'Описание обязательно для заполнения')
-    .max(350, 'Описание не должно превышать 350 символов'),
+    .min(1, 'Description is required')
+    .max(349, 'Title should not exceed 350 characters'),
 
   content: z
     .string()
-    .min(1, 'Содержание обязательно для заполнения')
-    .max(3500, 'Содержание не должно превышать 3500 символов'),
+    .min(1, 'Content is required')
+    .max(3500, 'Content should not exceed 3500 characters'),
 
   categories: z
     .array(z.string())
-    .min(2, 'Выберите минимум 2 категории')
-    .max(5, 'Можно выбрать максимум 5 категорий'),
+    .min(2, 'At least 2 categories')
+    .max(5, 'Maximum 5 categories'),
 
   images: z
     .array(z.any())
-    .length(5, 'Необходимо загрузить ровно 5 изображений')
+    .length(5, '5 images have to be uploaded')
     .refine(
       (files) =>
         files.every(
           (file) => file instanceof File && file.type.startsWith('image/')
         ),
-      'Все файлы должны быть изображениями'
+      'All the files should be images'
     ),
 });
 

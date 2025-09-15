@@ -19,9 +19,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CATEGORIES } from '../constants/categories';
 import { useAppDispatch } from '../app/store/hooks';
 import { createArticleAsync } from '../features/articles/slices/asyncActions';
+import { alertModal } from '../features/modal/slices/modalSlice';
+import { useNavigate } from 'react-router-dom';
 
 export const Editor: FC = () => {
   const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
 
   const {
     handleSubmit,
@@ -71,13 +75,30 @@ export const Editor: FC = () => {
         setValue('content', '');
         setValue('categories', []);
         setValue('images', []);
-        alert('Article created successfully!');
+        await dispatch(
+          alertModal({
+            title: 'Creating article success',
+            message: 'Congrats! The article has been created successfully!',
+          })
+        );
+
+        console.log(res.data);
+
+        navigate(`/article/${res.data?.slug}`);
       } else {
-        alert('Some error occured');
+        alertModal({
+          title: 'Creating article failed',
+          message: res.message,
+        });
       }
-    } catch (error) {
-      console.error('Error:', error);
-      alert(error instanceof Error ? error.message : 'Error creating article');
+    } catch (err) {
+      console.error('Error:', err);
+      await dispatch(
+        alertModal({
+          title: 'Creating article failed',
+          message: `${JSON.stringify(err)}. Please, try again.`,
+        })
+      );
     } finally {
       setIsSubmitting(false);
     }
