@@ -4,10 +4,12 @@ import { PageTitle } from '../components/ui/PageTitle';
 import { useAppDispatch, useAppSelector } from '../app/store/hooks';
 import { fetchArticles } from '../features/articles/slices/asyncActions';
 import { ArticlesList } from '../features/articles/components/ArticlesList';
+import { Status } from '../types/api';
+import { SpinnerLoading } from '../components/ui/SpinnerLoading';
 
 export const Articles = () => {
   const dispatch = useAppDispatch();
-  const { items, popularItems, total } = useAppSelector(
+  const { items, popularItems, total, status } = useAppSelector(
     (state) => state.articles.list
   );
 
@@ -18,6 +20,18 @@ export const Articles = () => {
   console.log(items);
   console.log(popularItems);
   console.log(total);
+
+  if (status === Status.LOADING) {
+    return (
+      <div className="h-screen">
+        <SpinnerLoading />
+      </div>
+    );
+  }
+
+  if (status === Status.ERROR) {
+    return <div>Something went wrong...</div>;
+  }
 
   return (
     <section className="h-full py-10">

@@ -4,6 +4,7 @@ import { formatDate } from '../../../utils/formatDate';
 import { Button } from '../../../components/ui/Button';
 import { HiEye } from 'react-icons/hi';
 import { BiSolidLike } from 'react-icons/bi';
+import { useNavigate } from 'react-router-dom';
 
 export const ArticleItem: FC<Article> = ({
   title,
@@ -14,7 +15,10 @@ export const ArticleItem: FC<Article> = ({
   createdAt,
   viewsCount,
   likesCount,
+  slug,
 }) => {
+  const navigate = useNavigate();
+
   return (
     <li className="border p-2 rounded-sm flex flex-col gap-3">
       <div className="overflow-hidden flex flex-col gap-2">
@@ -60,7 +64,11 @@ export const ArticleItem: FC<Article> = ({
           </div>
         </div>
 
-        <Button ariaLabel="read more" type="button">
+        <Button
+          ariaLabel="read more"
+          type="button"
+          onClick={() => navigate(`/article/${slug}`)}
+        >
           Read More
         </Button>
       </div>

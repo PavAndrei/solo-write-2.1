@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { createArticle, getArticles } from '../controllers/article.controller';
+import {
+  createArticle,
+  getArticles,
+  getOneArticle,
+} from '../controllers/article.controller';
 import { checkAuth } from '../middlewares/checkAuth';
 import { validate } from '../middlewares/validate';
 import { createArticleSchema } from '../schemas/editor.schema';
@@ -16,3 +20,4 @@ articleRouter.post(
 );
 
 articleRouter.get('/', getArticles);
+articleRouter.get('/:id', getOneArticle);

@@ -15,7 +15,6 @@ import { upload } from '../middlewares/upload';
 export const authRouter = Router();
 
 authRouter.post('/signin', validate(signinSchema), signIn);
-// authRouter.post('/signup', uploadImage, validate(signupSchema), signUp);
 
 authRouter.post(
   '/signup',
