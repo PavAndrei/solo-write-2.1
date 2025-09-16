@@ -24,10 +24,13 @@ export const ArticleItem: FC<Article> = ({
       <div className="overflow-hidden flex flex-col gap-2">
         <div>
           <h4 className="text-xl font-semibold line-clamp-3">{title}</h4>
-          <span className="text-xs">{formatDate(createdAt)}</span>
+          <span className="text-xs opacity-70">{formatDate(createdAt)}</span>
         </div>
         <p className="line-clamp-6 text-sm">{description}</p>
-        <span className="block italic text-sm">written by {author}</span>
+        <span className="flex gap-1.5 items-center italic text-sm">
+          <span className="opacity-80">written by</span>
+          <span className="opacity-100">{author}</span>
+        </span>
         <ul className="flex gap-1.5 flex-wrap">
           {categories?.map((category, i) => (
             <li

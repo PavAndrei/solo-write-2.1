@@ -20,4 +20,4 @@ articleRouter.post(
 );
 
 articleRouter.get('/', getArticles);
-articleRouter.get('/:id', getOneArticle);
+articleRouter.get('/:slug', getOneArticle);

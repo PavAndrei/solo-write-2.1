@@ -47,3 +47,24 @@ export const getAllArticles = async (): Promise<
     return { success: false, message: errorMessage };
   }
 };
+
+export const getOneArticle = async (
+  slug: string
+): Promise<ApiResponse<Article>> => {
+  try {
+    const res = await fetch(`${BASE_API_URL}/article/${slug}`);
+
+    const data = await res.json();
+
+    if (!data.success) {
+      throw new Error(data.message);
+    }
+
+    return data;
+  } catch (err) {
+    const errorMessage =
+      err instanceof Error ? err.message : 'Network error occured';
+    console.error(errorMessage);
+    return { success: false, message: errorMessage };
+  }
+};

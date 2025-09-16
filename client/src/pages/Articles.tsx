@@ -21,7 +21,7 @@ export const Articles = () => {
   console.log(popularItems);
   console.log(total);
 
-  if (status === Status.LOADING) {
+  if (status === Status.LOADING || status === Status.IDLE) {
     return (
       <div className="h-screen">
         <SpinnerLoading />

@@ -3,13 +3,13 @@ import type { Article } from '../types/article.types';
 
 export interface ArticleState {
   list: {
-    items: Article[] | undefined;
-    popularItems: Article[] | undefined;
+    items: Article[] | null | undefined;
+    popularItems: Article[] | null | undefined;
     total: number | undefined;
     status: Status;
   };
   current: {
-    item: Article | null;
+    item: Article | null | undefined;
     status: Status;
   };
   create: {

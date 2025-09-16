@@ -1,12 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Status } from '../../../types/api';
 import type { ArticleState } from './article.types';
-import { createArticleAsync, fetchArticles } from './asyncActions';
+import {
+  createArticleAsync,
+  fetchArticles,
+  fetchOneArticle,
+} from './asyncActions';
 
 const initialState: ArticleState = {
   list: {
-    items: [],
-    popularItems: [],
+    items: null,
+    popularItems: null,
     total: 0,
     status: Status.IDLE,
   },
@@ -42,8 +46,8 @@ const articleSlice = createSlice({
 
     builder.addCase(fetchArticles.pending, (state) => {
       state.list.status = Status.LOADING;
-      state.list.items = [];
-      state.list.popularItems = [];
+      state.list.items = null;
+      state.list.popularItems = null;
       state.list.total = 0;
     });
     builder.addCase(fetchArticles.fulfilled, (state, action) => {
@@ -54,9 +58,22 @@ const articleSlice = createSlice({
     });
     builder.addCase(fetchArticles.rejected, (state) => {
       state.list.status = Status.ERROR;
-      state.list.items = [];
-      state.list.popularItems = [];
+      state.list.items = null;
+      state.list.popularItems = null;
       state.list.total = 0;
+    });
+
+    builder.addCase(fetchOneArticle.pending, (state) => {
+      state.current.status = Status.LOADING;
+      state.current.item = null;
+    });
+    builder.addCase(fetchOneArticle.fulfilled, (state, action) => {
+      state.current.status = Status.SUCCESS;
+      state.current.item = action.payload.data;
+    });
+    builder.addCase(fetchOneArticle.rejected, (state) => {
+      state.list.status = Status.ERROR;
+      state.current.item = null;
     });
   },
 });

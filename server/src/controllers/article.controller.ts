@@ -163,20 +163,44 @@ export const getArticles = async (
   }
 };
 
+/** Экранирует строку для использования в RegExp */
+const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 export const getOneArticle = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
+    const raw = String(req.params.slug || '').trim();
+    // декодируем процент-энкодинг и приводим к lower-case — это помогает избежать несоответствий
+    const slug = decodeURIComponent(raw).toLowerCase();
 
-    // поиск статьи
-    const article = await Article.findById(id)
+    console.log('[getOneArticle] incoming slug param:', { raw, slug });
+
+    // 1) Пытаемся найти строгое совпадение slug и одновременно инкрементим viewsCount (атомарно)
+    let article = await Article.findOneAndUpdate(
+      { slug },
+      { $inc: { viewsCount: 1 } },
+      { new: true }
+    )
       .populate('user', 'username -_id')
       .lean<{ user: { username: string } } | null>();
 
+    // 2) Если не нашли — пробуем case-insensitive точное сравнение через RegExp
     if (!article) {
+      const regex = new RegExp(`^${escapeRegex(slug)}$`, 'i');
+      article = await Article.findOneAndUpdate(
+        { slug: regex },
+        { $inc: { viewsCount: 1 } },
+        { new: true }
+      )
+        .populate('user', 'username -_id')
+        .lean<{ user: { username: string } } | null>();
+    }
+
+    if (!article) {
+      console.log('[getOneArticle] not found for slug:', slug);
       throw errorHandler(404, 'Article not found');
     }
 
@@ -185,7 +209,7 @@ export const getOneArticle = async (
       author: article.user?.username || 'Unknown',
     };
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: 'Article received',
       data: formattedArticle,

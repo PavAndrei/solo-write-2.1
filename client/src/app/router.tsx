@@ -16,7 +16,7 @@ export const AppRouter = () => {
       <Route path="/signup" element={<Auth mode="sign-up" />} />
       <Route path="/editor" element={<Editor />} />
       <Route path="/articles" element={<Articles />} />
-      <Route path="/article/:id" element={<SingleArticle />} />
+      <Route path="/article/:slug" element={<SingleArticle />} />
       <Route path="*" element={<NotFound />} />
 
       <Route element={<ProtectedRoute />}>
