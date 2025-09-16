@@ -89,6 +89,148 @@ export const createArticle = async (
   }
 };
 
+// export const getArticles = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const {
+//       start = 0,
+//       limit = 10,
+//       search,
+//       category,
+//       user,
+//       sortBy = 'createdAt',
+//       order = 'desc',
+//     } = req.query;
+
+//     // Базовый фильтр
+//     const filter: any = {};
+
+//     if (search) {
+//       filter.$text = { $search: String(search) };
+//     }
+
+//     if (category) {
+//       filter.categories = { $in: [String(category)] };
+//     }
+
+//     if (user) {
+//       filter.user = user;
+//     }
+
+//     // Подсчет общего количества
+//     const totalArticles = await Article.countDocuments(filter);
+
+//     // Основной запрос
+//     const articles = await Article.find(filter)
+//       .sort({ [String(sortBy)]: order === 'desc' ? -1 : 1 })
+//       .skip(Number(start))
+//       .limit(Number(limit))
+//       .exec();
+
+//     // Самые популярные статьи (топ-3 по viewsCount)
+//     const popularArticles = await Article.find({})
+//       .sort({ viewsCount: -1 })
+//       .limit(3)
+//       .exec();
+
+//     res.status(200).json({
+//       success: true,
+//       message: 'Articles received',
+//       data: {
+//         articles,
+//         totalArticles,
+//         popularArticles,
+//       },
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
+// export const getArticles = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const {
+//       start = 0,
+//       limit = 10,
+//       search,
+//       category,
+//       user,
+//       sortBy = 'createdAt',
+//       order = 'desc',
+//     } = req.query;
+
+//     const filter: any = {};
+
+//     if (search) {
+//       filter.$text = { $search: String(search) };
+//     }
+
+//     if (category) {
+//       filter.categories = { $in: [String(category)] };
+//     }
+
+//     if (user) {
+//       filter.user = user;
+//     }
+
+//     // Подсчет общего количества
+//     const totalArticles = await Article.countDocuments(filter);
+
+//     // Основной запрос с populate
+//     const articles = await Article.find(filter)
+//       .sort({ [String(sortBy)]: order === 'desc' ? -1 : 1 })
+//       .skip(Number(start))
+//       .limit(Number(limit))
+//       .populate('user', 'username -_id') // тянем только username
+//       .lean(); // преобразуем в обычные объекты JS
+
+//     // Подменяем поле user → author
+//     const formattedArticles = articles.map((a) => ({
+//       ...a,
+//       author:
+//         typeof a.user === 'object' && 'username' in a.user
+//           ? (a.user as any).username
+//           : 'Unknown',
+//       user: undefined, // убираем ObjectId
+//     }));
+
+//     // Самые популярные статьи (топ-3 по viewsCount)
+//     const popularArticlesRaw = await Article.find({})
+//       .sort({ viewsCount: -1 })
+//       .limit(3)
+//       .populate('user', 'username -_id')
+//       .lean();
+
+//     const popularArticles = popularArticlesRaw.map((a) => ({
+//       ...a,
+//       author:
+//         typeof a.user === 'object' && 'username' in a.user
+//           ? (a.user as any).username
+//           : 'Unknown',
+//       user: undefined,
+//     }));
+
+//     res.status(200).json({
+//       success: true,
+//       message: 'Articles received',
+//       data: {
+//         articles: formattedArticles,
+//         totalArticles,
+//         popularArticles,
+//       },
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
 export const getArticles = async (
   req: Request,
   res: Response,
@@ -123,26 +265,39 @@ export const getArticles = async (
     // Подсчет общего количества
     const totalArticles = await Article.countDocuments(filter);
 
-    // Основной запрос
+    // Основной запрос (с populate user.username)
     const articles = await Article.find(filter)
       .sort({ [String(sortBy)]: order === 'desc' ? -1 : 1 })
       .skip(Number(start))
       .limit(Number(limit))
-      .exec();
+      .populate('user', 'username -_id') // вытягиваем только username
+      .lean<{ user: { username: string } }[]>(); // подсказываем TS структуру
+
+    // Преобразуем под нужный формат (заменяем user → author)
+    const formattedArticles = articles.map((a) => ({
+      ...a,
+      author: a.user?.username || 'Unknown',
+    }));
 
     // Самые популярные статьи (топ-3 по viewsCount)
     const popularArticles = await Article.find({})
       .sort({ viewsCount: -1 })
       .limit(3)
-      .exec();
+      .populate('user', 'username -_id')
+      .lean<{ user: { username: string } }[]>();
+
+    const formattedPopular = popularArticles.map((a) => ({
+      ...a,
+      author: a.user?.username || 'Unknown',
+    }));
 
     res.status(200).json({
       success: true,
       message: 'Articles received',
       data: {
-        articles,
+        articles: formattedArticles,
         totalArticles,
-        popularArticles,
+        popularArticles: formattedPopular,
       },
     });
   } catch (err) {

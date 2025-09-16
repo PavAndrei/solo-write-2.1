@@ -1,17 +1,23 @@
 import { useEffect } from 'react';
 import { Container } from '../components/layout/Container';
 import { PageTitle } from '../components/ui/PageTitle';
-import { BASE_API_URL } from '../constants/api';
+import { useAppDispatch, useAppSelector } from '../app/store/hooks';
+import { fetchArticles } from '../features/articles/slices/asyncActions';
+import { ArticlesList } from '../features/articles/components/ArticlesList';
 
 export const Articles = () => {
+  const dispatch = useAppDispatch();
+  const { items, popularItems, total } = useAppSelector(
+    (state) => state.articles.list
+  );
+
   useEffect(() => {
-    const fetchArticles = async () => {
-      const res = await fetch(`${BASE_API_URL}/article`);
-      const data = await res.json();
-      console.log(data);
-    };
-    fetchArticles();
+    dispatch(fetchArticles());
   }, []);
+
+  console.log(items);
+  console.log(popularItems);
+  console.log(total);
 
   return (
     <section className="h-full py-10">
@@ -19,6 +25,7 @@ export const Articles = () => {
         <PageTitle hasSubtitle="Find your favorites">
           Articles Collection
         </PageTitle>
+        {items && <ArticlesList articles={items} />}
       </Container>
     </section>
   );

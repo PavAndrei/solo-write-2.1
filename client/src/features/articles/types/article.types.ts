@@ -9,8 +9,14 @@ export interface Article {
   slug: string;
   title: string;
   updatedAt: string;
-  user: string;
+  author: string;
   viewsCount: number;
   _v: number;
   _id: string;
+}
+
+export interface AllArticlesResponse {
+  articles: Article[];
+  popularArticle: Article[];
+  totalArticles: number;
 }

@@ -9,4 +9,10 @@ export const CATEGORIES = [
   { value: 'sports', label: 'SPORT' },
   { value: 'travel', label: 'TRAVELING' },
   { value: 'food', label: 'FOOD' },
+  { value: 'ai', label: 'AI' },
+  { value: 'innovation', label: 'INNOVATION' },
+  { value: 'culture', label: 'CULTURE' },
+  { value: 'mindfulness', label: 'MINDFULNESS' },
+  { value: 'relationships', label: 'RELATIONSHIPS' },
+  { value: 'psychology', label: 'PSYCHOLOGY' },
 ];

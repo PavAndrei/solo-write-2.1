@@ -3,7 +3,9 @@ import type { Article } from '../types/article.types';
 
 export interface ArticleState {
   list: {
-    items: Article[];
+    items: Article[] | undefined;
+    popularItems: Article[] | undefined;
+    total: number | undefined;
     status: Status;
   };
   current: {

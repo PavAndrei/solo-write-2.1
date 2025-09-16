@@ -11,10 +11,8 @@ export const editorSchema = z.object({
     .min(1, 'Description is required')
     .max(349, 'Title should not exceed 350 characters'),
 
-  content: z
-    .string()
-    .min(1, 'Content is required')
-    .max(3500, 'Content should not exceed 3500 characters'),
+  content: z.string().min(1, 'Content is required'),
+  // .max(3500, 'Content should not exceed 3500 characters'),
 
   categories: z
     .array(z.string())
