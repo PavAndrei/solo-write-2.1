@@ -101,6 +101,10 @@ input:-webkit-autofill:focus {
   @apply dark:text-gray-700;
 }
 
+.tiptap blockquote {
+  @apply text-gray-900;
+}
+
 .tiptap blockquote::before,
 .article blockquote::before {
   content: '“';

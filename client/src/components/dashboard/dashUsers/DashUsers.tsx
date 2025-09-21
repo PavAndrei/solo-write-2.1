@@ -60,10 +60,6 @@ export const DashUsers = () => {
       window.scrollTo(0, 0);
     }, 400);
 
-    // dispatch(fetchUsers({ ...usersFilters, limit: undefined }));
-    // updateUsersURLParams(usersFilters);
-    // window.scrollTo(0, 0);
-
     return () => clearTimeout(timeoutId);
   }, [JSON.stringify(usersFilters), dispatch]);
 

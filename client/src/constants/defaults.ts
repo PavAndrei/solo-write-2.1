@@ -1,4 +1,7 @@
-import type { AdminUsersFilters } from '../features/filters/slices/filters.types';
+import type {
+  AdminArticlesFilters,
+  AdminUsersFilters,
+} from '../features/filters/slices/filters.types';
 
 export const USERS_FILTERS_DEFAULTS: AdminUsersFilters = {
   role: '',
@@ -9,4 +12,14 @@ export const USERS_FILTERS_DEFAULTS: AdminUsersFilters = {
   startIndex: 0,
   limit: 10,
   hasAvatar: false,
+};
+
+export const ARTICLES_FILTERS_DEFAULTS: AdminArticlesFilters = {
+  search: '',
+  category: '',
+  user: '',
+  sortBy: 'createdAt',
+  sort: 'desc',
+  limit: 7,
+  startIndex: 0,
 };

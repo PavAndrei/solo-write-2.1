@@ -9,10 +9,20 @@ export interface AdminUsersFilters {
   hasAvatar: boolean;
 }
 
+export interface AdminArticlesFilters {
+  search: string;
+  category: string;
+  user: string;
+  sortBy: string;
+  sort: 'desc' | 'asc';
+  limit: number;
+  startIndex: number;
+}
+
 interface AdminFilters {
   users: AdminUsersFilters;
   comments: undefined;
-  articles: undefined;
+  articles: AdminArticlesFilters;
 }
 
 export interface FiltersState {

@@ -43,7 +43,7 @@ export const Sidebar = () => {
   }, [isVisible]);
 
   return (
-    <div className={clsx('relative', 'w-0')}>
+    <div className={'relative w-0 z-100'}>
       <button
         onClick={() => setIsVisible((prev) => !prev)}
         className="border-1 absolute top-2 left-2 cursor-pointer w-10 h-4 rounded-md z-100 flex items-center bg-gray-100 dark:bg-gray-700"
