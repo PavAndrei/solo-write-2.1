@@ -13,8 +13,8 @@ export const DashArticles = () => {
   const { articles: articlesFilters } = useAppSelector((s) => s.filters.admin);
 
   useEffect(() => {
-    dispatch(fetchArticles());
-  }, []);
+    dispatch(fetchArticles(articlesFilters));
+  }, [JSON.stringify(articlesFilters), dispatch]);
 
   const handleFiltersChange = (values: AdminArticlesFilters) => {
     dispatch(setArticlesFilters(values));

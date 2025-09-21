@@ -63,8 +63,9 @@ const filtersSlice = createSlice({
         'search',
         'category',
         'user',
-        'sortBy',
-        'sort',
+        'sortByLikes',
+        'sortByViews',
+        'sortByPublishing',
       ];
 
       const filtersChanged = filterKeys.some(

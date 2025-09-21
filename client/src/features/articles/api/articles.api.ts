@@ -1,6 +1,10 @@
 import { BASE_API_URL } from '../../../constants/api';
 import type { ApiResponse } from '../../../types/api';
-import type { AllArticlesResponse, Article } from '../types/article.types';
+import type {
+  AllArticlesResponse,
+  Article,
+  FetchArticlesRequestParams,
+} from '../types/article.types';
 
 export const createArticle = async (
   formData: FormData
@@ -27,11 +31,28 @@ export const createArticle = async (
   }
 };
 
-export const getAllArticles = async (): Promise<
-  ApiResponse<AllArticlesResponse>
-> => {
+export const getAllArticles = async (
+  params: Partial<FetchArticlesRequestParams>
+): Promise<ApiResponse<AllArticlesResponse>> => {
   try {
-    const res = await fetch(`${BASE_API_URL}/article`);
+    let queryString;
+
+    if (params) {
+      const searchParams = new URLSearchParams();
+
+      Object.entries(params).filter(([key, value]) => {
+        if (!value) return;
+        if (key === 'sort' && value === 'desc') return;
+
+        searchParams.append(key, String(value));
+      });
+
+      queryString = searchParams.toString();
+    }
+
+    const res = await fetch(
+      `${BASE_API_URL}/article${queryString ? `?${queryString}` : ''}`
+    );
 
     const data = await res.json();
 

@@ -16,10 +16,11 @@ export const USERS_FILTERS_DEFAULTS: AdminUsersFilters = {
 
 export const ARTICLES_FILTERS_DEFAULTS: AdminArticlesFilters = {
   search: '',
-  category: '',
+  category: [],
   user: '',
-  sortBy: 'createdAt',
-  sort: 'desc',
+  sortByLikes: '',
+  sortByPublishing: 'desc',
+  sortByViews: '',
   limit: 7,
   startIndex: 0,
 };

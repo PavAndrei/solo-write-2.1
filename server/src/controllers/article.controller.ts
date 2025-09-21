@@ -6,6 +6,7 @@ import { Readable } from 'stream';
 import { errorHandler } from '../middlewares/handleErrors';
 import { Article } from '../models/article.model';
 import slugify from 'slugify';
+import { User } from '../models/user.model';
 
 const streamUpload = (buffer: Buffer): Promise<UploadApiResponse> => {
   return new Promise((resolve, reject) => {
@@ -89,6 +90,120 @@ export const createArticle = async (
   }
 };
 
+// export const getArticles = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const {
+//       start = 0,
+//       limit = 10,
+//       search,
+//       category,
+//       user,
+//       sortByLikes,
+//       sortByViews,
+//       sortByPublishing,
+//     } = req.query;
+
+//     // Базовый фильтр
+//     const filter: any = {};
+
+//     if (search) {
+//       filter.$text = { $search: String(search) };
+//     }
+
+//     if (category) {
+//       filter.categories = { $in: [String(category)] };
+//     }
+
+//     if (user) {
+//       // Ищем пользователей по username (частичное совпадение)
+//       const matchedUsers = await User.find({
+//         username: { $regex: String(user), $options: 'i' },
+//       }).select('_id');
+
+//       const userIds = matchedUsers.map((u) => u._id);
+
+//       if (userIds.length > 0) {
+//         filter.user = { $in: userIds };
+//       } else {
+//         return res.status(200).json({
+//           success: true,
+//           message: 'Articles received',
+//           data: {
+//             articles: [],
+//             totalArticles: 0,
+//             popularArticles: [],
+//           },
+//         });
+//       }
+//     }
+
+//     // Формируем объект сортировки
+//     const sortObject: Record<string, 1 | -1> = {};
+
+//     if (sortByLikes) {
+//       sortObject.likesCount =
+//         String(sortByLikes).toLowerCase() === 'asc' ? 1 : -1;
+//     }
+//     if (sortByViews) {
+//       sortObject.viewsCount =
+//         String(sortByViews).toLowerCase() === 'asc' ? 1 : -1;
+//     }
+//     if (sortByPublishing) {
+//       sortObject.createdAt =
+//         String(sortByPublishing).toLowerCase() === 'asc' ? 1 : -1;
+//     }
+
+//     // Если ничего не передано — сортировка по дате (новые сверху)
+//     if (Object.keys(sortObject).length === 0) {
+//       sortObject.createdAt = -1;
+//     }
+
+//     // Подсчет общего количества
+//     const totalArticles = await Article.countDocuments(filter);
+
+//     // Основной запрос
+//     const articles = await Article.find(filter)
+//       .sort(sortObject)
+//       .skip(Number(start))
+//       .limit(Number(limit))
+//       .populate('user', 'username -_id')
+//       .lean<{ user: { username: string } }[]>();
+
+//     const formattedArticles = articles.map((a) => ({
+//       ...a,
+//       author: a.user?.username || 'Unknown',
+//     }));
+
+//     // Популярные статьи (по просмотрам)
+//     const popularArticles = await Article.find({})
+//       .sort({ viewsCount: -1 })
+//       .limit(3)
+//       .populate('user', 'username -_id')
+//       .lean<{ user: { username: string } }[]>();
+
+//     const formattedPopular = popularArticles.map((a) => ({
+//       ...a,
+//       author: a.user?.username || 'Unknown',
+//     }));
+
+//     res.status(200).json({
+//       success: true,
+//       message: 'Articles received',
+//       data: {
+//         articles: formattedArticles,
+//         totalArticles,
+//         popularArticles: formattedPopular,
+//       },
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
 export const getArticles = async (
   req: Request,
   res: Response,
@@ -101,8 +216,9 @@ export const getArticles = async (
       search,
       category,
       user,
-      sortBy = 'createdAt',
-      order = 'desc',
+      sortByLikes,
+      sortByViews,
+      sortByPublishing,
     } = req.query;
 
     // Базовый фильтр
@@ -113,31 +229,78 @@ export const getArticles = async (
     }
 
     if (category) {
-      filter.categories = { $in: [String(category)] };
+      // Разбиваем строку по запятой → массив категорий
+      const categoriesArray = String(category)
+        .split(',')
+        .map((c) => c.trim())
+        .filter((c) => c.length > 0);
+
+      if (categoriesArray.length > 0) {
+        filter.categories = { $in: categoriesArray };
+      }
     }
 
     if (user) {
-      filter.user = user;
+      // Ищем пользователей по username (частичное совпадение)
+      const matchedUsers = await User.find({
+        username: { $regex: String(user), $options: 'i' },
+      }).select('_id');
+
+      const userIds = matchedUsers.map((u) => u._id);
+
+      if (userIds.length > 0) {
+        filter.user = { $in: userIds };
+      } else {
+        return res.status(200).json({
+          success: true,
+          message: 'Articles received',
+          data: {
+            articles: [],
+            totalArticles: 0,
+            popularArticles: [],
+          },
+        });
+      }
+    }
+
+    // Формируем объект сортировки
+    const sortObject: Record<string, 1 | -1> = {};
+
+    if (sortByLikes) {
+      sortObject.likesCount =
+        String(sortByLikes).toLowerCase() === 'asc' ? 1 : -1;
+    }
+    if (sortByViews) {
+      sortObject.viewsCount =
+        String(sortByViews).toLowerCase() === 'asc' ? 1 : -1;
+    }
+    if (sortByPublishing) {
+      sortObject.createdAt =
+        String(sortByPublishing).toLowerCase() === 'asc' ? 1 : -1;
+    }
+
+    // Если ничего не передано — сортировка по дате (новые сверху)
+    if (Object.keys(sortObject).length === 0) {
+      sortObject.createdAt = -1;
     }
 
     // Подсчет общего количества
     const totalArticles = await Article.countDocuments(filter);
 
-    // Основной запрос (с populate user.username)
+    // Основной запрос
     const articles = await Article.find(filter)
-      .sort({ [String(sortBy)]: order === 'desc' ? -1 : 1 })
+      .sort(sortObject)
       .skip(Number(start))
       .limit(Number(limit))
-      .populate('user', 'username -_id') // вытягиваем только username
-      .lean<{ user: { username: string } }[]>(); // подсказываем TS структуру
+      .populate('user', 'username -_id')
+      .lean<{ user: { username: string } }[]>();
 
-    // Преобразуем под нужный формат (заменяем user → author)
     const formattedArticles = articles.map((a) => ({
       ...a,
       author: a.user?.username || 'Unknown',
     }));
 
-    // Самые популярные статьи (топ-3 по viewsCount)
+    // Популярные статьи (по просмотрам)
     const popularArticles = await Article.find({})
       .sort({ viewsCount: -1 })
       .limit(3)

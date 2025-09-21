@@ -11,10 +11,11 @@ export interface AdminUsersFilters {
 
 export interface AdminArticlesFilters {
   search: string;
-  category: string;
+  category: string[];
   user: string;
-  sortBy: string;
-  sort: 'desc' | 'asc';
+  sortByLikes: 'desc' | 'asc' | '';
+  sortByViews: 'desc' | 'asc' | '';
+  sortByPublishing: 'desc' | 'asc';
   limit: number;
   startIndex: number;
 }

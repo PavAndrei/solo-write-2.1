@@ -1,6 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { ApiResponse } from '../../../types/api';
-import type { AllArticlesResponse, Article } from '../types/article.types';
+import type {
+  AllArticlesResponse,
+  Article,
+  FetchArticlesRequestParams,
+} from '../types/article.types';
 import {
   createArticle,
   getAllArticles,
@@ -27,11 +31,11 @@ export const createArticleAsync = createAsyncThunk<
 
 export const fetchArticles = createAsyncThunk<
   ApiResponse<AllArticlesResponse>,
-  void,
+  Partial<FetchArticlesRequestParams>,
   { rejectValue: string }
->('article/getAll', async (_, { rejectWithValue }) => {
+>('article/getAll', async (params, { rejectWithValue }) => {
   try {
-    const response = await getAllArticles();
+    const response = await getAllArticles(params);
     if (!response.success) {
       return rejectWithValue(response.message || 'Fetching articles failed');
     }
