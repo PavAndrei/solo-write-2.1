@@ -1,12 +1,33 @@
-import { useAppSelector } from '../../../app/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../app/store/hooks';
+import { setArticlesFilters } from '../../../features/filters/slices/filtersSlices';
 import { Status } from '../../../types/api';
+import { Pagination } from '../../ui/Pagination';
 import { SpinnerLoading } from '../../ui/SpinnerLoading';
 import { DashArticlesItem } from './DashArticlesItem';
 
 export const DashArticlesList = () => {
+  const dispatch = useAppDispatch();
+
   const { items, total, status } = useAppSelector(
     (state) => state.articles.list
   );
+
+  const { startIndex, limit } = useAppSelector(
+    (state) => state.filters.admin.articles
+  );
+
+  const handlePreviousPageClick = () => {
+    if (startIndex < 1) return;
+    dispatch(setArticlesFilters({ startIndex: startIndex - limit }));
+  };
+
+  const handleNextPageClick = () => {
+    dispatch(setArticlesFilters({ startIndex: startIndex + limit }));
+  };
+
+  const handleCurrentPageClick = (page: number) => {
+    dispatch(setArticlesFilters({ startIndex: limit * page }));
+  };
 
   if (status === Status.LOADING) {
     return (
@@ -38,6 +59,15 @@ export const DashArticlesList = () => {
               />
             ))}
           </ul>
+          {total && total > limit && (
+            <Pagination
+              currentPage={startIndex / limit}
+              totalPages={Math.ceil(total / limit)}
+              handleNextPage={handleNextPageClick}
+              handlePreviousPage={handlePreviousPageClick}
+              handlePageClick={handleCurrentPageClick}
+            />
+          )}
         </>
       )}
     </div>

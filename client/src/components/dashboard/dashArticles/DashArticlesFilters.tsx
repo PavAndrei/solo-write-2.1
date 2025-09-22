@@ -30,9 +30,9 @@ export const DashArticlesFilters: FC<DashArticlesFiltersProps> = ({
     onFiltersChange(values);
   }, [JSON.stringify(values)]);
 
-  useEffect(() => {
-    reset(defaultValues);
-  }, [defaultValues, reset]);
+  // useEffect(() => {
+  //   reset(defaultValues);
+  // }, [defaultValues, reset]);
 
   const handleReset = () => {
     console.log('reset');
@@ -92,8 +92,8 @@ export const DashArticlesFilters: FC<DashArticlesFiltersProps> = ({
             value={field.value}
             onChange={field.onChange}
             buttons={[
-              { value: 'desc', label: 'Oldest first' },
-              { value: 'asc', label: 'Newest first' },
+              { value: 'asc', label: 'Oldest first' },
+              { value: 'desc', label: 'Newest first' },
             ]}
           />
         )}

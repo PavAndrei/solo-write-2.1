@@ -13,10 +13,12 @@ export const DashArticles = () => {
   const { articles: articlesFilters } = useAppSelector((s) => s.filters.admin);
 
   useEffect(() => {
+    console.log('fetch Articles');
     dispatch(fetchArticles(articlesFilters));
   }, [JSON.stringify(articlesFilters), dispatch]);
 
   const handleFiltersChange = (values: AdminArticlesFilters) => {
+    console.log('handle filter change...');
     dispatch(setArticlesFilters(values));
   };
 

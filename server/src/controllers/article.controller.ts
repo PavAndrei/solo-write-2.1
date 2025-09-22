@@ -211,7 +211,7 @@ export const getArticles = async (
 ) => {
   try {
     const {
-      start = 0,
+      startIndex = 0,
       limit = 10,
       search,
       category,
@@ -290,7 +290,7 @@ export const getArticles = async (
     // Основной запрос
     const articles = await Article.find(filter)
       .sort(sortObject)
-      .skip(Number(start))
+      .skip(Number(startIndex))
       .limit(Number(limit))
       .populate('user', 'username -_id')
       .lean<{ user: { username: string } }[]>();
