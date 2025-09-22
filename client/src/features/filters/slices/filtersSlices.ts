@@ -3,14 +3,18 @@ import type {
   AdminUsersFilters,
   AdminArticlesFilters,
   FiltersState,
+  PublicArticlesFilters,
 } from './filters.types';
 import {
   ARTICLES_FILTERS_DEFAULTS,
+  ARTICLES_PUBLIC_FILTERS_DEFAULTS,
   USERS_FILTERS_DEFAULTS,
 } from '../../../constants/defaults';
 
 const initialState: FiltersState = {
-  public: undefined,
+  public: {
+    articles: ARTICLES_PUBLIC_FILTERS_DEFAULTS,
+  },
   admin: {
     users: USERS_FILTERS_DEFAULTS,
     comments: undefined,
@@ -86,6 +90,34 @@ const filtersSlice = createSlice({
       };
     },
 
+    setPublicArticlesFilters(
+      state,
+      action: PayloadAction<
+        Partial<PublicArticlesFilters> & { resetStartIndex?: boolean }
+      >
+    ) {
+      const prev = state.public.articles;
+      const { resetStartIndex = true, ...payload } = action.payload;
+      const next = { ...prev, ...payload };
+
+      const filterKeys: (keyof PublicArticlesFilters)[] = [
+        'search',
+        'category',
+        'user',
+        'sortByLikes',
+        'sortByViews',
+        'sortByPublishing',
+      ];
+
+      const filtersChanged = filterKeys.some(
+        (key) => payload[key] !== undefined && payload[key] !== prev[key]
+      );
+      state.public.articles = {
+        ...next,
+        startIndex: resetStartIndex && filtersChanged ? 0 : next.startIndex,
+      };
+    },
+
     resetArticlesFilters(state) {
       state.admin.articles = ARTICLES_FILTERS_DEFAULTS;
     },
@@ -97,6 +129,7 @@ export const {
   resetUsersFilters,
   setArticlesFilters,
   resetArticlesFilters,
+  setPublicArticlesFilters,
 } = filtersSlice.actions;
 
 export default filtersSlice.reducer;

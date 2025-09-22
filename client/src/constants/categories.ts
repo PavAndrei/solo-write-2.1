@@ -15,4 +15,7 @@ export const CATEGORIES = [
   { value: 'mindfulness', label: 'MINDFULNESS' },
   { value: 'relationships', label: 'RELATIONSHIPS' },
   { value: 'psychology', label: 'PSYCHOLOGY' },
+  { value: 'finance', label: 'FINANCE' },
+  { value: 'architecture', label: 'ARCHITECTURE' },
+  { value: 'construction', label: 'CONSTRUCTION' },
 ];
