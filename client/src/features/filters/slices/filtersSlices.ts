@@ -23,9 +23,15 @@ const filtersSlice = createSlice({
   initialState,
   reducers: {
     // Users filters
-    setUsersFilters(state, action: PayloadAction<Partial<AdminUsersFilters>>) {
+    setUsersFilters(
+      state,
+      action: PayloadAction<
+        Partial<AdminUsersFilters> & { resetStartIndex?: boolean }
+      >
+    ) {
       const prev = state.admin.users;
-      const next = { ...prev, ...action.payload };
+      const { resetStartIndex = true, ...payload } = action.payload;
+      const next = { ...prev, ...payload };
 
       const filterKeys: (keyof AdminUsersFilters)[] = [
         'role',
@@ -37,13 +43,12 @@ const filtersSlice = createSlice({
       ];
 
       const filtersChanged = filterKeys.some(
-        (key) =>
-          action.payload[key] !== undefined && action.payload[key] !== prev[key]
+        (key) => payload[key] !== undefined && payload[key] !== prev[key]
       );
 
       state.admin.users = {
         ...next,
-        startIndex: filtersChanged ? 0 : next.startIndex,
+        startIndex: resetStartIndex && filtersChanged ? 0 : next.startIndex,
       };
     },
 
@@ -54,10 +59,13 @@ const filtersSlice = createSlice({
     // Articles filters
     setArticlesFilters(
       state,
-      action: PayloadAction<Partial<AdminArticlesFilters>>
+      action: PayloadAction<
+        Partial<AdminArticlesFilters> & { resetStartIndex?: boolean }
+      >
     ) {
       const prev = state.admin.articles;
-      const next = { ...prev, ...action.payload };
+      const { resetStartIndex = true, ...payload } = action.payload;
+      const next = { ...prev, ...payload };
 
       const filterKeys: (keyof AdminArticlesFilters)[] = [
         'search',
@@ -69,13 +77,12 @@ const filtersSlice = createSlice({
       ];
 
       const filtersChanged = filterKeys.some(
-        (key) =>
-          action.payload[key] !== undefined && action.payload[key] !== prev[key]
+        (key) => payload[key] !== undefined && payload[key] !== prev[key]
       );
 
       state.admin.articles = {
         ...next,
-        startIndex: filtersChanged ? 0 : next.startIndex,
+        startIndex: resetStartIndex && filtersChanged ? 0 : next.startIndex,
       };
     },
 

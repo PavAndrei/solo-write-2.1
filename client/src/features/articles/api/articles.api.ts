@@ -42,6 +42,7 @@ export const getAllArticles = async (
 
       Object.entries(params).filter(([key, value]) => {
         if (!value) return;
+        if (Array.isArray(value) && value.length === 0) return;
         if (key === 'sort' && value === 'desc') return;
 
         searchParams.append(key, String(value));

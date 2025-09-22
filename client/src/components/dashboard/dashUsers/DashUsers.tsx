@@ -43,7 +43,14 @@ export const DashUsers = () => {
         (val) => val !== '' && val !== false && val !== 0
       );
       if (hasUrlParams) {
-        dispatch(setUsersFilters({ ...defaults, ...urlFilters }));
+        // ⬇️ при инициализации сброса startIndex быть не должно
+        dispatch(
+          setUsersFilters({
+            ...defaults,
+            ...urlFilters,
+            resetStartIndex: false,
+          })
+        );
       } else if (hasRedux) {
         dispatch(fetchUsers({ ...usersFilters, limit: undefined }));
         updateUsersURLParams(usersFilters);

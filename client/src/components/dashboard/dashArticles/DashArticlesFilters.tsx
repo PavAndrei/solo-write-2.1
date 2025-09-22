@@ -14,11 +14,13 @@ import { CATEGORIES } from '../../../constants/categories';
 type DashArticlesFiltersProps = {
   defaultValues: AdminArticlesFilters;
   onFiltersChange: (values: AdminArticlesFilters) => void;
+  isFirstRender: boolean;
 };
 
 export const DashArticlesFilters: FC<DashArticlesFiltersProps> = ({
   defaultValues,
   onFiltersChange,
+  isFirstRender,
 }) => {
   const { register, reset, watch, control } = useForm<AdminArticlesFilters>({
     defaultValues,
@@ -27,12 +29,20 @@ export const DashArticlesFilters: FC<DashArticlesFiltersProps> = ({
   const values = watch();
 
   useEffect(() => {
-    onFiltersChange(values);
+    if (!isFirstRender) {
+      onFiltersChange(values);
+    }
   }, [JSON.stringify(values)]);
 
-  // useEffect(() => {
-  //   reset(defaultValues);
-  // }, [defaultValues, reset]);
+  useEffect(() => {
+    // явное клонирование массива категорий
+    reset({
+      ...defaultValues,
+      category: Array.isArray(defaultValues.category)
+        ? [...defaultValues.category]
+        : [],
+    });
+  }, [JSON.stringify(defaultValues.category), reset]);
 
   const handleReset = () => {
     console.log('reset');
