@@ -212,7 +212,7 @@ export const getArticles = async (
   try {
     const {
       startIndex = 0,
-      limit = 10,
+      limit = 7,
       search,
       category,
       user,

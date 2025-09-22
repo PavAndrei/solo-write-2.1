@@ -49,6 +49,7 @@ export function toUrlParams<T extends object>(
     if (key === 'startIndex' && value === 0) return;
     if (key === 'limit') return; // limit вообще не пишем в URL
     if (defaults[key] === value) return;
+    if (value === '' || value === undefined) return;
 
     if (typeof value === 'boolean') {
       if (value) params[key as string] = 'true';
