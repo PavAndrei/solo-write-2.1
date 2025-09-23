@@ -21,6 +21,13 @@ export interface AllArticlesResponse {
   totalArticles: number;
 }
 
+export interface ArticleLikeResponse {
+  likesCount: number;
+  liked: boolean;
+  likedArticleId: string;
+  userId: string;
+}
+
 export interface FetchUsersRequestParams {
   role: 'user' | 'admin' | '';
   verified: boolean;

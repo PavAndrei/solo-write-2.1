@@ -3,12 +3,14 @@ import type { ApiResponse } from '../../../types/api';
 import type {
   AllArticlesResponse,
   Article,
+  ArticleLikeResponse,
   FetchArticlesRequestParams,
 } from '../types/article.types';
 import {
   createArticle,
   getAllArticles,
   getOneArticle,
+  toggleArticleLike,
 } from '../api/articles.api';
 
 export const createArticleAsync = createAsyncThunk<
@@ -56,6 +58,25 @@ export const fetchOneArticle = createAsyncThunk<
     const response = await getOneArticle(slug);
     if (!response.success) {
       return rejectWithValue(response.message || 'Fetching article failed');
+    }
+    return response;
+  } catch (err) {
+    return rejectWithValue(
+      err instanceof Error ? err.message : 'Unknown error'
+    );
+  }
+});
+
+export const fetchArticleLike = createAsyncThunk<
+  ApiResponse<ArticleLikeResponse>,
+  string,
+  { rejectValue: string }
+>('article/like', async (slug, { rejectWithValue }) => {
+  try {
+    const response = await toggleArticleLike(slug);
+
+    if (!response.success) {
+      return rejectWithValue(response.message || 'Fetching like failed');
     }
     return response;
   } catch (err) {

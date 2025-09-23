@@ -3,6 +3,7 @@ import type { ApiResponse } from '../../../types/api';
 import type {
   AllArticlesResponse,
   Article,
+  ArticleLikeResponse,
   FetchArticlesRequestParams,
 } from '../types/article.types';
 
@@ -75,6 +76,30 @@ export const getOneArticle = async (
 ): Promise<ApiResponse<Article>> => {
   try {
     const res = await fetch(`${BASE_API_URL}/article/${slug}`);
+
+    const data = await res.json();
+
+    if (!data.success) {
+      throw new Error(data.message);
+    }
+
+    return data;
+  } catch (err) {
+    const errorMessage =
+      err instanceof Error ? err.message : 'Network error occured';
+    console.error(errorMessage);
+    return { success: false, message: errorMessage };
+  }
+};
+
+export const toggleArticleLike = async (
+  slug: string
+): Promise<ApiResponse<ArticleLikeResponse>> => {
+  try {
+    const res = await fetch(`${BASE_API_URL}/article/${slug}/like`, {
+      method: 'POST',
+      credentials: 'include',
+    });
 
     const data = await res.json();
 

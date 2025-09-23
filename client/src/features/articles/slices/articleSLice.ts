@@ -6,6 +6,7 @@ import {
   fetchArticles,
   fetchOneArticle,
 } from './asyncActions';
+import { fetchArticleLike } from './asyncActions';
 
 const initialState: ArticleState = {
   list: {
@@ -74,6 +75,39 @@ const articleSlice = createSlice({
     builder.addCase(fetchOneArticle.rejected, (state) => {
       state.list.status = Status.ERROR;
       state.current.item = null;
+    });
+
+    builder.addCase(fetchArticleLike.fulfilled, (state, action) => {
+      const articleId = action.payload.data?.likedArticleId;
+      const userId = action.payload.data?.userId;
+      // const liked = action.payload.data?.liked;
+
+      if (!articleId || !userId) {
+        return;
+      }
+
+      state.list.items =
+        state.list.items?.map((a) => {
+          if (a._id !== articleId) return a;
+
+          const likedBy = a.likedBy ? [...a.likedBy] : [];
+          const index = likedBy.indexOf(userId);
+
+          if (index === -1) {
+            likedBy.push(userId);
+          } else {
+            likedBy.splice(index, 1);
+          }
+
+          return {
+            ...a,
+            likedBy,
+            likesCount: likedBy.length,
+          };
+        }) || null;
+    });
+    builder.addCase(fetchArticleLike.rejected, (_, action) => {
+      console.error('Attempting like failed', action.payload);
     });
   },
 });

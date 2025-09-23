@@ -15,6 +15,8 @@ export const Articles = () => {
     (state) => state.filters.public
   );
 
+  console.log('1');
+
   useEffect(() => {
     dispatch(fetchArticles(articlesFilters));
   }, [dispatch, JSON.stringify(articlesFilters)]);

@@ -388,8 +388,6 @@ export const toggleArticleLike = async (
   res: Response,
   next: NextFunction
 ) => {
-  res.status(200).json({ data: 'article' });
-
   try {
     const { slug } = req.params;
     const userId = req.userId;
@@ -428,16 +426,10 @@ export const toggleArticleLike = async (
       data: {
         likesCount: article.likesCount,
         liked: !hasLiked,
+        likedArticleId: article._id,
+        userId: userId,
       },
     });
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const test = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    return res.status(200).json({ success: true });
   } catch (err) {
     next(err);
   }

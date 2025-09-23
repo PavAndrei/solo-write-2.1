@@ -1,19 +1,27 @@
-import { Router, Request, Response } from 'express';
-
-console.log('🚀 Загружен файл article.route.ts:', __filename);
+import { Router } from 'express';
+import {
+  createArticle,
+  getArticles,
+  getOneArticle,
+  toggleArticleLike,
+} from '../controllers/article.controller';
+import { checkAuth } from '../middlewares/checkAuth';
+import { validate } from '../middlewares/validate';
+import { createArticleSchema } from '../schemas/editor.schema';
+import { upload } from '../middlewares/upload';
 
 export const articleRouter = Router();
 
-console.log('✅ articleRouter подключен');
+articleRouter.post(
+  '/create',
+  checkAuth,
+  upload.array('images', 5),
+  validate(createArticleSchema),
+  createArticle
+);
 
-// Тестовый POST /
-articleRouter.post('/', (req: Request, res: Response) => {
-  console.log('🔥 Сработал POST /api/article');
-  res.json({ success: true, message: 'POST /api/article работает!' });
-});
+articleRouter.get('/', getArticles);
 
-// Тестовый GET /
-articleRouter.get('/', (req: Request, res: Response) => {
-  console.log('🔥 Сработал GET /api/article');
-  res.json({ success: true, message: 'GET /api/article работает!' });
-});
+articleRouter.post('/:slug/like', checkAuth, toggleArticleLike);
+
+articleRouter.get('/:slug', getOneArticle);

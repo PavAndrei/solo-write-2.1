@@ -5,8 +5,10 @@ import { Button } from '../../../components/ui/Button';
 import { HiEye } from 'react-icons/hi';
 import { BiSolidLike } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../../../app/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../app/store/hooks';
 import clsx from 'clsx';
+import { fetchArticleLike } from '../slices/asyncActions';
+// import { toggleArticleLike } from '../api/articles.api';
 
 export const ArticleItem: FC<Article> = ({
   title,
@@ -20,12 +22,21 @@ export const ArticleItem: FC<Article> = ({
   slug,
   likedBy,
 }) => {
-  const navigate = useNavigate();
-
+  const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
 
+  const navigate = useNavigate();
+
+  // const toggleLike = async (slug: string) => {
+  //   const res = await toggleArticleLike(slug);
+  //   console.log(res);
+  // };
+
+  const toggleLike = async (slug: string) => {
+    await dispatch(fetchArticleLike(slug));
+  };
+
   const isLikedByCurrentUser = user && likedBy?.includes(user._id);
-  console.log(isLikedByCurrentUser);
 
   return (
     <li className="border p-2 rounded-sm flex flex-col gap-3">
@@ -61,6 +72,7 @@ export const ArticleItem: FC<Article> = ({
         </div>
         <div className="flex justify-between items-center">
           <button
+            onClick={() => toggleLike(slug)}
             type="button"
             aria-label="like"
             className={clsx(
