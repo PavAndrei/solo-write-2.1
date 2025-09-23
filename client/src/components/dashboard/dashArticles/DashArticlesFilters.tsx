@@ -42,7 +42,7 @@ export const DashArticlesFilters: FC<DashArticlesFiltersProps> = ({
         ? [...defaultValues.category]
         : [],
     });
-  }, [JSON.stringify(defaultValues.category), reset]);
+  }, [JSON.stringify(defaultValues), reset]);
 
   const handleReset = () => {
     console.log('reset');
