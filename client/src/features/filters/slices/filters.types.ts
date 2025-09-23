@@ -20,6 +20,21 @@ export interface AdminArticlesFilters {
   startIndex: number;
 }
 
+export interface PublicArticlesFilters {
+  search: string;
+  category: string[];
+  user: string;
+  sortByLikes: 'desc' | 'asc' | '';
+  sortByViews: 'desc' | 'asc' | '';
+  sortByPublishing: 'desc' | 'asc';
+  limit: number;
+  startIndex: number;
+}
+
+interface PublicFilters {
+  articles: PublicArticlesFilters;
+}
+
 interface AdminFilters {
   users: AdminUsersFilters;
   comments: undefined;
@@ -27,6 +42,6 @@ interface AdminFilters {
 }
 
 export interface FiltersState {
-  public: undefined;
+  public: PublicFilters;
   admin: AdminFilters;
 }
