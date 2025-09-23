@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '../../../app/store/hooks';
 import clsx from 'clsx';
 import { fetchArticleLike } from '../slices/asyncActions';
 import { alertModal } from '../../modal/slices/modalSlice';
+import { getOptimizedImageUrl } from '../../../utils/optimizeImage';
 // import { toggleArticleLike } from '../api/articles.api';
 
 export const ArticleItem: FC<Article> = ({
@@ -70,10 +71,10 @@ export const ArticleItem: FC<Article> = ({
       </div>
 
       <div className="flex flex-col gap-1.5 mt-auto mb-0">
-        <div className="rounded-md max-w-full max-h-[300]">
+        <div className="rounded-md max-w-full h-[200px] w-full">
           <img
             className="object-cover w-full h-full rounded-md"
-            src={images[0]}
+            src={getOptimizedImageUrl(images[0], 30)}
             alt={title}
           />
         </div>

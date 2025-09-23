@@ -53,6 +53,7 @@ export const Slider: FC<SliderProps> = ({ slides }) => {
             <SwiperSlide key={i}>
               <div className="rounded-xl h-[280px] group overflow-hidden">
                 <img
+                  loading="lazy"
                   src={src}
                   alt={`Slide ${i}`}
                   className="rounded-xl cursor-pointer w-full h-full object-cover group-hover:scale-111 transition duration-300 ease-in-out"
