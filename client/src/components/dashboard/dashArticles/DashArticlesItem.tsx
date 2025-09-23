@@ -6,6 +6,8 @@ import { formatDate } from '../../../utils/formatDate';
 import { BiSolidLike } from 'react-icons/bi';
 import { HiEye } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../../app/store/hooks';
+import { fetchArticleLike } from '../../../features/articles/slices/asyncActions';
 
 interface DashArticlesItemProps {
   title: string;
@@ -17,6 +19,7 @@ interface DashArticlesItemProps {
   viewsCount: number;
   categories: string[];
   slug: string;
+  likedBy: string[];
 }
 
 export const DashArticlesItem: FC<DashArticlesItemProps> = ({
@@ -28,9 +31,19 @@ export const DashArticlesItem: FC<DashArticlesItemProps> = ({
   likesCount,
   viewsCount,
   categories,
+  likedBy,
   slug,
 }) => {
   const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
+
+  const toggleLike = async (slug: string) => {
+    await dispatch(fetchArticleLike(slug));
+  };
+
+  const isLikedByCurrentUser = user && likedBy?.includes(user._id);
 
   return (
     <li className="border py-3 pr-1.5 pl-20 rounded-md relative">
@@ -90,13 +103,25 @@ export const DashArticlesItem: FC<DashArticlesItemProps> = ({
         </div>
 
         <div className="flex gap-4">
-          <Button
-            ariaLabel="read full text"
-            type="button"
-            onClick={() => navigate(`/article/${slug}`)}
-          >
-            Read Full Text
-          </Button>
+          <div className="flex gap-4">
+            <Button
+              ariaLabel="read full text"
+              type="button"
+              onClick={() => navigate(`/article/${slug}`)}
+            >
+              Read Full Text
+            </Button>
+            <Button
+              type="button"
+              ariaLabel="like"
+              onClick={() => toggleLike(slug)}
+            >
+              <BiSolidLike
+                className={isLikedByCurrentUser ? 'text-red-600' : ''}
+              />
+            </Button>
+          </div>
+
           <div className="flex ml-auto mr-0 gap-4">
             <Button type="button" ariaLabel="edit this user" size="sm">
               <span>Edit</span>

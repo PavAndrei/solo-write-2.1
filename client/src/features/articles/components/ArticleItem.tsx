@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/store/hooks';
 import clsx from 'clsx';
 import { fetchArticleLike } from '../slices/asyncActions';
+import { alertModal } from '../../modal/slices/modalSlice';
 // import { toggleArticleLike } from '../api/articles.api';
 
 export const ArticleItem: FC<Article> = ({
@@ -27,13 +28,19 @@ export const ArticleItem: FC<Article> = ({
 
   const navigate = useNavigate();
 
-  // const toggleLike = async (slug: string) => {
-  //   const res = await toggleArticleLike(slug);
-  //   console.log(res);
-  // };
-
-  const toggleLike = async (slug: string) => {
-    await dispatch(fetchArticleLike(slug));
+  const toggleLike = async (isAuthentificated: boolean, slug: string) => {
+    if (isAuthentificated) {
+      await dispatch(fetchArticleLike(slug));
+    } else {
+      await dispatch(
+        alertModal({
+          title: 'You can not like the article',
+          message:
+            'You are not authentificated. Please sign in and repeat again.',
+        })
+      );
+      navigate('/signin');
+    }
   };
 
   const isLikedByCurrentUser = user && likedBy?.includes(user._id);
@@ -72,13 +79,13 @@ export const ArticleItem: FC<Article> = ({
         </div>
         <div className="flex justify-between items-center">
           <button
-            onClick={() => toggleLike(slug)}
+            onClick={() => toggleLike(!!user?._id, slug)}
             type="button"
             aria-label="like"
             className={clsx(
               'flex gap-1.5 items-center text-lg cursor-pointer',
               isLikedByCurrentUser
-                ? 'text-red-500'
+                ? 'text-red-600'
                 : 'text-gray-700 dark:text-gray-300'
             )}
           >

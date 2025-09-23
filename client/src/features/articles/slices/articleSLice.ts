@@ -7,6 +7,7 @@ import {
   fetchOneArticle,
 } from './asyncActions';
 import { fetchArticleLike } from './asyncActions';
+import { updateLikes } from '../helpers/updateLikes';
 
 const initialState: ArticleState = {
   list: {
@@ -80,31 +81,19 @@ const articleSlice = createSlice({
     builder.addCase(fetchArticleLike.fulfilled, (state, action) => {
       const articleId = action.payload.data?.likedArticleId;
       const userId = action.payload.data?.userId;
-      // const liked = action.payload.data?.liked;
 
-      if (!articleId || !userId) {
-        return;
-      }
+      if (!articleId || !userId) return;
 
+      // Обновляем список
       state.list.items =
-        state.list.items?.map((a) => {
-          if (a._id !== articleId) return a;
+        state.list.items?.map((a) =>
+          a._id === articleId ? updateLikes(a, userId) : a
+        ) || null;
 
-          const likedBy = a.likedBy ? [...a.likedBy] : [];
-          const index = likedBy.indexOf(userId);
-
-          if (index === -1) {
-            likedBy.push(userId);
-          } else {
-            likedBy.splice(index, 1);
-          }
-
-          return {
-            ...a,
-            likedBy,
-            likesCount: likedBy.length,
-          };
-        }) || null;
+      // Обновляем текущую статью
+      if (state.current.item && state.current.item._id === articleId) {
+        state.current.item = updateLikes(state.current.item, userId);
+      }
     });
     builder.addCase(fetchArticleLike.rejected, (_, action) => {
       console.error('Attempting like failed', action.payload);
