@@ -36,9 +36,11 @@ export const ArticlesList: FC<ArticleListProps> = ({ articles }) => {
   return (
     <>
       <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {articles?.map((article) => (
-          <ArticleItem key={article._id} {...article} />
-        ))}
+        {articles &&
+          articles.length > 0 &&
+          articles.map((article) => (
+            <ArticleItem key={article._id} {...article} />
+          ))}
       </ul>
       {total && total > limit && (
         <Pagination

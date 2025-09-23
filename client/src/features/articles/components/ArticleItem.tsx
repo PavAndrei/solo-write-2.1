@@ -5,6 +5,8 @@ import { Button } from '../../../components/ui/Button';
 import { HiEye } from 'react-icons/hi';
 import { BiSolidLike } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../../../app/store/hooks';
+import clsx from 'clsx';
 
 export const ArticleItem: FC<Article> = ({
   title,
@@ -16,8 +18,14 @@ export const ArticleItem: FC<Article> = ({
   viewsCount,
   likesCount,
   slug,
+  likedBy,
 }) => {
   const navigate = useNavigate();
+
+  const { user } = useAppSelector((state) => state.auth);
+
+  const isLikedByCurrentUser = user && likedBy?.includes(user._id);
+  console.log(isLikedByCurrentUser);
 
   return (
     <li className="border p-2 rounded-sm flex flex-col gap-3">
@@ -55,7 +63,12 @@ export const ArticleItem: FC<Article> = ({
           <button
             type="button"
             aria-label="like"
-            className="flex gap-1.5 items-center text-lg text-gray-700 dark:text-gray-300 cursor-pointer"
+            className={clsx(
+              'flex gap-1.5 items-center text-lg cursor-pointer',
+              isLikedByCurrentUser
+                ? 'text-red-500'
+                : 'text-gray-700 dark:text-gray-300'
+            )}
           >
             <BiSolidLike />
             {likesCount}
