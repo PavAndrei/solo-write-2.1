@@ -35,14 +35,13 @@ export const DashArticlesFilters: FC<DashArticlesFiltersProps> = ({
   }, [JSON.stringify(values)]);
 
   useEffect(() => {
-    // явное клонирование массива категорий
     reset({
       ...defaultValues,
       category: Array.isArray(defaultValues.category)
         ? [...defaultValues.category]
         : [],
     });
-  }, [JSON.stringify(defaultValues), reset]);
+  }, [JSON.stringify(defaultValues.category), reset]);
 
   const handleReset = () => {
     console.log('reset');

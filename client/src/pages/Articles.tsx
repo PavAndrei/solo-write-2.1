@@ -6,33 +6,14 @@ import { fetchArticles } from '../features/articles/slices/asyncActions';
 import { ArticlesList } from '../features/articles/components/ArticlesList';
 import { Status } from '../types/api';
 import { SpinnerLoading } from '../components/ui/SpinnerLoading';
-import { Pagination } from '../components/ui/Pagination';
-import { setPublicArticlesFilters } from '../features/filters/slices/filtersSlices';
 
 export const Articles = () => {
   const dispatch = useAppDispatch();
-  const { items, total, status } = useAppSelector(
-    (state) => state.articles.list
-  );
+  const { items, status } = useAppSelector((state) => state.articles.list);
 
   const { articles: articlesFilters } = useAppSelector(
     (state) => state.filters.public
   );
-
-  const { startIndex, limit } = articlesFilters;
-
-  const handlePreviousPageClick = () => {
-    if (startIndex < 1) return;
-    dispatch(setPublicArticlesFilters({ startIndex: startIndex - limit }));
-  };
-
-  const handleNextPageClick = () => {
-    dispatch(setPublicArticlesFilters({ startIndex: startIndex + limit }));
-  };
-
-  const handleCurrentPageClick = (page: number) => {
-    dispatch(setPublicArticlesFilters({ startIndex: limit * page }));
-  };
 
   useEffect(() => {
     dispatch(fetchArticles(articlesFilters));
@@ -57,15 +38,6 @@ export const Articles = () => {
           Articles Collection
         </PageTitle>
         {items && <ArticlesList articles={items} />}
-        {total && total > limit && (
-          <Pagination
-            currentPage={startIndex / limit}
-            totalPages={Math.ceil(total / limit)}
-            handleNextPage={handleNextPageClick}
-            handlePreviousPage={handlePreviousPageClick}
-            handlePageClick={handleCurrentPageClick}
-          />
-        )}
       </Container>
     </section>
   );

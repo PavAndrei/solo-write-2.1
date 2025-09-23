@@ -7,6 +7,7 @@ import { errorHandler } from '../middlewares/handleErrors';
 import { Article } from '../models/article.model';
 import slugify from 'slugify';
 import { User } from '../models/user.model';
+import { success } from 'zod/v4';
 
 const streamUpload = (buffer: Buffer): Promise<UploadApiResponse> => {
   return new Promise((resolve, reject) => {
@@ -377,6 +378,66 @@ export const getOneArticle = async (
       message: 'Article received',
       data: formattedArticle,
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const toggleArticleLike = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  res.status(200).json({ data: 'article' });
+
+  try {
+    const { slug } = req.params;
+    const userId = req.userId;
+
+    console.log(slug);
+
+    if (!userId) {
+      throw errorHandler(401, 'Unauthorized');
+    }
+
+    // Находим статью по slug
+    const article = await Article.findOne({ slug });
+    if (!article) {
+      throw errorHandler(404, 'Article not found');
+    }
+
+    const hasLiked = article.likedBy.some((id) => id.toString() === userId);
+
+    if (hasLiked) {
+      // Убираем лайк
+      article.likedBy = article.likedBy.filter(
+        (id) => id.toString() !== userId
+      );
+      article.likesCount = Math.max(0, article.likesCount - 1); // защита от отрицательных значений
+    } else {
+      // Добавляем лайк
+      article.likedBy.push(userId as any);
+      article.likesCount += 1;
+    }
+
+    await article.save();
+
+    return res.status(200).json({
+      success: true,
+      message: hasLiked ? 'Like removed' : 'Like added',
+      data: {
+        likesCount: article.likesCount,
+        liked: !hasLiked,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const test = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    return res.status(200).json({ success: true });
   } catch (err) {
     next(err);
   }
