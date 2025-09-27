@@ -1,12 +1,12 @@
 import clsx from 'clsx';
-import { type FC, type ReactNode } from 'react';
+import type { FC, ReactNode, ChangeEvent } from 'react';
 import type { FieldError, UseFormRegisterReturn } from 'react-hook-form';
 
 interface CustomTextareaProps {
   label: string;
   name: string;
   placeholder?: string;
-  register: UseFormRegisterReturn;
+  register?: UseFormRegisterReturn; // теперь необязательный
   error?: FieldError;
   icon: ReactNode;
   rows?: number;
@@ -14,7 +14,9 @@ interface CustomTextareaProps {
   noScroll?: boolean;
   maxLength?: number;
   showCounter?: boolean;
-  currentValue: string;
+  currentValue?: string; // оставляем для совместимости
+  value?: string; // для onChange+useState
+  onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 export const CustomTextarea: FC<CustomTextareaProps> = ({
@@ -30,8 +32,10 @@ export const CustomTextarea: FC<CustomTextareaProps> = ({
   maxLength,
   showCounter = false,
   currentValue,
+  value,
+  onChange,
 }) => {
-  const value = currentValue || '';
+  const controlledValue = value ?? currentValue ?? '';
 
   return (
     <label className="flex flex-col gap-1.5">
@@ -39,23 +43,24 @@ export const CustomTextarea: FC<CustomTextareaProps> = ({
         <span className="font-medium text-lg">{label}</span>
         {showCounter && maxLength && (
           <span className="text-sm text-gray-500">
-            {value.length}/{maxLength}
+            {controlledValue.length}/{maxLength}{' '}
           </span>
         )}
       </div>
-
       <div className="relative group">
         <textarea
           placeholder={placeholder}
           rows={rows}
-          {...register}
           autoComplete={name}
           maxLength={maxLength}
           style={{ resize }}
+          {...(register ?? {})}
+          value={controlledValue}
+          onChange={onChange ?? register?.onChange}
           className={clsx(
-            'border rounded pl-8 pr-3 py-2 placeholder:text-gray-500 w-full transition-all ease-in-out duration-200 shadow-md hover:shadow-gray-300 dark:hover:shadow-gray-500 focus:border-gray-900 dark:focus:border-gray-100 focus:shadow-gray-300 dark:focus:shadow-gray-500 focus-visible:shadow-gray-500 focus-visible:inset-shadow-gray-600 dark:inset-shadow-gray-100 focus-visible:inset-shadow-sm',
-            'min-h-[100px]', // Минимальная высота
-            noScroll && 'overflow-hidden', // Скрываем скролл
+            'border rounded pl-8 pr-3 py-2 placeholder:text-gray-500 w-full transition-all ease-in-out duration-200 shadow-md hover:shadow-gray-300 dark:hover:shadow-gray-500 focus:border-gray-900 dark:focus:border-gray-100 focus:shadow-gray-300 dark:focus:shadow-gray-500 focus-visible:shadow-gray-500 focus-visible:inset-shadow-gray-600 dark:group-focus-within:inset-shadow-gray-100 focus-visible:inset-shadow-sm',
+            'min-h-[100px]',
+            noScroll && 'overflow-hidden',
             error ? 'border-red-500' : 'border-gray-500'
           )}
         />
@@ -63,7 +68,6 @@ export const CustomTextarea: FC<CustomTextareaProps> = ({
           {icon}
         </span>
       </div>
-
       {error && <p className="text-red-500 text-sm">{error.message}</p>}
     </label>
   );

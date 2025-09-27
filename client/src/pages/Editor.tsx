@@ -125,7 +125,7 @@ export const Editor: FC = () => {
 
           <CustomTextarea
             label="Description"
-            placeholder="Enter the description"
+            placeholder="Enter description"
             register={register('description')}
             name="description"
             currentValue={values.description}
@@ -150,6 +150,7 @@ export const Editor: FC = () => {
                 maxSelection={5}
                 icon={<FaTags />}
                 error={errors.categories?.message}
+                isMulti
               />
             )}
           />

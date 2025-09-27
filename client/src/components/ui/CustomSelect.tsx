@@ -2,14 +2,14 @@ import clsx from 'clsx';
 import { type FC, type ReactNode, useState, useEffect, useRef } from 'react';
 import { FaChevronDown, FaTimes } from 'react-icons/fa';
 
-interface SelectOption {
+export interface SelectOption {
   value: string;
   label: string;
 }
 
 interface CustomSelectProps {
   label: string;
-  name: string;
+  name?: string;
   options: SelectOption[];
   selected: string[];
   onChange: (value: string[]) => void;
@@ -18,10 +18,13 @@ interface CustomSelectProps {
   minSelection?: number;
   maxSelection?: number;
   placeholder?: string;
+  isMulti?: boolean;
+  className?: string;
 }
 
 export const CustomSelect: FC<CustomSelectProps> = ({
   label,
+  isMulti,
   // name,
   options,
   selected,
@@ -31,6 +34,7 @@ export const CustomSelect: FC<CustomSelectProps> = ({
   minSelection = 0,
   maxSelection = 5,
   placeholder = 'Choose options',
+  className,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
@@ -53,11 +57,18 @@ export const CustomSelect: FC<CustomSelectProps> = ({
   }, []);
 
   const toggleOption = (optionValue: string) => {
-    const newSelected = selected.includes(optionValue)
-      ? selected.filter((v) => v !== optionValue)
-      : selected.length < maxSelection
-      ? [...selected, optionValue]
-      : selected;
+    let newSelected: string[];
+
+    if (isMulti) {
+      newSelected = selected.includes(optionValue)
+        ? selected.filter((v) => v !== optionValue)
+        : selected.length < maxSelection
+        ? [...selected, optionValue]
+        : selected;
+    } else {
+      newSelected = [optionValue]; // только одно значение
+      setIsOpen(false); // закрываем селект после выбора
+    }
 
     onChange(newSelected);
   };
@@ -96,7 +107,8 @@ export const CustomSelect: FC<CustomSelectProps> = ({
             'border rounded pl-8 pr-10 py-2 w-full transition-all ease-in-out duration-200 shadow-md hover:shadow-gray-300 dark:hover:shadow-gray-500 focus:border-gray-900 dark:focus:border-gray-100 focus:shadow-gray-300 dark:focus:shadow-gray-500',
             'min-h-[44px] flex items-center flex-wrap gap-1 cursor-pointer',
             error ? 'border-red-500' : 'border-gray-500',
-            isOpen && 'border-gray-900 dark:border-gray-100'
+            isOpen && 'border-gray-900 dark:border-gray-100',
+            className
           )}
           onClick={handleSelectClick}
           tabIndex={0}
@@ -115,13 +127,15 @@ export const CustomSelect: FC<CustomSelectProps> = ({
                   className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm flex items-center gap-1"
                 >
                   {option.label}
-                  <button
-                    type="button"
-                    onClick={(e) => removeOption(option.value, e)}
-                    className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-                  >
-                    <FaTimes size={12} />
-                  </button>
+                  {isMulti && (
+                    <button
+                      type="button"
+                      onClick={(e) => removeOption(option.value, e)}
+                      className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                    >
+                      <FaTimes size={12} />
+                    </button>
+                  )}
                 </span>
               ))}
             </div>

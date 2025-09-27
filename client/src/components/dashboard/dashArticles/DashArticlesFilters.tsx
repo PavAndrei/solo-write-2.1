@@ -88,6 +88,7 @@ export const DashArticlesFilters: FC<DashArticlesFiltersProps> = ({
             minSelection={1}
             maxSelection={5}
             icon={<FaTags />}
+            isMulti
           />
         )}
       />
