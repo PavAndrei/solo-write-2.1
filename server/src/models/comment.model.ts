@@ -4,12 +4,13 @@ export interface IComment extends Document {
   text: string;
   likes: number;
   isLiked: Schema.Types.ObjectId[];
-  articleSlug: string;
+  articleId: Schema.Types.ObjectId;
   author: {
     userId: Schema.Types.ObjectId;
     username: string;
+    userAvatar?: string;
   };
-  popularity: number; // показатель популярности комментария
+  popularity: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,8 +32,9 @@ const commentSchema = new Schema<IComment>(
         ref: 'User',
       },
     ],
-    articleSlug: {
-      type: String,
+    articleId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Article',
       required: true,
       index: true,
     },
@@ -45,6 +47,9 @@ const commentSchema = new Schema<IComment>(
       username: {
         type: String,
         required: true,
+      },
+      userAvatar: {
+        type: String,
       },
     },
     popularity: {

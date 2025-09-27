@@ -1,6 +1,7 @@
 interface CommentAuthor {
   userId: string;
   username: string;
+  userAvatar?: string;
 }
 
 export interface Comment {
@@ -8,7 +9,7 @@ export interface Comment {
   text: string;
   likes: number;
   isLiked: string[];
-  articleSlug: string;
+  articleId: string;
   author: CommentAuthor;
   popularity: number;
   createdAt: string;
@@ -16,7 +17,9 @@ export interface Comment {
   __v: number;
 }
 
+export type CommentList = Comment[];
+
 export interface CreateCommentPayload {
   text: string;
-  articleSlug: string;
+  articleId: string;
 }

@@ -17,8 +17,15 @@ import { CustomSelect } from '../components/ui/CustomSelect';
 import { FaFilter } from 'react-icons/fa';
 import { CustomTextarea } from '../components/ui/CustomTextarea';
 import { MdComment } from 'react-icons/md';
-import { createComment } from '../features/comments/api/comment.api';
-import type { CreateCommentPayload } from '../features/comments/types/comment.types';
+import {
+  createComment,
+  getCommentsByArticle,
+} from '../features/comments/api/comment.api';
+import type {
+  CommentList,
+  CreateCommentPayload,
+} from '../features/comments/types/comment.types';
+import { ArticleCommentList } from '../features/comments/components/CommentList';
 
 export const SingleArticle = () => {
   const { slug } = useParams();
@@ -31,11 +38,28 @@ export const SingleArticle = () => {
   const [sort, setSort] = useState<string[]>(['newest', 'Newest first']);
   const [comment, setComment] = useState('');
 
+  const [commentsList, setCommentsList] = useState<CommentList>([]);
+
   useEffect(() => {
     if (slug) {
       dispatch(fetchOneArticle(slug));
     }
   }, []);
+
+  useEffect(() => {
+    if (item?._id && status === Status.SUCCESS) {
+      const fetchArticleComments = async (id: string) => {
+        try {
+          const result = await getCommentsByArticle(id);
+          setCommentsList(result.data!);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      fetchArticleComments(item!._id);
+    }
+  }, [status, item]);
 
   if (status === Status.LOADING || status === Status.IDLE) {
     return (
@@ -63,7 +87,6 @@ export const SingleArticle = () => {
   const isLikedByCurrentUser = user && item?.likedBy?.includes(user._id);
 
   const postComment = async (payload: CreateCommentPayload) => {
-    console.log(payload);
     try {
       const result = await createComment(payload);
       console.log(result);
@@ -129,27 +152,35 @@ export const SingleArticle = () => {
                 className="w-1/12"
                 disabled={!comment}
                 onClick={() =>
-                  postComment({ text: comment, articleSlug: item.slug })
+                  postComment({ text: comment, articleId: item._id })
                 }
               >
                 Post
               </Button>
-              <CustomSelect
-                label="Sort comments"
-                options={[
-                  { value: 'newest', label: 'Newest first' },
-                  { value: 'oldest', label: 'Oldest first' },
-                  { value: 'popular', label: 'Most popular' },
-                ]}
-                selected={sort}
-                onChange={setSort}
-                isMulti={false}
-                placeholder="Select sorting"
-                icon={<FaFilter />}
-                className="max-w-1/5"
-                maxSelection={1}
-                minSelection={1}
-              />
+
+              {commentsList && commentsList.length >= 1 ? (
+                <>
+                  <CustomSelect
+                    label="Sort comments"
+                    options={[
+                      { value: 'newest', label: 'Newest first' },
+                      { value: 'oldest', label: 'Oldest first' },
+                      { value: 'popular', label: 'Most popular' },
+                    ]}
+                    selected={sort}
+                    onChange={setSort}
+                    isMulti={false}
+                    placeholder="Select sorting"
+                    icon={<FaFilter />}
+                    className="max-w-1/5"
+                    maxSelection={1}
+                    minSelection={1}
+                  />
+                  <ArticleCommentList commentList={commentsList} />
+                </>
+              ) : (
+                <span>No comments has been found yet...</span>
+              )}
             </section>
           </>
         )}
