@@ -1,55 +1,59 @@
-import mongoose, { Document, Schema, Model } from 'mongoose';
-import { IUser } from './user.model';
-import { IArticle } from './article.model';
+import { Schema, model, Document } from 'mongoose';
 
 export interface IComment extends Document {
-  content: string;
-  articleId: mongoose.Types.ObjectId;
-  userId: mongoose.Types.ObjectId;
-  likes: mongoose.Types.ObjectId[];
-  numberOfLikes?: number;
-  userData?: IUser;
-  articleData?: IArticle;
+  text: string;
+  likes: number;
+  isLiked: Schema.Types.ObjectId[];
+  articleSlug: string;
+  author: {
+    userId: Schema.Types.ObjectId;
+    username: string;
+  };
+  popularity: number; // показатель популярности комментария
   createdAt: Date;
   updatedAt: Date;
 }
 
 const commentSchema = new Schema<IComment>(
   {
-    content: { type: String, required: true, trim: true },
-    articleId: { type: Schema.Types.ObjectId, ref: 'Article', required: true },
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    text: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    likes: {
+      type: Number,
+      default: 0,
+    },
+    isLiked: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    articleSlug: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    author: {
+      userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      },
+      username: {
+        type: String,
+        required: true,
+      },
+    },
+    popularity: {
+      type: Number,
+      default: 0,
+      index: true,
+    },
   },
-  {
-    timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
-    id: false,
-  }
+  { timestamps: true }
 );
 
-commentSchema.virtual('numberOfLikes').get(function (this: IComment) {
-  return this.likes.length;
-});
-
-commentSchema.virtual('userData', {
-  ref: 'User',
-  localField: 'userId',
-  foreignField: '_id',
-  justOne: true,
-});
-
-commentSchema.virtual('articleData', {
-  ref: 'Article',
-  localField: 'articleId',
-  foreignField: '_id',
-  justOne: true,
-});
-
-commentSchema.index({ articleId: 1, createdAt: -1 });
-
-export const Comment: Model<IComment> = mongoose.model<IComment>(
-  'Comment',
-  commentSchema
-);
+export const Comment = model<IComment>('Comment', commentSchema);

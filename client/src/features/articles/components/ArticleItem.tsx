@@ -10,7 +10,6 @@ import clsx from 'clsx';
 import { fetchArticleLike } from '../slices/asyncActions';
 import { alertModal } from '../../modal/slices/modalSlice';
 import { getOptimizedImageUrl } from '../../../utils/optimizeImage';
-// import { toggleArticleLike } from '../api/articles.api';
 
 export const ArticleItem: FC<Article> = ({
   title,
