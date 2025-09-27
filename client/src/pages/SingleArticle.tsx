@@ -17,6 +17,8 @@ import { CustomSelect } from '../components/ui/CustomSelect';
 import { FaFilter } from 'react-icons/fa';
 import { CustomTextarea } from '../components/ui/CustomTextarea';
 import { MdComment } from 'react-icons/md';
+import { createComment } from '../features/comments/api/comment.api';
+import type { CreateCommentPayload } from '../features/comments/types/comment.types';
 
 export const SingleArticle = () => {
   const { slug } = useParams();
@@ -59,6 +61,16 @@ export const SingleArticle = () => {
   };
 
   const isLikedByCurrentUser = user && item?.likedBy?.includes(user._id);
+
+  const postComment = async (payload: CreateCommentPayload) => {
+    console.log(payload);
+    try {
+      const result = await createComment(payload);
+      console.log(result);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="h-full py-10">
@@ -116,6 +128,9 @@ export const SingleArticle = () => {
                 ariaLabel="send comment"
                 className="w-1/12"
                 disabled={!comment}
+                onClick={() =>
+                  postComment({ text: comment, articleSlug: item.slug })
+                }
               >
                 Post
               </Button>

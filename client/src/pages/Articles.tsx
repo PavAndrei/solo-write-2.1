@@ -19,8 +19,6 @@ export const Articles = () => {
     dispatch(fetchArticles(articlesFilters));
   }, [dispatch, JSON.stringify(articlesFilters)]);
 
-  console.log(items?.map((item) => item.images));
-
   if (status === Status.LOADING || status === Status.IDLE) {
     return (
       <div className="h-screen">
