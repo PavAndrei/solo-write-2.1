@@ -6,10 +6,12 @@ import type {
   CommentList,
   CreateCommentPayload,
   DeletedCommentData,
+  FetchAllCommentsResponse,
 } from '../types/comment.types';
 import {
   createComment,
   deleteComment,
+  getAllComments,
   getCommentsByArticle,
   toggleCommentLike,
 } from '../api/comment.api';
@@ -78,6 +80,25 @@ export const fetchCommentLike = createAsyncThunk<
 
     if (!response.success) {
       return rejectWithValue(response.message || 'Deleting comment failed');
+    }
+    return response;
+  } catch (err) {
+    return rejectWithValue(
+      err instanceof Error ? err.message : 'Unknown error'
+    );
+  }
+});
+
+export const fetchAllComments = createAsyncThunk<
+  ApiResponse<FetchAllCommentsResponse>,
+  void,
+  { rejectValue: string }
+>('comment/getAll', async (_, { rejectWithValue }) => {
+  try {
+    const response = await getAllComments();
+
+    if (!response.success) {
+      return rejectWithValue(response.message || 'Getting comments failed');
     }
     return response;
   } catch (err) {

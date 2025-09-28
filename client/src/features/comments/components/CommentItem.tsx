@@ -82,7 +82,8 @@ export const CommentItem: FC<Comment> = ({
         </Button>
 
         <Button
-          className="absolute top-2.5 right-2"
+          className="absolute top-1.5 right-2"
+          size="sm"
           ariaLabel="delete"
           type="button"
           onClick={() => deleteCommentById(_id)}

@@ -6,6 +6,12 @@ export interface CommentState {
     items: CommentList;
     status: Status;
   };
+  list: {
+    items: CommentList;
+    status: Status;
+    total: number | null;
+    count: number | null;
+  };
   create: {
     status: Status;
   };

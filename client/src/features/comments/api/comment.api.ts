@@ -6,6 +6,7 @@ import type {
   CommentList,
   CreateCommentPayload,
   DeletedCommentData,
+  FetchAllCommentsResponse,
 } from '../types/comment.types';
 
 export const createComment = async (
@@ -99,6 +100,29 @@ export const toggleCommentLike = async (
       method: 'PATCH',
       credentials: 'include',
     });
+    const data = await res.json();
+
+    if (!data.success) {
+      throw new Error(data.message);
+    }
+
+    return data;
+  } catch (err) {
+    const errorMessage =
+      err instanceof Error ? err.message : 'Network error occured';
+    console.error(errorMessage);
+    return { success: false, message: errorMessage };
+  }
+};
+
+export const getAllComments = async (): Promise<
+  ApiResponse<FetchAllCommentsResponse>
+> => {
+  try {
+    const res = await fetch(`${BASE_API_URL}/comment`, {
+      credentials: 'include',
+    });
+
     const data = await res.json();
 
     if (!data.success) {

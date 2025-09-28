@@ -34,3 +34,9 @@ export interface CommentLikeResponse {
   likesCount: number;
   liked: boolean;
 }
+
+export interface FetchAllCommentsResponse {
+  total: number;
+  count: number;
+  comments: CommentList;
+}
