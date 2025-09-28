@@ -9,4 +9,7 @@ export interface CommentState {
   create: {
     status: Status;
   };
+  delete: {
+    status: Status;
+  };
 }

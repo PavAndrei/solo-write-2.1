@@ -114,6 +114,9 @@ export const deleteComment = async (
     return res.status(200).json({
       success: true,
       message: 'Comment deleted successfully',
+      data: {
+        deletedCommentId: id,
+      },
     });
   } catch (err) {
     next(err);

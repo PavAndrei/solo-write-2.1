@@ -17,6 +17,10 @@ export interface Comment {
   __v: number;
 }
 
+export interface DeletedCommentData {
+  deletedCommentId: string;
+}
+
 export type CommentList = Comment[];
 
 export interface CreateCommentPayload {
