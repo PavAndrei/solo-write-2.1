@@ -8,6 +8,7 @@ import type {
 import {
   ARTICLES_FILTERS_DEFAULTS,
   ARTICLES_PUBLIC_FILTERS_DEFAULTS,
+  COMMENTS_FILTERS_DEFAULTS,
   USERS_FILTERS_DEFAULTS,
 } from '../../../constants/defaults';
 
@@ -17,7 +18,7 @@ const initialState: FiltersState = {
   },
   admin: {
     users: USERS_FILTERS_DEFAULTS,
-    comments: undefined,
+    comments: COMMENTS_FILTERS_DEFAULTS,
     articles: ARTICLES_FILTERS_DEFAULTS,
   },
 };

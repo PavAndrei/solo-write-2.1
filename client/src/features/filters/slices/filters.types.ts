@@ -20,6 +20,13 @@ export interface AdminArticlesFilters {
   startIndex: number;
 }
 
+export interface AdminCommentsFilters {
+  search: string;
+  user: string;
+  sort: 'createdAt' | 'popularity';
+  order: 'desc' | 'asc';
+}
+
 export interface PublicArticlesFilters {
   search: string;
   category: string[];
@@ -37,7 +44,7 @@ interface PublicFilters {
 
 interface AdminFilters {
   users: AdminUsersFilters;
-  comments: undefined;
+  comments: AdminCommentsFilters;
   articles: AdminArticlesFilters;
 }
 
