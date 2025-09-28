@@ -8,7 +8,7 @@ interface CommentListProps {
 
 export const ArticleCommentList: FC<CommentListProps> = ({ commentList }) => {
   return (
-    <ul>
+    <ul className="flex flex-col gap-4">
       {commentList.map((comment) => (
         <CommentItem key={comment._id} {...comment} />
       ))}

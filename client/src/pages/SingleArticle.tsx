@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { Container } from '../components/layout/Container';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/store/hooks';
 import {
   fetchArticleLike,
@@ -13,32 +13,19 @@ import { Button } from '../components/ui/Button';
 import { BiSolidLike } from 'react-icons/bi';
 import { HiEye } from 'react-icons/hi';
 import { alertModal } from '../features/modal/slices/modalSlice';
-import { CustomSelect } from '../components/ui/CustomSelect';
-import { FaFilter } from 'react-icons/fa';
-import { CustomTextarea } from '../components/ui/CustomTextarea';
-import { MdComment } from 'react-icons/md';
-import {
-  createComment,
-  getCommentsByArticle,
-} from '../features/comments/api/comment.api';
-import type {
-  CommentList,
-  CreateCommentPayload,
-} from '../features/comments/types/comment.types';
-import { ArticleCommentList } from '../features/comments/components/CommentList';
+import { fetchArticleComments } from '../features/comments/slices/asyncAction';
+import { CommentSection } from '../features/comments/components/CommentsSection';
 
 export const SingleArticle = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
-  const { item, status } = useAppSelector((state) => state.articles.current);
+  const { item, status: articleStatus } = useAppSelector(
+    (state) => state.articles.current
+  );
+
   const { user } = useAppSelector((state) => state.auth);
-
-  const [sort, setSort] = useState<string[]>(['newest', 'Newest first']);
-  const [comment, setComment] = useState('');
-
-  const [commentsList, setCommentsList] = useState<CommentList>([]);
 
   useEffect(() => {
     if (slug) {
@@ -47,21 +34,16 @@ export const SingleArticle = () => {
   }, []);
 
   useEffect(() => {
-    if (item?._id && status === Status.SUCCESS) {
-      const fetchArticleComments = async (id: string) => {
-        try {
-          const result = await getCommentsByArticle(id);
-          setCommentsList(result.data!);
-        } catch (err) {
-          console.log(err);
-        }
+    if (item?._id && articleStatus === Status.SUCCESS) {
+      const getComments = async () => {
+        await dispatch(fetchArticleComments(item._id));
       };
 
-      fetchArticleComments(item!._id);
+      getComments();
     }
-  }, [status, item]);
+  }, [articleStatus, item, dispatch]);
 
-  if (status === Status.LOADING || status === Status.IDLE) {
+  if (articleStatus === Status.LOADING || articleStatus === Status.IDLE) {
     return (
       <div className="h-screen">
         <SpinnerLoading />
@@ -85,15 +67,6 @@ export const SingleArticle = () => {
   };
 
   const isLikedByCurrentUser = user && item?.likedBy?.includes(user._id);
-
-  const postComment = async (payload: CreateCommentPayload) => {
-    try {
-      const result = await createComment(payload);
-      console.log(result);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <div className="h-full py-10">
@@ -135,53 +108,8 @@ export const SingleArticle = () => {
               </div>
             </section>
             <span className="h-px w-full bg-gray-300 dark:bg-gray-700 my-4" />
-            <section className="py-4 flex flex-col gap-4">
-              <CustomTextarea
-                label="Comment"
-                placeholder="Write your comment here..."
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                name="description"
-                icon={<MdComment />}
-                showCounter
-                maxLength={350}
-                rows={3}
-              />
-              <Button
-                ariaLabel="send comment"
-                className="w-1/12"
-                disabled={!comment}
-                onClick={() =>
-                  postComment({ text: comment, articleId: item._id })
-                }
-              >
-                Post
-              </Button>
 
-              {commentsList && commentsList.length >= 1 ? (
-                <>
-                  <CustomSelect
-                    label="Sort comments"
-                    options={[
-                      { value: 'newest', label: 'Newest first' },
-                      { value: 'oldest', label: 'Oldest first' },
-                      { value: 'popular', label: 'Most popular' },
-                    ]}
-                    selected={sort}
-                    onChange={setSort}
-                    isMulti={false}
-                    placeholder="Select sorting"
-                    icon={<FaFilter />}
-                    className="max-w-1/5"
-                    maxSelection={1}
-                    minSelection={1}
-                  />
-                  <ArticleCommentList commentList={commentsList} />
-                </>
-              ) : (
-                <span>No comments has been found yet...</span>
-              )}
-            </section>
+            <CommentSection articleId={item?._id} />
           </>
         )}
       </Container>

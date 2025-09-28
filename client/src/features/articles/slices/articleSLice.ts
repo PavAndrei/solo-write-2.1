@@ -84,13 +84,11 @@ const articleSlice = createSlice({
 
       if (!articleId || !userId) return;
 
-      // Обновляем список
       state.list.items =
         state.list.items?.map((a) =>
           a._id === articleId ? updateLikes(a, userId) : a
         ) || null;
 
-      // Обновляем текущую статью
       if (state.current.item && state.current.item._id === articleId) {
         state.current.item = updateLikes(state.current.item, userId);
       }

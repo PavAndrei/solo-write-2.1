@@ -6,11 +6,9 @@ import users from '../../features/users/slices/usersSlice';
 import filters from '../../features/filters/slices/filtersSlices';
 import modal from '../../features/modal/slices/modalSlice';
 import articles from '../../features/articles/slices/articleSLice';
-import { modalMiddleware } from '../../features/modal/slices/modalMiddleware';
+import comments from '../../features/comments/slices/commentSlice';
 
-// const store = configureStore({
-//   reducer: { auth, theme, users, filters, modal },
-// });
+import { modalMiddleware } from '../../features/modal/slices/modalMiddleware';
 
 export const store = configureStore({
   reducer: {
@@ -20,6 +18,7 @@ export const store = configureStore({
     filters,
     modal,
     articles,
+    comments,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(modalMiddleware),
