@@ -11,11 +11,7 @@ import { useAppDispatch, useAppSelector } from '../../../app/store/hooks';
 import { createCommentAsync } from '../slices/asyncAction';
 import { FaFilter } from 'react-icons/fa';
 
-interface CommentSectionProps {
-  articleId: string;
-}
-
-export const CommentSection: FC<CommentSectionProps> = ({ articleId }) => {
+export const CommentSection: FC = () => {
   const dispatch = useAppDispatch();
 
   const [sort, setSort] = useState<string[]>(['newest', 'Newest first']);
@@ -24,6 +20,7 @@ export const CommentSection: FC<CommentSectionProps> = ({ articleId }) => {
   const { items: comments, status: commentsStatus } = useAppSelector(
     (state) => state.comments.current
   );
+  const articleId = useAppSelector((state) => state.articles.current.item!._id);
 
   const postComment = async (payload: CreateCommentPayload) => {
     await dispatch(createCommentAsync(payload));

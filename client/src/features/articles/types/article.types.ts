@@ -1,18 +1,18 @@
-export interface Article {
-  categories: string[];
-  content: string;
-  createdAt: string;
-  description: string;
-  images: string[];
-  likedBy?: string[];
-  likesCount: number;
-  slug: string;
+import type { LikeableEntity } from '../../../types/api';
+
+export interface Article extends LikeableEntity {
+  _id: string;
   title: string;
-  updatedAt: string;
+  slug: string;
+  description: string;
+  content: string;
+  categories: string[];
+  images: string[];
   author: string;
   viewsCount: number;
+  createdAt: string;
+  updatedAt: string;
   _v: number;
-  _id: string;
 }
 
 export interface AllArticlesResponse {
@@ -22,10 +22,10 @@ export interface AllArticlesResponse {
 }
 
 export interface ArticleLikeResponse {
+  likedEntityId: string; // id статьи
+  userId: string;
   likesCount: number;
   liked: boolean;
-  likedArticleId: string;
-  userId: string;
 }
 
 export interface FetchUsersRequestParams {

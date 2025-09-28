@@ -4,18 +4,22 @@ import { timeAgo } from '../../../utils/timeAgo';
 import type { FC } from 'react';
 import type { Comment } from '../types/comment.types';
 import { MdDelete } from 'react-icons/md';
-import { useAppDispatch } from '../../../app/store/hooks';
-import { deleteCommentAsync } from '../slices/asyncAction';
+import { useAppDispatch, useAppSelector } from '../../../app/store/hooks';
+import { deleteCommentAsync, fetchCommentLike } from '../slices/asyncAction';
 import { alertModal, confirmModal } from '../../modal/slices/modalSlice';
+import clsx from 'clsx';
 
 export const CommentItem: FC<Comment> = ({
   _id,
   author,
   text,
   createdAt,
-  likes,
+  likesCount,
+  likedBy,
 }) => {
   const dispatch = useAppDispatch();
+
+  const { user } = useAppSelector((state) => state.auth);
 
   const deleteCommentById = async (id: string) => {
     const confirm = await dispatch(
@@ -41,6 +45,12 @@ export const CommentItem: FC<Comment> = ({
     }
   };
 
+  const toggleLike = async (id: string) => {
+    await dispatch(fetchCommentLike(id));
+  };
+
+  const isLikedByCurrentUser = user && likedBy?.includes(user?._id);
+
   return (
     <li className="flex flex-col gap-3 border rounded-sm p-2 border-gray-400 relative">
       <div className="flex items-center gap-5">
@@ -61,9 +71,14 @@ export const CommentItem: FC<Comment> = ({
         <div className="text-sm opacity-60">
           {'published ' + timeAgo(createdAt)}
         </div>
-        <Button size="sm" ariaLabel="likes" className="text-sm">
+        <Button
+          onClick={() => toggleLike(_id)}
+          size="sm"
+          ariaLabel="likes"
+          className={clsx('text-sm', isLikedByCurrentUser && 'text-red-500')}
+        >
           <BiSolidLike />
-          <span>{likes}</span>
+          <span>{likesCount || 0}</span>
         </Button>
 
         <Button

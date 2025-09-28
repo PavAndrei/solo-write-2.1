@@ -1,14 +1,14 @@
+import type { LikeableEntity } from '../../../types/api';
+
 interface CommentAuthor {
   userId: string;
   username: string;
   userAvatar?: string;
 }
 
-export interface Comment {
+export interface Comment extends LikeableEntity {
   _id: string;
   text: string;
-  likes: number;
-  isLiked: string[];
   articleId: string;
   author: CommentAuthor;
   popularity: number;
@@ -26,4 +26,11 @@ export type CommentList = Comment[];
 export interface CreateCommentPayload {
   text: string;
   articleId: string;
+}
+
+export interface CommentLikeResponse {
+  likedEntityId: string;
+  userId: string;
+  likesCount: number;
+  liked: boolean;
 }

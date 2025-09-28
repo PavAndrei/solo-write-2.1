@@ -426,7 +426,7 @@ export const toggleArticleLike = async (
       data: {
         likesCount: article.likesCount,
         liked: !hasLiked,
-        likedArticleId: article._id,
+        likedEntityId: article._id,
         userId: userId,
       },
     });

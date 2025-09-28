@@ -13,3 +13,8 @@ export enum Status {
   SUCCESS = 'success',
   ERROR = 'error',
 }
+
+export interface LikeableEntity {
+  likesCount: number;
+  likedBy: string[];
+}

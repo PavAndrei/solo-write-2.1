@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { ApiResponse } from '../../../types/api';
 import type {
   Comment,
+  CommentLikeResponse,
   CommentList,
   CreateCommentPayload,
   DeletedCommentData,
@@ -10,6 +11,7 @@ import {
   createComment,
   deleteComment,
   getCommentsByArticle,
+  toggleCommentLike,
 } from '../api/comment.api';
 
 export const createCommentAsync = createAsyncThunk<
@@ -55,6 +57,25 @@ export const deleteCommentAsync = createAsyncThunk<
 >('comment/deleteComment', async (id, { rejectWithValue }) => {
   try {
     const response = await deleteComment(id);
+    if (!response.success) {
+      return rejectWithValue(response.message || 'Deleting comment failed');
+    }
+    return response;
+  } catch (err) {
+    return rejectWithValue(
+      err instanceof Error ? err.message : 'Unknown error'
+    );
+  }
+});
+
+export const fetchCommentLike = createAsyncThunk<
+  ApiResponse<CommentLikeResponse>,
+  string,
+  { rejectValue: string }
+>('comment/toggleLike', async (id, { rejectWithValue }) => {
+  try {
+    const response = await toggleCommentLike(id);
+
     if (!response.success) {
       return rejectWithValue(response.message || 'Deleting comment failed');
     }

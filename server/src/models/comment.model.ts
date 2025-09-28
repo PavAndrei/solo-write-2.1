@@ -2,8 +2,8 @@ import { Schema, model, Document } from 'mongoose';
 
 export interface IComment extends Document {
   text: string;
-  likes: number;
-  isLiked: Schema.Types.ObjectId[];
+  likesCount: number;
+  likedBy: Schema.Types.ObjectId[];
   articleId: Schema.Types.ObjectId;
   author: {
     userId: Schema.Types.ObjectId;
@@ -22,11 +22,11 @@ const commentSchema = new Schema<IComment>(
       required: true,
       trim: true,
     },
-    likes: {
+    likesCount: {
       type: Number,
       default: 0,
     },
-    isLiked: [
+    likedBy: [
       {
         type: Schema.Types.ObjectId,
         ref: 'User',

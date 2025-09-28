@@ -2,6 +2,7 @@ import { BASE_API_URL } from '../../../constants/api';
 import type { ApiResponse } from '../../../types/api';
 import type {
   Comment,
+  CommentLikeResponse,
   CommentList,
   CreateCommentPayload,
   DeletedCommentData,
@@ -69,6 +70,33 @@ export const deleteComment = async (
 
     const res = await fetch(`${BASE_API_URL}/comment/${id}`, {
       method: 'DELETE',
+      credentials: 'include',
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      throw new Error(data.message);
+    }
+
+    return data;
+  } catch (err) {
+    const errorMessage =
+      err instanceof Error ? err.message : 'Network error occured';
+    console.error(errorMessage);
+    return { success: false, message: errorMessage };
+  }
+};
+
+export const toggleCommentLike = async (
+  id: string
+): Promise<ApiResponse<CommentLikeResponse>> => {
+  try {
+    if (!id) {
+      throw new Error('Id is not provided');
+    }
+
+    const res = await fetch(`${BASE_API_URL}/comment/${id}/like`, {
+      method: 'PATCH',
       credentials: 'include',
     });
     const data = await res.json();

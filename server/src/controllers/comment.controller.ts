@@ -3,6 +3,7 @@ import { Comment } from '../models/comment.model';
 import { User } from '../models/user.model';
 import { Article } from '../models/article.model';
 import { errorHandler } from '../middlewares/handleErrors';
+import mongoose from 'mongoose';
 
 export const createComment = async (
   req: Request,
@@ -116,6 +117,58 @@ export const deleteComment = async (
       message: 'Comment deleted successfully',
       data: {
         deletedCommentId: id,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const toggleCommentLike = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.userId;
+    const { id } = req.params;
+
+    if (!userId) {
+      throw errorHandler(401, 'Unauthorized');
+    }
+
+    const comment = await Comment.findById(id);
+    if (!comment) {
+      throw errorHandler(404, 'Comment not found');
+    }
+
+    const hasLiked = comment.likedBy.some(
+      (uid) => uid.toString() === userId.toString()
+    );
+
+    if (hasLiked) {
+      comment.likedBy = comment.likedBy.filter(
+        (uid) => uid.toString() !== userId.toString()
+      );
+      comment.likesCount = Math.max(0, comment.likesCount - 1);
+    } else {
+      comment.likedBy.push(
+        new mongoose.Types.ObjectId(
+          userId
+        ) as unknown as mongoose.Schema.Types.ObjectId
+      );
+      comment.likesCount += 1;
+    }
+
+    await comment.save();
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        likesCount: comment.likesCount,
+        liked: !hasLiked,
+        likedEntityId: comment._id,
+        userId,
       },
     });
   } catch (err) {
