@@ -78,3 +78,44 @@ export const getCommentsByArticle = async (
     next(err);
   }
 };
+
+export const deleteComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.userId;
+    const { id } = req.params;
+
+    if (!userId) {
+      throw errorHandler(401, 'Unauthorized');
+    }
+
+    const comment = await Comment.findById(id);
+    if (!comment) {
+      throw errorHandler(404, 'Comment not found');
+    }
+
+    const user = await User.findById(userId).select('role');
+    if (!user) {
+      throw errorHandler(404, 'User not found');
+    }
+
+    const isAuthor = comment.author.userId.toString() === userId.toString();
+    const isAdmin = user.role === 'admin';
+
+    if (!isAuthor && !isAdmin) {
+      throw errorHandler(403, 'You are not allowed to delete this comment');
+    }
+
+    await Comment.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Comment deleted successfully',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
