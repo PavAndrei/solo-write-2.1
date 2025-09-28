@@ -4,6 +4,7 @@ import {
   getCommentsByArticle,
   deleteComment,
   toggleCommentLike,
+  getAllComments,
 } from '../controllers/comment.controller';
 import { checkAuth } from '../middlewares/checkAuth';
 
@@ -13,3 +14,4 @@ commentRouter.post('/create', checkAuth, createComment);
 commentRouter.get('/:id', getCommentsByArticle);
 commentRouter.delete('/:id', checkAuth, deleteComment);
 commentRouter.patch('/:id/like', checkAuth, toggleCommentLike);
+commentRouter.get('/', checkAuth, getAllComments);

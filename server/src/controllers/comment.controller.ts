@@ -4,6 +4,7 @@ import { User } from '../models/user.model';
 import { Article } from '../models/article.model';
 import { errorHandler } from '../middlewares/handleErrors';
 import mongoose from 'mongoose';
+import { success } from 'zod/v4';
 
 export const createComment = async (
   req: Request,
@@ -169,6 +170,58 @@ export const toggleCommentLike = async (
         liked: !hasLiked,
         likedEntityId: comment._id,
         userId,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getAllComments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const {
+      sortBy = 'createdAt',
+      order = 'desc',
+      limit = '10',
+      startIndex = '0',
+      search,
+      user,
+    } = req.query;
+
+    const parsedLimit = Math.min(parseInt(limit as string, 10) || 10, 100);
+    const parsedStartIndex = parseInt(startIndex as string, 10) || 0;
+
+    const filter: Record<string, any> = {};
+    if (search) {
+      filter.text = { $regex: search, $options: 'i' };
+    }
+    if (user) {
+      filter['author.username'] = { $regex: user, $options: 'i' };
+    }
+
+    const sortQuery: Record<string, 1 | -1> = {
+      [sortBy as string]: order === 'asc' ? 1 : -1,
+    };
+
+    const comments = await Comment.find(filter)
+      .sort(sortQuery)
+      .skip(parsedStartIndex)
+      .limit(parsedLimit)
+      .lean();
+
+    const total = await Comment.countDocuments(filter);
+
+    return res.status(200).json({
+      success: true,
+      message: 'All comments received',
+      data: {
+        total,
+        count: comments.length,
+        comments,
       },
     });
   } catch (err) {
